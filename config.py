@@ -1,6 +1,63 @@
 start_date = '2000-08-01'
 end_date = '2021-01-12'
 
+target_feature = 'target'
+
+stats = [
+    'high_100_d',
+    'change',
+    'rsi', 'rsi_6',
+    'log-ret',
+    'ups_10_c', 'downs_10_c',
+    'close_-2~0_min', 'close_-2~0_max', 'close_-10~0_min', 'close_-10~0_max',
+    'stochrsi', 'stochrsi_6',
+    'wt1', 'wt2',
+    'trix', 'middle_10_trix',
+    'tema', 'middle_10_tema',
+    'vr', 'vr_6',
+    'wr', 'wr_6',
+    'cci', 'cci_6',
+    'atr', 'atr_5',
+    'supertrend', 'supertrend_ub', 'supertrend_lb',
+    'dma',
+    'pdi', 'mdi', 'dx', 'adx', 'adxr',
+    #'cr', 'cr-ma1', 'cr-ma2', 'cr-ma3',
+    'middle',
+    'boll', 'boll_ub', 'boll_lb',
+    'macd', 'macds', 'macdh',
+    'ppo', 'ppos', 'ppoh',
+    'vwma', 'vwma_6',
+    'chop', 'chop_6',
+    'mfi', 'mfi_6',
+]
+
+X_features = [
+    'day',
+    'change', 'change_-10~0_min', 'change_-10~0_max',
+    'rsi', 'rsi_6',
+    'log-ret',
+    'ups_10_c', 'downs_10_c',
+    'close_-2~0_min', 'close_-2~0_max',
+    'stochrsi', 'stochrsi_6',
+    'wt1', 'wt2',
+    'trix', 'middle_10_trix',
+    'tema', 'middle_10_tema',
+    # 'vr', 'vr_6',
+    'wr', 'wr_6',
+    'cci', 'cci_6',
+    'atr', 'atr_5',
+    'supertrend', 'supertrend_ub', 'supertrend_lb',
+    'dma',
+    'pdi', 'mdi', 'dx', 'adx', 'adxr',
+    'middle',
+    'boll', 'boll_ub', 'boll_lb',
+    'macd', 'macds', 'macdh',
+    'ppo', 'ppos', 'ppoh',
+    'vwma', 'vwma_6',
+    'chop', 'chop_6',
+    'mfi', 'mfi_6',
+]
+
 tickers = [
     "AB.PA",
     "A2A.MI",
@@ -212,5 +269,5 @@ tickers = [
     "MF.PA",
     "WLN.PA",
     "XFAB.PA",
-    "2CRSI.PA"
+    "2CRSI.PA",
 ]
