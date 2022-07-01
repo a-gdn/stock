@@ -1,10 +1,12 @@
 start_date = '2000-08-01'
 end_date = '2021-01-12'
 
+target_percent_increase = 0.10
+target_days = 15
 target_feature = 'target'
+target_feature_class = 'target_class'
 
 stats = [
-    'high_100_d',
     'change',
     'rsi', 'rsi_6',
     'log-ret',

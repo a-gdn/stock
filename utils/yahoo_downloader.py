@@ -32,7 +32,7 @@ class YahooDownloader:
 
         try:
             data_df.columns = [ "date", "open", "high", "low", "close", "adjcp", "volume", "tic"] # rename column names
-            data_df["close"] = data_df["adjcp"] # use adjusted close price instead of close price
+            # data_df["close"] = data_df["adjcp"] # use adjusted close price instead of close price
             data_df = data_df.drop(labels="adjcp", axis=1) # drop the adjusted close price column
 
         except NotImplementedError:
