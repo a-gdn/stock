@@ -2,7 +2,7 @@ start_date = '2000-08-01'
 end_date = '2021-01-12'
 
 target_percent_increase = 0.10
-target_days = 15
+target_days = 1
 target_feature = 'target'
 target_feature_class = 'target_class'
 

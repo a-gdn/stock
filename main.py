@@ -3,7 +3,7 @@ import os
 
 import config as cfg
 from utils.yahoo_downloader import YahooDownloader
-import utils.helper_functions as help_fn
+import utils.helper_functions as hf
 
 from stockstats import wrap
 
@@ -68,17 +68,44 @@ def plot_feature_importances(df: pd.DataFrame, X_features: list, y_feature: str,
     plt.close()
 
 def add_supports_resistances(df: pd.DataFrame) -> pd.DataFrame:
-    df['rolling_min'] = help_fn.get_rolling_min(df, 'close', cfg.target_days)
-    df['rolling_max'] = help_fn.get_rolling_max(df, 'close', cfg.target_days)
+    df['rolling_min'] = hf.get_rolling_min(df['low'], cfg.target_days)
+    df['rolling_max'] = hf.get_rolling_max(df['high'], cfg.target_days)
+    df['last_close'] = df['close'].shift(1)
 
-    df['pivot'] = df.apply(lambda row: help_fn.get_pivot(row['rolling_max'], row['rolling_min'], row['close']), axis = 1)
-    
-    df['support1'] = df.apply(lambda row: help_fn.get_support1(row['pivot'], row['rolling_max']), axis = 1)
-    df['support2'] = df.apply(lambda row: help_fn.get_support2(row['pivot'], row['rolling_max'], row['rolling_min']), axis = 1)
-    df['resistance1'] = df.apply(lambda row: help_fn.get_resistance1(row['pivot'], row['rolling_min']), axis = 1)
-    df['resistance2'] = df.apply(lambda row: help_fn.get_resistance2(row['pivot'], row['rolling_max'], row['rolling_min']), axis = 1)
-    
+    df['pivot'] = hf.get_pivot(df['rolling_max'], df['rolling_min'], df['last_close'])
+
+    df = df.dropna()
+
+    df['support1'] = hf.get_support1(df['pivot'], df['rolling_max'])
+    df['support2'] = hf.get_support2(df['pivot'], df['rolling_max'], df['rolling_min'])
+    df['resistance1'] = hf.get_resistance1(df['pivot'], df['rolling_min'])
+    df['resistance2'] = hf.get_resistance2(df['pivot'], df['rolling_max'], df['rolling_min'])
+
     return df
+
+def get_total_profits(df: pd.DataFrame, support_column: str, resistance_column: str) -> list:
+    total_profits = []
+    buy_price = 0
+    is_bought = False
+
+    support = df.iloc[0][support_column]
+    resistance = df.iloc[0][resistance_column]
+
+    for row in df.itertuples():
+        last_close = row.last_close
+        open = row.open
+        if (is_bought and last_close > resistance):
+            is_bought = False
+            total_profits.append(open - buy_price)
+        else:
+            last_profit = total_profits[-1] if len(total_profits) > 0 else 0
+            total_profits.append(last_profit)
+
+            if (not is_bought and last_close < support):
+                is_bought = True
+                buy_price = open
+
+    return total_profits
 
 def main():
     df = get_yahoo_data(
@@ -89,7 +116,12 @@ def main():
 
     df = add_supports_resistances(df)
 
-    print(df.head())
+    df['total_profit1'] = get_total_profits(df, 'support1', 'resistance1')
+    df['total_profit2'] = get_total_profits(df, 'support1', 'resistance2')
+    df['total_profit3'] = get_total_profits(df, 'support2', 'resistance1')
+    df['total_profit4'] = get_total_profits(df, 'support2', 'resistance2')
+    
+    print(df)
 
     # df = add_stats(df)
     # plot_correlations(df=df, folder_path='./plots/', file_name='correlations.pdf')
