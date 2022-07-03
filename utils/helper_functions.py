@@ -1,5 +1,8 @@
 import pandas as pd
 
+def pct(number: float) -> float:
+    return round(number * 100, 2)
+
 def get_rolling_min(close_df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return close_df.rolling(window=n_past_days, closed='left').min() # closed = 'left' excludes the last row (i.e. current row)
 

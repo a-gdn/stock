@@ -12,6 +12,7 @@ import seaborn as sns
 
 from sklearn.feature_selection import mutual_info_classif
 
+pd.options.mode.chained_assignment = None
 
 def get_yahoo_data(folder_path: str, file_name: str, start_date: str, end_date: str, tickers: list[str]) -> pd.DataFrame:
     """ Save a db with ohlcv + day + tickers data and return df """
@@ -83,9 +84,10 @@ def add_supports_resistances(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-def get_total_profits(df: pd.DataFrame, support_column: str, resistance_column: str) -> list:
-    total_profits = []
+def get_profit(df: pd.DataFrame, support_column: str, resistance_column: str) -> list:
+    profit = 1
     buy_price = 0
+    bought_days = 0
     is_bought = False
 
     support = df.iloc[0][support_column]
@@ -94,34 +96,54 @@ def get_total_profits(df: pd.DataFrame, support_column: str, resistance_column: 
     for row in df.itertuples():
         last_close = row.last_close
         open = row.open
+
         if (is_bought and last_close > resistance):
             is_bought = False
-            total_profits.append(open - buy_price)
-        else:
-            last_profit = total_profits[-1] if len(total_profits) > 0 else 0
-            total_profits.append(last_profit)
+            sell_price = open
+            profit *= (sell_price / buy_price) * cfg.fee_coef
+        elif (not is_bought and last_close < support):
+            is_bought = True
+            buy_price = open
+            profit *= cfg.fee_coef
+        
+        if is_bought:
+            bought_days += 1
 
-            if (not is_bought and last_close < support):
-                is_bought = True
-                buy_price = open
-
-    return total_profits
+    if bought_days > 0:
+        return profit, bought_days
+    else:
+        return 0, 0
 
 def main():
-    df = get_yahoo_data(
+    all_df = get_yahoo_data(
         folder_path='./db/', file_name='ohlcv.pkl',
         start_date=cfg.start_date, end_date=cfg.end_date,
         tickers=cfg.tickers)
-    df = df.loc[df['tic'] == 'FR.PA']
-
-    df = add_supports_resistances(df)
-
-    df['total_profit1'] = get_total_profits(df, 'support1', 'resistance1')
-    df['total_profit2'] = get_total_profits(df, 'support1', 'resistance2')
-    df['total_profit3'] = get_total_profits(df, 'support2', 'resistance1')
-    df['total_profit4'] = get_total_profits(df, 'support2', 'resistance2')
     
-    print(df)
+    profits = []
+
+    for ticker in cfg.tickers:
+        df = all_df.loc[all_df['tic'] == ticker]
+
+        if not df.empty:
+            df = add_supports_resistances(df)
+
+            days = len(df)
+            profit, bought_days = get_profit(df, 'support1', 'resistance1')
+
+            profits.append({
+                'ticker': ticker,
+                'profit': hf.pct(profit - 1) if bought_days > 0 else 0,
+                'daily_profit': hf.pct(profit / bought_days) if bought_days > 0 else 0,
+                'days': days,
+                'bought_days': bought_days,
+                'bought_days%': hf.pct(bought_days / days)
+            })
+
+    profit_df = pd.DataFrame(profits)
+    print(profit_df.head())
+    print(profit_df['daily_profit'].mean(skipna=True))
+    print(profit_df['bought_days%'].mean(skipna=True))
 
     # df = add_stats(df)
     # plot_correlations(df=df, folder_path='./plots/', file_name='correlations.pdf')
