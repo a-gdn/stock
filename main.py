@@ -120,25 +120,35 @@ def main():
         start_date=cfg.start_date, end_date=cfg.end_date,
         tickers=cfg.tickers)
     
+    all_df['date'] = pd.to_datetime(all_df['date'])
+    all_df['year'] = all_df['date'].dt.strftime('%Y')
+
+    print(all_df.dtypes)
+
     profits = []
 
     for ticker in cfg.tickers:
-        df = all_df.loc[all_df['tic'] == ticker]
+        ticker_df = all_df.loc[all_df['tic'] == ticker]
 
-        if not df.empty:
-            df = add_supports_resistances(df)
+        if not ticker_df.empty:
+            years = ticker_df['year'].unique()
 
-            days = len(df)
-            profit, bought_days = get_profit(df, 'support1', 'resistance1')
+            for year in years:
+                year_df = ticker_df.loc[ticker_df['year'] == year]
 
-            profits.append({
-                'ticker': ticker,
-                'profit': hf.pct(profit - 1) if bought_days > 0 else 0,
-                'daily_profit': hf.pct(profit / bought_days) if bought_days > 0 else 0,
-                'days': days,
-                'bought_days': bought_days,
-                'bought_days%': hf.pct(bought_days / days)
-            })
+                year_df = add_supports_resistances(year_df)
+
+                days = len(year_df)
+                profit, bought_days = get_profit(year_df, 'support1', 'resistance1')
+
+                profits.append({
+                    'ticker_year': f'{ticker}-{year}',
+                    'profit': hf.pct(profit - 1) if bought_days > 0 else 0,
+                    'daily_profit': hf.pct(profit / bought_days) if bought_days > 0 else 0,
+                    'days': days,
+                    'bought_days': bought_days,
+                    'bought_days%': hf.pct(bought_days / days)
+                })
 
     profit_df = pd.DataFrame(profits)
     print(profit_df.head())
