@@ -1,1 +1,3 @@
 add new features in factors analysis: comparison to references stock values (cac40, dow jones)
+
+call add_supports_resistances(ticker_df) instead of add_supports_resistances(year_df)

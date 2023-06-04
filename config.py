@@ -1,11 +1,11 @@
-start_date = '2000-08-01'
-end_date = '2021-01-12'
+start_date = '2000-01-04'
+end_date = '2022-12-31'
 
 fee = 0.006
 fee_coef = 1 - fee
 
 target_percent_increase = 0.10
-target_days = 1
+target_days = 100
 target_feature = 'target'
 target_feature_class = 'target_class'
 
@@ -64,6 +64,7 @@ X_features = [
 ]
 
 tickers = [
+    "^FCHI",
     "AB.PA",
     "A2A.MI",
     "ABCA.PA",

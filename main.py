@@ -23,9 +23,12 @@ def get_yahoo_data(folder_path: str, file_name: str, start_date: str, end_date: 
 
     if os.path.isfile(file_path):
         df = pd.read_pickle(file_path)
+
     else:
         df = YahooDownloader(start_date, end_date, tickers).fetch_data()        
         df.to_pickle(file_path)
+    
+    df.to_csv('ohlcv.csv')
 
     return df
 
@@ -109,10 +112,7 @@ def get_profit(df: pd.DataFrame, support_column: str, resistance_column: str) ->
         if is_bought:
             bought_days += 1
 
-    if bought_days > 0:
-        return profit, bought_days
-    else:
-        return 0, 0
+    return profit, bought_days
 
 def main():
     all_df = get_yahoo_data(
@@ -127,33 +127,37 @@ def main():
 
     profits = []
 
-    for ticker in cfg.tickers:
+    available_tickers = all_df['tic'].unique()
+
+    for ticker in available_tickers:
         ticker_df = all_df.loc[all_df['tic'] == ticker]
 
-        if not ticker_df.empty:
-            years = ticker_df['year'].unique()
+        years = ticker_df['year'].unique()
 
-            for year in years:
-                year_df = ticker_df.loc[ticker_df['year'] == year]
+        for year in years:
+            year_df = ticker_df.loc[ticker_df['year'] == year]
 
-                year_df = add_supports_resistances(year_df)
+            year_df = add_supports_resistances(year_df)
 
-                days = len(year_df)
-                profit, bought_days = get_profit(year_df, 'support1', 'resistance1')
+            days = len(year_df)
+            profit, bought_days = get_profit(year_df, 'support1', 'resistance1')
 
-                profits.append({
-                    'ticker_year': f'{ticker}-{year}',
-                    'profit': hf.pct(profit - 1) if bought_days > 0 else 0,
-                    'daily_profit': hf.pct(profit / bought_days) if bought_days > 0 else 0,
-                    'days': days,
-                    'bought_days': bought_days,
-                    'bought_days%': hf.pct(bought_days / days)
-                })
+            profits.append({
+                'ticker_year': f'{ticker}-{year}',
+                'profit': hf.pct(profit - 1),
+                'daily_profit': hf.pct(profit / bought_days) if bought_days > 0 else 0,
+                'days': days,
+                'bought_days': bought_days,
+                'bought_days%': hf.pct(bought_days / days)
+            })
 
     profit_df = pd.DataFrame(profits)
     print(profit_df.head())
+    print('daily profit:')
     print(profit_df['daily_profit'].mean(skipna=True))
+    print('bought days:')
     print(profit_df['bought_days%'].mean(skipna=True))
+    print('end.')
 
     # df = add_stats(df)
     # plot_correlations(df=df, folder_path='./plots/', file_name='correlations.pdf')
