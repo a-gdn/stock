@@ -160,11 +160,11 @@ def main():
     print('end.')
 
     # df = add_stats(df)
-    # plot_correlations(df=df, folder_path='./plots/', file_name='correlations.pdf')
+    # plot_correlations(df=df, folder_path='./outputs/', file_name='correlations.pdf')
     # plot_feature_importances(
     #     df=df,
     #     X_features=cfg.X_features, y_feature=cfg.target_feature_class,
-    #     folder_path='./plots/', file_name='feature_importances.pdf')
+    #     folder_path='./outputs/', file_name='feature_importances.pdf')
 
 if __name__ == "__main__":
     main()
