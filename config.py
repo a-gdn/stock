@@ -5,7 +5,7 @@ fee = 0.006
 fee_coef = 1 - fee
 
 target_percent_increase = 0.10
-target_days = 25
+target_days = 50
 target_feature = 'target'
 target_feature_class = 'target_class'
 
