@@ -4,10 +4,16 @@ end_date = '2022-12-31'
 fee = 0.006
 fee_coef = 1 - fee
 
+support_sell_coef = 0.97
+resistance_buy_coef = 1.03
+
 target_percent_increase = 0.10
-target_days = 17
+target_days = 15
 target_feature = 'target'
 target_feature_class = 'target_class'
+
+support_column = 'support1'
+resistance_column = 'resistance2'
 
 stats = [
     'change',

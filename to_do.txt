@@ -1,3 +1,12 @@
 add new features in factors analysis: comparison to references stock values (cac40, dow jones)
 
-try using different target_days windows for updating support and resistance
+define better support and resistance formulas with coefficients
+
+simulate wallet with 10000€
+
+possiblity to handle quantities:
+    - buy even if alredy owned
+    - sell even if already 
+
+handle support and resistance breakouts
+    - try with 3 % loss lower than support and higher than resistance
