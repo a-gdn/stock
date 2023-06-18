@@ -8,5 +8,4 @@ possiblity to handle quantities:
     - buy even if alredy owned
     - sell even if already 
 
-handle support and resistance breakouts
-    - try with 3 % loss lower than support and higher than resistance
+stop investing for 40 days if breaking support

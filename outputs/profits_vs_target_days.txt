@@ -1,293 +1,36 @@
-Average high / close ratio
-----------------------------------------------------------
+support_sell_coef = 0.2
+resistance_buy_coef = 0.9
+target_days = 15
 
-1.014, i.e. 1.4% higher
+    Average profit: 114.24115577889447%
+    Average daily profit %: 0.01663316582914573%
+    Average bought days %: 88.81979899497487 days
 
+    Average profit: -41.36%
+    Average daily profit %: -0.01%
+    Average bought days %: 98.86 days
 
-Support 1, Resistance 1
-----------------------------------------------------------
+support_sell_coef = 0.2
+resistance_buy_coef = 0.85
+target_days = 15
 
-100 days:
-    All
-        Average profit: 5.167537132055091%
-        Average daily profit %: 0.11674588171752633%
-        Average bought days %: 31.830402376451524 days
-    CAC40
-        Average profit: 3.740000000000001%
-        Average daily profit %: 0.058695652173913045%
-        Average bought days %: 33.8795652173913 days
+    Average profit: 170.52145728643214%
+    Average daily profit %: 0.030000000000000002%
+    Average bought days %: 92.5375879396985 days
 
-50 days:
-    All
-        Average profit: 6.557779574238749%
-        Average daily profit %: 0.14045001347345729%
-        Average bought days %: 39.45626515763945 days
-    CAC40
-        Average profit: 4.001739130434783%
-        Average daily profit %: 0.06304347826086958%
-        Average bought days %: 40.74391304347826 days
+    Average profit: -40.41%
+    Average daily profit %: -0.01%
+    Average bought days %: 98.98 days
 
-25 days:
-    All
-        Average profit: 5.533241138560688%
-        Average daily profit %: 0.1307465091299678%
-        Average bought days %: 43.94613319011816 days
-    CAC40
-        Average profit: 2.059565217391305%
-        Average daily profit %: 0.058260869565217394%
-        Average bought days %: 43.30739130434783 days
-        
-10 days:
-    All
-        Average profit: 1.7344825737265415%
-        Average daily profit %: 0.06644772117962466%
-        Average bought days %: 46.037453083109924 days
-    CAC40
-        Average profit: -3.2782608695652176%
-        Average daily profit %: -0.024782608695652165%
-        Average bought days %: 39.48 days
+support_sell_coef = 0.2
+resistance_buy_coef = 0.8
+target_days = 15
 
-5 days:
-    All
-        Average profit: -2.5781859592711687%
-        Average daily profit %: 0.010964630225080386%
-        Average bought days %: 46.371838156484465 days
-    CAC40
-        Average profit: -4.98695652173913%
-        Average daily profit %: -0.03173913043478261%
-        Average bought days %: 41.818260869565215 days
+    Average profit: 170.52145728643214%
+    Average daily profit %: 0.030000000000000002%
+    Average bought days %: 92.5375879396985 days
 
-Support 2, Resistance 2
-----------------------------------------------------------
-
-100 days:
-    All
-        Average profit: 0.7653605184985147%
-        Average daily profit %: 0.015455036456926818%
-        Average bought days %: 15.278765865514448 days
-    CAC40
-        Average profit: -0.1826086956521739%
-        Average daily profit %: -0.0060869565217391295%
-        Average bought days %: 17.58782608695652 days
-
-50 days:
-    All
-        Average profit: 2.077367286445702%
-        Average daily profit %: 0.035750471571005124%
-        Average bought days %: 24.237690649420642 days
-    CAC40
-        Average profit: 1.1782608695652173%
-        Average daily profit %: 0.022608695652173914%
-        Average bought days %: 34.32086956521739 days
-
-25 days:
-    All
-        Average profit: 4.497397959183674%
-        Average daily profit %: 0.12862244897959185%
-        Average bought days %: 33.86921321160043 days
-    CAC40
-        Average profit: 1.5756521739130434%
-        Average daily profit %: 0.03260869565217391%
-        Average bought days %: 42.313043478260866 days
-
-10 days:
-    All
-        Average profit: 6.284643431635389%
-        Average daily profit %: 0.13309919571045575%
-        Average bought days %: 42.69478284182305 days
-    CAC40
-        Average profit: 1.9343478260869567%
-        Average daily profit %: 0.03347826086956522%
-        Average bought days %: 52.64173913043477 days
-
-5 days:
-    All
-        Average profit: 4.827100750267953%
-        Average daily profit %: 0.14166398713826367%
-        Average bought days %: 45.281680064308674 days
-    CAC40
-        Average profit: 1.3673913043478263%
-        Average daily profit %: 0.019565217391304346%
-        Average bought days %: 48.89739130434783 days
-
-Support 1, Resistance 2
-----------------------------------------------------------
-
-100 days:
-    All
-        Average profit: 2.4991385363219014%
-        Average daily profit %: 0.028090737240075613%
-        Average bought days %: 33.89911963273021 days
-    CAC40
-        Average profit: 0.37956521739130444%
-        Average daily profit %: 0.006521739130434782%
-        Average bought days %: 34.71260869565217 days
-
-50 days:
-    All
-        Average profit: 5.650409593101591%
-        Average daily profit %: 0.07407706817569387%
-        Average bought days %: 45.6461277283751 days
-    CAC40
-        Average profit: 3.5030434782608704%
-        Average daily profit %: 0.026956521739130438%
-        Average bought days %: 52.218260869565206 days
-
-30 days:
-    All
-        Average profit: 8.048302850995158%
-        Average daily profit %: 0.10484938138784294%
-        Average bought days %: 53.485855298547605 days
-    CAC40
-        Average profit: 3.5391304347826096%
-        Average daily profit %: 0.0408695652173913%
-        Average bought days %: 58.17043478260869 days
-
-25 days:
-    All
-        Average profit: 8.35578141783029%
-        Average daily profit %: 0.1088077336197637%
-        Average bought days %: 55.28103651987111 days
-    CAC40
-        Average profit: 3.1182608695652174%
-        Average daily profit %: 0.03391304347826087%
-        Average bought days %: 58.697391304347825 days
-
-20 days
-    All
-        Average profit: 8.993871140939596%
-        Average daily profit %: 0.10940939597315437%
-        Average bought days %: 56.8730711409396 days
-    CAC40
-        Average profit: 4.297826086956522%
-        Average daily profit %: 0.03913043478260869%
-        Average bought days %: 62.11391304347826 days
-
-17 days
-    All
-        Average profit: 9.124708881137645%
-        Average daily profit %: 0.1124228602092836%
-        Average bought days %: 57.82546552186746 days
-    CAC40
-        Average profit: 4.782608695652175%
-        Average daily profit %: 0.05652173913043478%
-        Average bought days %: 64.50608695652176 days
-
-15 days
-    All
-        Average profit: 9.310702978266702%
-        Average daily profit %: 0.11121545478937483%
-        Average bought days %: 58.504657901797685 days
-    CAC40
-        Average profit: 4.881304347826088%
-        Average daily profit %: 0.051304347826086956%
-        Average bought days %: 64.60391304347827 days
-
-     ticker_year  profit  daily_profit  days  bought_days  bought_days%
-2346  ^FCHI-2000   -0.60         -0.01   237           72         30.38
-2347  ^FCHI-2001   -0.60         -0.00   253          251         99.21
-2348  ^FCHI-2002    6.55          0.03   255          227         89.02
-2349  ^FCHI-2003    4.00          0.02   255          164         64.31
-2350  ^FCHI-2004   -0.60         -0.00   259          202         77.99
-2351  ^FCHI-2005    9.14          0.13   257           73         28.40
-2352  ^FCHI-2006    4.30          0.06   255           75         29.41
-2353  ^FCHI-2007    6.83          0.04   255          187         73.33
-2354  ^FCHI-2008   -0.60         -0.00   256          253         98.83
-2355  ^FCHI-2009   16.62          0.12   256          135         52.73
-2356  ^FCHI-2010   -0.60         -0.00   256          240         93.75
-2357  ^FCHI-2011    3.29          0.02   257          211         82.10
-2358  ^FCHI-2012   -2.73         -0.02   253          124         49.01
-2359  ^FCHI-2013   27.77          0.26   255          108         42.35
-2360  ^FCHI-2014    7.04          0.05   255          150         58.82
-2361  ^FCHI-2015   -0.60         -0.00   255          170         66.67
-2362  ^FCHI-2016    6.32          0.03   257          237         92.22
-2363  ^FCHI-2017   10.76          0.11   255           94         36.86
-2364  ^FCHI-2018   -0.60         -0.00   255          230         90.20
-2365  ^FCHI-2019   16.37          0.14   255          120         47.06
-2366  ^FCHI-2020   -0.60         -0.00   257          235         91.44
-2367  ^FCHI-2021    4.69          0.22   258           21          8.14
-2368  ^FCHI-2022   -3.88         -0.02   257          215         83.66
-
-13 days
-    All
-        Average profit: 8.74966738197425%
-        Average daily profit %: 0.10215665236051504%
-        Average bought days %: 59.40161212446352 days
-    CAC40
-        Average profit: 5.13913043478261%
-        Average daily profit %: 0.043478260869565216%
-        Average bought days %: 66.59782608695653 days
-
-10 days
-    All
-        Average profit: 8.016195710455765%
-        Average daily profit %: 0.09283109919571045%
-        Average bought days %: 60.49349329758713 days
-    CAC40
-        Average profit: 4.2639130434782615%
-        Average daily profit %: 0.0382608695652174%
-        Average bought days %: 64.80652173913043 days
-
-5 days
-    All
-        Average profit: 5.000685959271169%
-        Average daily profit %: 0.055383172561629154%
-        Average bought days %: 61.27185155412647 days
-    CAC40
-        Average profit: -0.24999999999999978%
-        Average daily profit %: 0.006956521739130435%
-        Average bought days %: 62.37739130434782 days
-
-Support 2, Resistance 1
-----------------------------------------------------------
-
-100 days:
-    All
-        Average profit: 2.2480556305698083%
-        Average daily profit %: 0.06479071023494465%
-        Average bought days %: 13.786097758574128 days
-    CAC40
-        Average profit: -0.1826086956521739%
-        Average daily profit %: -0.002608695652173913%
-        Average bought days %: 17.79217391304348 days
-
-50 days:
-    All
-        Average profit: 3.5149151172190787%
-        Average daily profit %: 0.1439073026138507%
-        Average bought days %: 20.35921853947723 days
-    CAC40
-        Average profit: 2.469130434782609%
-        Average daily profit %: 0.04739130434782609%
-        Average bought days %: 28.89 days
-
-25 days
-    All
-        Average profit: 4.496544038668098%
-        Average daily profit %: 0.2557921589688507%
-        Average bought days %: 26.1185096670247 days
-    CAC40
-        Average profit: 1.7821739130434784%
-        Average daily profit %: 0.04217391304347826%
-        Average bought days %: 28.42391304347826 days
-
-10 days
-    All
-        Average profit: 3.1584557640750672%
-        Average daily profit %: 0.2263243967828418%
-        Average bought days %: 29.54415549597855 days
-    CAC40
-        Average profit: -0.22869565217391327%
-        Average daily profit %: 0.05913043478260868%
-        Average bought days %: 28.993913043478262 days
-
-5 days
-    All
-        Average profit: 1.1428885316184352%
-        Average daily profit %: 0.19596195069667738%
-        Average bought days %: 30.98824222936763 days
-    CAC40
-        Average profit: -1.3234782608695654%
-        Average daily profit %: 0.00043478260869565414%
-        Average bought days %: 32.54304347826086 days
+    Average profit: -40.41%
+    Average daily profit %: -0.01%
+    Average bought days %: 98.98 days
 

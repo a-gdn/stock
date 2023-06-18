@@ -1,11 +1,12 @@
-start_date = '2000-01-04'
+start_date = '2012-01-04'
 end_date = '2022-12-31'
 
 fee = 0.006
 fee_coef = 1 - fee
 
-support_sell_coef = 0.97
-resistance_buy_coef = 1.03
+support_sell_coef = 0.8
+resistance_buy_coef = 1
+fall_security_days = 30
 
 target_percent_increase = 0.10
 target_days = 15
