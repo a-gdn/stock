@@ -1,2 +1,1 @@
-include a tax coef
-include a wallet
+consider loss_limit in whole timespan between buy and sell
