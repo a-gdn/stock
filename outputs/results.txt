@@ -1,4 +1,9 @@
 Results on 23/06/2023:
+years: 10.99, top_profit: x181.50, top_yearly_profit: x1.61
+
+config:
+    start_date = '2012-01-04'
+    end_date = '2022-12-31'
 
     watch_days  num_stocks_to_buy  hold_days  loss_limit  total_profit
 24           2                  1          5       0.999       181.498
