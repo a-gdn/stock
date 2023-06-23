@@ -1,36 +1,32 @@
-support_sell_coef = 0.2
-resistance_buy_coef = 0.9
-target_days = 15
+Results on 23/06/2023:
 
-    Average profit: 114.24115577889447%
-    Average daily profit %: 0.01663316582914573%
-    Average bought days %: 88.81979899497487 days
-
-    Average profit: -41.36%
-    Average daily profit %: -0.01%
-    Average bought days %: 98.86 days
-
-support_sell_coef = 0.2
-resistance_buy_coef = 0.85
-target_days = 15
-
-    Average profit: 170.52145728643214%
-    Average daily profit %: 0.030000000000000002%
-    Average bought days %: 92.5375879396985 days
-
-    Average profit: -40.41%
-    Average daily profit %: -0.01%
-    Average bought days %: 98.98 days
-
-support_sell_coef = 0.2
-resistance_buy_coef = 0.8
-target_days = 15
-
-    Average profit: 170.52145728643214%
-    Average daily profit %: 0.030000000000000002%
-    Average bought days %: 92.5375879396985 days
-
-    Average profit: -40.41%
-    Average daily profit %: -0.01%
-    Average bought days %: 98.98 days
-
+    watch_days  num_stocks_to_buy  hold_days  loss_limit  total_profit
+24           2                  1          5       0.999       181.498
+40           3                  1          4       0.999       170.461
+44           3                  1          5       0.999        88.088
+42           3                  2          4       0.999        86.098
+32           2                  1          7       0.999        77.563
+25           2                  1          5       0.990        73.237
+33           2                  1          7       0.990        36.002
+34           2                  2          7       0.999        33.899
+26           2                  2          5       0.999        31.122
+41           3                  1          4       0.990        27.274
+43           3                  2          4       0.990        22.898
+52           3                  1          7       0.999        22.270
+45           3                  1          5       0.990        17.760
+56           3                  1          8       0.999        14.895
+35           2                  2          7       0.990        14.594
+27           2                  2          5       0.990        13.208
+50           3                  2          6       0.999        10.095
+46           3                  2          5       0.999         9.459
+58           3                  2          8       0.999         9.425
+57           3                  1          8       0.990         9.101
+28           2                  1          6       0.999         8.729
+48           3                  1          6       0.999         7.678
+20           2                  1          4       0.999         7.180
+53           3                  1          7       0.990         6.551
+...
+3            1                  2          4       0.990         0.133
+13           1                  1          7       0.990         0.127
+5            1                  1          5       0.990         0.122
+1            1                  1          4       0.990         0.048
