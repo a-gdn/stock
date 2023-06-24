@@ -1,37 +1,293 @@
-Results on 23/06/2023:
-years: 10.99, top_profit: x181.50, top_yearly_profit: x1.61
+Results calculations on 23/06/2023:
+___________________________________
 
-config:
-    start_date = '2012-01-04'
-    end_date = '2022-12-31'
+start_date = '2012-01-04'
+end_date = '2022-12-31'
 
-    watch_days  num_stocks_to_buy  hold_days  loss_limit  total_profit
-24           2                  1          5       0.999       181.498
-40           3                  1          4       0.999       170.461
-44           3                  1          5       0.999        88.088
-42           3                  2          4       0.999        86.098
-32           2                  1          7       0.999        77.563
-25           2                  1          5       0.990        73.237
-33           2                  1          7       0.990        36.002
-34           2                  2          7       0.999        33.899
-26           2                  2          5       0.999        31.122
-41           3                  1          4       0.990        27.274
-43           3                  2          4       0.990        22.898
-52           3                  1          7       0.999        22.270
-45           3                  1          5       0.990        17.760
-56           3                  1          8       0.999        14.895
-35           2                  2          7       0.990        14.594
-27           2                  2          5       0.990        13.208
-50           3                  2          6       0.999        10.095
-46           3                  2          5       0.999         9.459
-58           3                  2          8       0.999         9.425
-57           3                  1          8       0.990         9.101
-28           2                  1          6       0.999         8.729
-48           3                  1          6       0.999         7.678
-20           2                  1          4       0.999         7.180
-53           3                  1          7       0.990         6.551
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+
+|     |   watch_days |   num_stocks_to_buy |   hold_days |   loss_limit |   total_profit |   yearly_profit |
+|----:|-------------:|--------------------:|------------:|-------------:|---------------:|----------------:|
+|  72 |            2 |                   1 |           5 |        0.999 |  181.498       |        1.60525  |
+| 114 |            3 |                   1 |           4 |        0.999 |  170.461       |        1.59612  |
+| 210 |            5 |                   1 |           4 |        0.999 |  111.223       |        1.53529  |
+| 120 |            3 |                   1 |           5 |        0.999 |   88.0879      |        1.50306  |
+| 116 |            3 |                   2 |           4 |        0.999 |   86.0982      |        1.49994  |
+| 156 |            4 |                   1 |           3 |        0.999 |   85.0703      |        1.4983   |
+| 168 |            4 |                   1 |           5 |        0.999 |   78.0685      |        1.48663  |
+|  84 |            2 |                   1 |           7 |        0.999 |   77.5625      |        1.48575  |
+|  73 |            2 |                   1 |           5 |        0.99  |   73.2368      |        1.47802  |
+| 158 |            4 |                   2 |           3 |        0.999 |   49.9208      |        1.42736  |
+| 228 |            5 |                   1 |           7 |        0.999 |   44.6333      |        1.41289  |
+|  85 |            2 |                   1 |           7 |        0.99  |   36.0016      |        1.38553  |
+|  86 |            2 |                   2 |           7 |        0.999 |   33.8994      |        1.37797  |
+|  74 |            2 |                   2 |           5 |        0.999 |   31.1221      |        1.36729  |
+| 102 |            3 |                   1 |           2 |        0.999 |   29.5021      |        1.36065  |
+| 118 |            3 |                   3 |           4 |        0.999 |   28.391       |        1.35591  |
+| 170 |            4 |                   2 |           5 |        0.999 |   27.5826      |        1.35235  |
+| 115 |            3 |                   1 |           4 |        0.99  |   27.274       |        1.35097  |
+| 211 |            5 |                   1 |           4 |        0.99  |   25.0441      |        1.34052  |
+| 117 |            3 |                   2 |           4 |        0.99  |   22.8984      |        1.32964  |
+| 132 |            3 |                   1 |           7 |        0.999 |   22.27        |        1.32628  |
+| 212 |            5 |                   2 |           4 |        0.999 |   21.7434      |        1.32339  |
+|  88 |            2 |                   3 |           7 |        0.999 |   21.6212      |        1.32271  |
 ...
-3            1                  2          4       0.990         0.133
-13           1                  1          7       0.990         0.127
-5            1                  1          5       0.990         0.122
-1            1                  1          4       0.990         0.048
+|   5 |            1 |                   3 |           1 |        0.99  |    1.29845e-07 |        0.236245 |
+|   4 |            1 |                   3 |           1 |        0.999 |    1.29845e-07 |        0.236245 |
+|   1 |            1 |                   1 |           1 |        0.99  |    1.21282e-07 |        0.234783 |
+|   0 |            1 |                   1 |           1 |        0.999 |    1.21282e-07 |        0.234783 |
+
+________________________________________________________________________
+
+start_date = '2012-01-05'
+end_date = '2022-12-31'
+
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+
+|     |   watch_days |   num_stocks_to_buy |   hold_days |   loss_limit |   total_profit |   yearly_profit |
+|----:|-------------:|--------------------:|------------:|-------------:|---------------:|----------------:|
+| 114 |            3 |                   1 |           4 |        0.999 |  134.916       |        1.56268  |
+|  78 |            2 |                   1 |           6 |        0.999 |  123.182       |        1.5498   |
+| 138 |            3 |                   1 |           8 |        0.999 |  111.518       |        1.53583  |
+| 162 |            4 |                   1 |           4 |        0.999 |   88.5547      |        1.50393  |
+| 108 |            3 |                   1 |           3 |        0.999 |   86.056       |        1.50002  |
+| 222 |            5 |                   1 |           6 |        0.999 |   59.5197      |        1.45052  |
+| 115 |            3 |                   1 |           4 |        0.99  |   58.7036      |        1.4487   |
+| 236 |            5 |                   2 |           8 |        0.999 |   57.4174      |        1.44578  |
+| 164 |            4 |                   2 |           4 |        0.999 |   57.324       |        1.44557  |
+| 174 |            4 |                   1 |           6 |        0.999 |   53.4193      |        1.43631  |
+| 116 |            3 |                   2 |           4 |        0.999 |   50.5653      |        1.42915  |
+| 234 |            5 |                   1 |           8 |        0.999 |   49.6818      |        1.42686  |
+|  66 |            2 |                   1 |           4 |        0.999 |   48.232       |        1.42302  |
+|  72 |            2 |                   1 |           5 |        0.999 |   44.4767      |        1.41256  |
+| 139 |            3 |                   1 |           8 |        0.99  |   44.3857      |        1.4123   |
+| 237 |            5 |                   2 |           8 |        0.99  |   39.328       |        1.39683  |
+| 180 |            4 |                   1 |           7 |        0.999 |   36.9791      |        1.38903  |
+|  79 |            2 |                   1 |           6 |        0.99  |   33.6695      |        1.37722  |
+| 235 |            5 |                   1 |           8 |        0.99  |   33.6323      |        1.37708  |
+| 163 |            4 |                   1 |           4 |        0.99  |   33.5937      |        1.37694  |
+| 206 |            5 |                   2 |           3 |        0.999 |   33.4968      |        1.37658  |
+| 102 |            3 |                   1 |           2 |        0.999 |   31.6051      |        1.36931  |
+| 218 |            5 |                   2 |           5 |        0.999 |   30.2529      |        1.36387  |
+...
+|   5 |            1 |                   3 |           1 |        0.99  |    4.76597e-08 |        0.215571 |
+|   4 |            1 |                   3 |           1 |        0.999 |    4.76597e-08 |        0.215571 |
+|   3 |            1 |                   2 |           1 |        0.99  |    2.9331e-08  |        0.206253 |
+|   2 |            1 |                   2 |           1 |        0.999 |    2.9331e-08  |        0.206253 |
+
+________________________________________________________________________
+
+start_date = '2012-01-06'
+end_date = '2022-12-31'
+
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+
+|     |   watch_days |   num_stocks_to_buy |   hold_days |   loss_limit |   total_profit |   yearly_profit |
+|----:|-------------:|--------------------:|------------:|-------------:|---------------:|----------------:|
+|  60 |            2 |                   1 |           3 |        0.999 |  226.448       |        1.63831  |
+| 170 |            4 |                   2 |           5 |        0.999 |  169.432       |        1.59561  |
+|  62 |            2 |                   2 |           3 |        0.999 |   77.7294      |        1.48634  |
+| 126 |            3 |                   1 |           6 |        0.999 |   68.5767      |        1.46948  |
+| 171 |            4 |                   2 |           5 |        0.99  |   65.2899      |        1.46293  |
+| 174 |            4 |                   1 |           6 |        0.999 |   55.6943      |        1.44191  |
+| 168 |            4 |                   1 |           5 |        0.999 |   44.5056      |        1.41277  |
+| 172 |            4 |                   3 |           5 |        0.999 |   42.6872      |        1.40741  |
+|  90 |            2 |                   1 |           8 |        0.999 |   35.5213      |        1.38406  |
+| 114 |            3 |                   1 |           4 |        0.999 |   31.9599      |        1.37081  |
+| 108 |            3 |                   1 |           3 |        0.999 |   31.3731      |        1.3685   |
+| 128 |            3 |                   2 |           6 |        0.999 |   30.671       |        1.36569  |
+| 212 |            5 |                   2 |           4 |        0.999 |   27.2141      |        1.3509   |
+| 216 |            5 |                   1 |           5 |        0.999 |   26.6282      |        1.34822  |
+| 156 |            4 |                   1 |           3 |        0.999 |   26.3962      |        1.34715  |
+|  64 |            2 |                   3 |           3 |        0.999 |   25.7606      |        1.34416  |
+|  61 |            2 |                   1 |           3 |        0.99  |   25.457       |        1.34271  |
+| 176 |            4 |                   2 |           6 |        0.999 |   23.798       |        1.3345   |
+| 218 |            5 |                   2 |           5 |        0.999 |   23.2712      |        1.33179  |
+| 210 |            5 |                   1 |           4 |        0.999 |   23.0342      |        1.33055  |
+| 222 |            5 |                   1 |           6 |        0.999 |   22.8285      |        1.32946  |
+| 182 |            4 |                   2 |           7 |        0.999 |   18.893       |        1.30675  |
+| 162 |            4 |                   1 |           4 |        0.999 |   18.4336      |        1.30383  |
+...
+|   5 |            1 |                   3 |           1 |        0.99  |    1.33531e-07 |        0.236678 |
+|   4 |            1 |                   3 |           1 |        0.999 |    1.33531e-07 |        0.236678 |
+|   1 |            1 |                   1 |           1 |        0.99  |    1.24877e-07 |        0.235238 |
+|   0 |            1 |                   1 |           1 |        0.999 |    1.24877e-07 |        0.235238 |
+
+________________________________________________________________________
+
+start_date = '2012-01-07'
+end_date = '2022-12-31'
+
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+
+|     |   watch_days |   num_stocks_to_buy |   hold_days |   loss_limit |   total_profit |   yearly_profit |
+|----:|-------------:|--------------------:|------------:|-------------:|---------------:|----------------:|
+| 126 |            3 |                   1 |           6 |        0.999 | 1570.04        |        1.95446  |
+| 128 |            3 |                   2 |           6 |        0.999 |  462.661       |        1.74866  |
+| 127 |            3 |                   1 |           6 |        0.99  |  417.417       |        1.73235  |
+| 129 |            3 |                   2 |           6 |        0.99  |  210.891       |        1.62792  |
+| 130 |            3 |                   3 |           6 |        0.999 |  185.537       |        1.60904  |
+| 150 |            4 |                   1 |           2 |        0.999 |  183.017       |        1.60704  |
+| 108 |            3 |                   1 |           3 |        0.999 |  117.289       |        1.54323  |
+| 210 |            5 |                   1 |           4 |        0.999 |  103.219       |        1.52538  |
+| 131 |            3 |                   3 |           6 |        0.99  |   86.8468      |        1.50157  |
+| 138 |            3 |                   1 |           8 |        0.999 |   81.7859      |        1.49339  |
+| 110 |            3 |                   2 |           3 |        0.999 |   78.6211      |        1.48803  |
+| 212 |            5 |                   2 |           4 |        0.999 |   72.1548      |        1.47645  |
+| 204 |            5 |                   1 |           3 |        0.999 |   56.9916      |        1.44507  |
+| 170 |            4 |                   2 |           5 |        0.999 |   49.4338      |        1.42647  |
+| 168 |            4 |                   1 |           5 |        0.999 |   44.3233      |        1.41236  |
+| 140 |            3 |                   2 |           8 |        0.999 |   39.8024      |        1.39859  |
+| 176 |            4 |                   2 |           6 |        0.999 |   37.4233      |        1.39076  |
+|  72 |            2 |                   1 |           5 |        0.999 |   32.2214      |        1.37194  |
+| 120 |            3 |                   1 |           5 |        0.999 |   31.0489      |        1.36732  |
+| 230 |            5 |                   2 |           7 |        0.999 |   28.7466      |        1.35776  |
+| 236 |            5 |                   2 |           8 |        0.999 |   28.0609      |        1.35477  |
+|  62 |            2 |                   2 |           3 |        0.999 |   27.0129      |        1.35009  |
+| 172 |            4 |                   3 |           5 |        0.999 |   26.6666      |        1.3485   |
+...
+|   5 |            1 |                   3 |           1 |        0.99  |    5.01725e-08 |        0.216416 |
+|   4 |            1 |                   3 |           1 |        0.999 |    5.01725e-08 |        0.216416 |
+|   3 |            1 |                   2 |           1 |        0.99  |    3.13752e-08 |        0.207359 |
+|   2 |            1 |                   2 |           1 |        0.999 |    3.13752e-08 |        0.207359 |
+
+________________________________________________________________________
+
+start_date = '2012-01-08'
+end_date = '2022-12-31'
+
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+
+|     |   watch_days |   num_stocks_to_buy |   hold_days |   loss_limit |   total_profit |   yearly_profit |
+|----:|-------------:|--------------------:|------------:|-------------:|---------------:|----------------:|
+|  84 |            2 |                   1 |           7 |        0.999 |  533.911       |        1.77187  |
+|  85 |            2 |                   1 |           7 |        0.99  |  164.095       |        1.59133  |
+| 222 |            5 |                   1 |           6 |        0.999 |  152.258       |        1.58052  |
+| 204 |            5 |                   1 |           3 |        0.999 |  151.853       |        1.58014  |
+| 132 |            3 |                   1 |           7 |        0.999 |  140.653       |        1.56915  |
+|  86 |            2 |                   2 |           7 |        0.999 |  126.34        |        1.55388  |
+| 108 |            3 |                   1 |           3 |        0.999 |  104.622       |        1.52741  |
+| 164 |            4 |                   2 |           4 |        0.999 |   74.4744      |        1.48085  |
+|  87 |            2 |                   2 |           7 |        0.99  |   62.6241      |        1.45766  |
+| 223 |            5 |                   1 |           6 |        0.99  |   56.7807      |        1.44471  |
+|  66 |            2 |                   1 |           4 |        0.999 |   52.3888      |        1.43416  |
+| 138 |            3 |                   1 |           8 |        0.999 |   44.9189      |        1.4142   |
+| 110 |            3 |                   2 |           3 |        0.999 |   42.8222      |        1.40806  |
+| 206 |            5 |                   2 |           3 |        0.999 |   41.7245      |        1.40473  |
+| 126 |            3 |                   1 |           6 |        0.999 |   41.2875      |        1.40338  |
+| 134 |            3 |                   2 |           7 |        0.999 |   41.0336      |        1.4026   |
+| 166 |            4 |                   3 |           4 |        0.999 |   39.4117      |        1.39745  |
+| 224 |            5 |                   2 |           6 |        0.999 |   37.0664      |        1.38967  |
+| 133 |            3 |                   1 |           7 |        0.99  |   33.9185      |        1.37848  |
+| 102 |            3 |                   1 |           2 |        0.999 |   32.7417      |        1.37405  |
+| 205 |            5 |                   1 |           3 |        0.99  |   30.7481      |        1.36621  |
+|  88 |            2 |                   3 |           7 |        0.999 |   30.6247      |        1.36571  |
+| 210 |            5 |                   1 |           4 |        0.999 |   29.9312      |        1.36286  |
+...
+|   5 |            1 |                   3 |           1 |        0.99  |    1.35524e-07 |        0.236827 |
+|   4 |            1 |                   3 |           1 |        0.999 |    1.35524e-07 |        0.236827 |
+|   1 |            1 |                   1 |           1 |        0.99  |    1.26047e-07 |        0.235268 |
+|   0 |            1 |                   1 |           1 |        0.999 |    1.26047e-07 |        0.235268 |
+
+________________________________________________________________________
+
+start_date = '2012-01-09'
+end_date = '2022-12-31'
+
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+________________________________________________________________________
+
+start_date = '2012-01-10'
+end_date = '2022-12-31'
+
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+
+________________________________________________________________________
+
+start_date = '2000-08-01'
+end_date = '2022-12-31'
+
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+
+|     |   watch_days |   num_stocks_to_buy |   hold_days |   loss_limit |   total_profit |   yearly_profit |
+|----:|-------------:|--------------------:|------------:|-------------:|---------------:|----------------:|
+| 114 |            3 |                   1 |           4 |        0.999 | 3392.91        |        1.43718  |
+| 120 |            3 |                   1 |           5 |        0.999 | 2378.19        |        1.41457  |
+| 132 |            3 |                   1 |           7 |        0.999 |  615.055       |        1.33175  |
+| 138 |            3 |                   1 |           8 |        0.999 |  451.258       |        1.31348  |
+| 162 |            4 |                   1 |           4 |        0.999 |  323.202       |        1.29407  |
+|  78 |            2 |                   1 |           6 |        0.999 |  280.322       |        1.28587  |
+| 168 |            4 |                   1 |           5 |        0.999 |  264.73        |        1.28259  |
+| 216 |            5 |                   1 |           5 |        0.999 |  262.922       |        1.2822   |
+| 204 |            5 |                   1 |           3 |        0.999 |  239.661       |        1.27691  |
+| 174 |            4 |                   1 |           6 |        0.999 |  238.816       |        1.27671  |
+| 228 |            5 |                   1 |           7 |        0.999 |  227.626       |        1.27398  |
+| 122 |            3 |                   2 |           5 |        0.999 |  211.399       |        1.26979  |
+| 210 |            5 |                   1 |           4 |        0.999 |  191.051       |        1.26407  |
+| 164 |            4 |                   2 |           4 |        0.999 |  189.212       |        1.26352  |
+| 134 |            3 |                   2 |           7 |        0.999 |  173.953       |        1.25879  |
+|  80 |            2 |                   2 |           6 |        0.999 |  155.549       |        1.25253  |
+| 116 |            3 |                   2 |           4 |        0.999 |  133.571       |        1.24404  |
+| 139 |            3 |                   1 |           8 |        0.99  |  130.783       |        1.24287  |
+| 121 |            3 |                   1 |           5 |        0.99  |  128.34        |        1.24183  |
+| 230 |            5 |                   2 |           7 |        0.999 |  127.704       |        1.24155  |
+| 218 |            5 |                   2 |           5 |        0.999 |  123.705       |        1.23979  |
+| 224 |            5 |                   2 |           6 |        0.999 |  122.86        |        1.23941  |
+| 206 |            5 |                   2 |           3 |        0.999 |  115.697       |        1.23609  |
+...
+|   4 |            1 |                   3 |           1 |        0.999 |    8.18121e-16 |        0.21228  |
+|   5 |            1 |                   3 |           1 |        0.99  |    8.18121e-16 |        0.21228  |
+|   3 |            1 |                   2 |           1 |        0.99  |    3.55711e-16 |        0.204537 |
+|   2 |            1 |                   2 |           1 |        0.999 |    3.55711e-16 |        0.204537 |
+
+
+start_date = '2000-08-02'
+end_date = '2022-12-31'
+
+tickers = ["^FCHI", "AB.PA", "A2A.MI", "ABCA.PA", "ABNX.PA", "ABVX.PA", "AC.PA", "ATI.PA", "ADP.PA", "AIR.PA", "AF.PA", "AI.PA", "AKA.PA", "AKW.PA", "ABIO.PA", "ALD.PA", "ALO.PA", "ALTA.PA", "ATE.PA", "AMUN.PA", "APAM.AS", "MT", "ARG.PA", "AKE.PA", "PRC.PA", "ATA.PA", "ATO.PA", "AVT.PA", "CS.PA", "BALYO.PA", "BAMI.MI", "BPE.MI", "BASS.PA", "BLC.PA", "BEN.PA", "BB.PA", "BIG.PA", "BIM.PA", "BNP.PA", "BOL.PA", "BON.PA", "EN.PA", "BVI.PA", "CAP.PA", "CARM.PA", "CA.PA", "CO.PA", "CATG.PA", "ALCLS.PA", "CGG.PA", "CRI.PA", "CNP.PA", "COFA.PA", "RE.PA", "CDA.PA", "CLA.PA", "COV.PA", "ACA.PA", "BN.PA", "AM.PA", "DSY.PA", "DBV.PA", "DBG.PA", "EDEN.PA", "EDF.PA", "FGR.PA", "EKI.PA", "ELIOR.PA", "ELIS.PA", "ENEL.MI", "ENGI.PA", "ENI.MI", "ERA.PA", "ERYP.PA", "EL.PA", "RF.PA", "ERF.PA", "ENX.PA", "EUCAR.PA", "ETL.PA", "EO.PA", "FDJ.PA", "FALG.PA", "FNAC.PA", "ALFPC.PA", "GFC.PA", "GNE.PA", "GNFT.PA", "GV.PA", "SIGHT.PA", "GET.PA", "GLO.PA", "GOE.PA", "GTT.PA", "GUI.PA", "RMS.PA", "HEXA.PA", "HOLN.PA", "ICAD.PA", "IDL.PA", "NK.PA", "IPH.PA", "ITP.PA", "IVA.PA", "IPN.PA", "IPS.PA", "ISP.MI", "JCQ.PA", "DEC.PA", "JUVE.MI", "KOF.PA", "KER.PA", "LI.PA", "KORI.PA", "OR.PA", "MMB.PA", "LR.PA", "LNA.PA", "FII.PA", "MC.PA", "MMT.PA", "MDM.PA", "MTU.PA", "MAU.PA", "MCPHY.PA", "MEDCL.PA", "MERY.PA", "MRN.PA", "METEX.PA", "ML.PA", "NACON.PA", "NANO.PA", "NAVYA.PA", "NEOEN.PA", "NEX.PA", "NXI.PA", "COX.PA", "NOKIA.PA", "ORA.PA", "ORP.PA", "OSE.PA", "RI.PA", "PEUG.PA", "PHA.PA", "VAC.PA", "POM.PA", "PVL.PA", "POXEL.PA", "PWG.PA", "PUB.PA", "QDT.PA", "RCO.PA", "RNO.PA", "RXL.PA", "RN.MI", "RUI.PA", "SAF.PA", "SGO.PA", "SAN.PA", "SPM.MI", "SRS.MI", "DIM.PA", "SU.PA", "SCR.PA", "SK.PA", "SCHP.PA", "SEFER.PA", "SESG.PA", "SRP.PA", "SMCP.PA", "SII.PA", "GLE.PA", "SW.PA", "SOI.PA", "LOCAL.PA", "S30.PA", "SOLB.BR", "SOP.PA", "SPIE.PA", "SRG.MI", "STF.PA", "STM.PA", "TKTT.PA", "TIT.MI", "TEP.PA", "TFI.PA", "HO.PA", "TKO.PA", "TIS.MI", "TTE.PA", "TNG.PA", "TRI.PA", "UBI.PA", "UCG.MI", "URW.AS", "FR.PA", "VK.PA", "VLA.PA", "VIE.PA", "VRLA.PA", "VMX.PA", "VETO.PA", "VCT.PA", "DG.PA", "VIRP.PA", "VIV.PA", "VLTSA.PA", "WAVE.PA", "MF.PA", "WLN.PA", "XFAB.PA", "2CRSI.PA"]
+
+watch_days_range = [1,2,3,4,5]
+hold_days_range = [1,2,3,4,5,6,7,8]
+num_stocks_to_buy_range = [1,2,3]
+loss_limit_range = [0.999,0.99]
+
