@@ -1,4 +1,4 @@
-plot a graph Profit vs Mean of Watched Profits (aim: avoid loss when market is going down)
+sort out issue where some value might be sold below the limit loss threshold (occurs around 4 times in 10 years)
 
 find new ticker names of 14 Failed downloads:
 - EUCAR.PA: No data found, symbol may be delisted
