@@ -1,19 +1,4 @@
-to confirm repeatability, recalculate these configs but change the start_date
-    config:
-        start_date = '2012-01-04'
-        end_date = '2022-12-31'
-
-    watch_days  num_stocks_to_buy  hold_days  loss_limit  total_profit
-24           2                  1          5       0.999       181.498
-40           3                  1          4       0.999       170.461
-
-the new start_date is
-    2012-01-05
-    2012-01-06
-    2012-01-07
-    2012-01-08
-    2012-01-09
-    2012-01-10
+plot a graph Profit vs Mean of Watched Profits (aim: avoid loss when market is going down)
 
 find new ticker names of 14 Failed downloads:
 - EUCAR.PA: No data found, symbol may be delisted
