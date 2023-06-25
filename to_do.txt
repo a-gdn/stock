@@ -1,17 +1,1 @@
 sort out issue where some value might be sold below the limit loss threshold (occurs around 4 times in 10 years)
-
-find new ticker names of 14 Failed downloads:
-- EUCAR.PA: No data found, symbol may be delisted
-- 2CRSI.PA: No data found, symbol may be delisted
-- PHA.PA: No data found, symbol may be delisted
-- GOE.PA: No data found, symbol may be delisted
-- ABIO.PA: No data found, symbol may be delisted
-- CNP.PA: No data found, symbol may be delisted
-- HOLN.PA: No data found, symbol may be delisted
-- AKA.PA: No data found, symbol may be delisted
-- URW.AS: No data found, symbol may be delisted
-- TIS.MI: No data found, symbol may be delisted
-- ATI.PA: No data found, symbol may be delisted
-- STM.PA: No data found, symbol may be delisted
-- ATA.PA: No data found, symbol may be delisted
-- HEXA.PA: No data found, symbol may be delisted
