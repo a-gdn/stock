@@ -1,7 +1,7 @@
 start_date = '2000-08-01'
 end_date = '2022-12-31'
 
-fee = 0.003 # i.e. 0.6 %
+fee = 0.002 # i.e. 0.6 %
 fee_coef = 1 - fee
 
 support_sell_coef = 0.8
