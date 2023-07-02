@@ -4,3 +4,5 @@ plot a graph nth_position_hold_days vs nth_postion_watched_days
 
 plot profit versus volume
 plot profit vs delta volume on watched_days
+
+sell at opening instead of close
