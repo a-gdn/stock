@@ -1,5 +1,3 @@
-sort out issue where some value might be sold below the limit loss threshold (occurs around 4 times in 10 years)
-
 plus de valeurs boursieres
 
 plot a graph nth_position_hold_days vs nth_postion_watched_days
