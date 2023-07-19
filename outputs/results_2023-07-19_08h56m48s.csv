@@ -1,0 +1,3 @@
+date_range,year,rank,pct_change_threshold,watch_days,hold_days,num_stocks_to_buy,loss_limit,fee,num_tickers,total_profit,yearly_profit,win_ratio
+2023-01-02/2023-06-23,2023,nsmallest,-99.0,2,2,1,0.999,0.002,1254,165025.8171,120147328578.2543,0.17
+2023-01-02/2023-06-23,2023,nsmallest,0.01,2,2,1,0.999,0.002,1254,0.865,0.735,0.0
