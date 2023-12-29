@@ -1,13 +1,66 @@
 import pandas as pd
+from datetime import datetime
+from sklearn.metrics import classification_report, confusion_matrix
+
+
+# GENERAL
+def get_num_combinations(list_of_lists: list[list]) -> int:
+    lengths = [len(sublist) for sublist in list_of_lists]
+    num_combinations = 1
+    
+    for length in lengths:
+        num_combinations *= length
+    
+    print(f'number of combinations: {num_combinations}')
+
+    return num_combinations
+
+# def print_combination(current_combination: int, total_combinations: int):
+#     print(f'\r step: {current_combination}/{total_combinations}', end='')
+
+def print_progress(current_iteration, total_iterations):
+    if current_iteration <= 0:
+        return "Invalid current iteration"
+
+    if current_iteration > total_iterations:
+        return "Current iteration cannot be greater than total iterations"
+
+    percentage_completed = current_iteration / total_iterations
+
+    current_time = datetime.datetime.now()
+    estimated_remaining_time = (current_time - current_time * percentage_completed) / percentage_completed
+
+    estimated_end_hour = current_time + estimated_remaining_time
+    print(f"""\r
+        step: {current_iteration}/{total_iterations}
+        estimated_remaining_time: {estimated_remaining_time}
+        estimated_end_hour: {estimated_end_hour}""", end='')
+
+def get_date() -> str:
+    return datetime.today().strftime('%Y-%m-%d-%H:%M')
+
+
+# SUPPORT & RESISTANCE
 
 def pct(number: float) -> float:
     return round(number * 100, 2)
 
-def get_rolling_min(close_df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
-    return close_df.rolling(window=n_past_days, closed='left').min() # closed = 'left' excludes the last row (i.e. current row)
+def get_rolling_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
+    return df.rolling(window=n_past_days, closed='left').min() # closed = 'left' excludes the last row (i.e. current row)
 
-def get_rolling_max(close_df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
-    return close_df.rolling(window=n_past_days, closed='left').max()
+def get_rolling_max(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
+    return df.rolling(window=n_past_days, closed='left').max()
+
+def get_forward_indexer(n_future_days: int):
+    return pd.api.indexers.FixedForwardWindowIndexer(window_size=n_future_days) # between current day and day before n_days_future
+
+def get_future_rolling_min(min_df: pd.DataFrame, n_future_days: int) -> pd.DataFrame:
+    indexer = get_forward_indexer(n_future_days)
+    return min_df.rolling(window=indexer).min()
+
+def get_future_rolling_max(max_df: pd.DataFrame, n_future_days: int) -> pd.DataFrame:
+    indexer = get_forward_indexer(n_future_days)
+    return max_df.rolling(window=indexer).max()
 
 def get_pivot(rolling_max_df: pd.DataFrame, rolling_min_df: pd.DataFrame, close_df:pd.DataFrame) -> pd.DataFrame:
     return (rolling_max_df + rolling_min_df + close_df) / 3
@@ -23,3 +76,105 @@ def get_resistance1(pivot_df: pd.DataFrame, rolling_min_df: pd.DataFrame) -> pd.
 
 def get_resistance2(pivot_df: pd.DataFrame, rolling_max_df: pd.DataFrame, rolling_min_df: pd.DataFrame) -> pd.DataFrame:
     return pivot_df + (rolling_max_df - rolling_min_df)
+
+
+# REORGANIZE DATAFRAME
+def remove_top_column_name(df):
+    return df.droplevel(0, axis='columns')
+
+def concat_dfs(df_list: list[pd.DataFrame], column_list: list[str]) -> pd.DataFrame:    
+    df = pd.concat(df_list, axis=1, keys=column_list)
+    return df.dropna()
+
+def get_last_characters_from_index(df: pd.DataFrame, n_last_characters: int) -> pd.DataFrame:
+    return df.index.get_level_values(0).astype(str).str[:n_last_characters]
+
+def filter_by_lower_and_upper_limits(df: pd.DataFrame, column: str, lower_limit: float, upper_limit: float) -> pd.DataFrame:
+    return df[(df[column] >= lower_limit) & (df[column] <= upper_limit)]
+
+def get_rows_after_date(df: pd.DataFrame, start_date: str) -> pd.DataFrame:
+    #start_date formatted as 'YYYY-MM-DD'
+    return df[df.index >= pd.Timestamp(start_date)]
+
+def stack(df, new_col_name):
+    df_stacked = pd.DataFrame(df.stack(dropna=False))    
+    df_stacked.rename(columns={df_stacked.columns[0] : new_col_name}, inplace=True)
+
+    return df_stacked
+
+def create_floor_mask(df: pd.DataFrame, low_df:pd.DataFrame, loss_limit:float, n_future_days:int) -> pd.DataFrame:
+    if loss_limit > 0:
+        raise ValueError("loss_limit should be <= 0.")
+    
+    future_min_values = get_future_rolling_min(low_df, n_future_days)
+    loss_threshold = df * (1 + (loss_limit / 100)) # loss_limit is neagtive
+    
+    return future_min_values < loss_threshold
+
+def get_last_column(df):
+    return df[df.columns[-1]]
+
+
+
+# DATAFRAME CALCULATION
+def calculate_variations(df, n_past_days, n_future_days):
+    return df.shift(-n_future_days) / df.shift(n_past_days)
+
+def calculate_positive_rate(df: pd.DataFrame) -> float:
+    positive_values_count = (df> 0).sum()
+    total_count = len(df)
+
+    return (positive_values_count / total_count) if total_count != 0 else float('nan')
+
+def apply_fee(df: pd.DataFrame, fee: float) -> pd.DataFrame:
+    return df * (1 - fee) / (1 + fee)
+
+def calculate_volatility(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
+    pct_change = df.pct_change()
+    volatility = pct_change.rolling(window=n_past_days).std()
+    return volatility
+
+def get_days_since_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
+    return n_past_days - df.rolling(window=n_past_days + 1).apply(lambda x: x.argmin(), raw=True)
+
+def get_days_since_max(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
+    return n_past_days - df.rolling(window=n_past_days + 1).apply(lambda x: x.argmax(), raw=True)
+
+
+
+# SCIKIT LEARN
+def print_report(y_real, y_prediction):
+    print("Classification Report:")
+    print(classification_report(y_real, y_prediction))
+
+    conf_matrix = confusion_matrix(y_real, y_prediction)
+
+    tn = conf_matrix[0, 0]
+    fp = conf_matrix[0, 1]
+    tp = conf_matrix[1, 1]
+    fn = conf_matrix[1, 0]
+
+    print(f"""
+    True Positive (Acheté, bon choix): {tp}
+    True Negative (Pas acheté, bon choix): {tn}
+    False Positive (Acheté, mauvais choix): {fp}
+    False Negative (Pas acheté, mauvais choix): {fn}
+    """)
+
+
+
+# FILES
+
+def get_file_path(folder_path: str, file_name: str) -> str:
+    date = get_date()
+    return f'{folder_path}{file_name}_{date}'
+
+def save_df_as_csv(df: pd.DataFrame, folder_path: str, file_name: str):
+    file_path = get_file_path(folder_path, file_name)
+    print('Saving file csv file...')
+    df.to_csv(f'{file_path}.csv')
+
+def save_df_as_xlsx(df: pd.DataFrame, folder_path: str, file_name: str):
+    file_path = get_file_path(folder_path, file_name)
+    print('Saving file xlsx file...')
+    df.to_excel(f'{file_path}.xlsx')
