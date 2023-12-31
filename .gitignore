@@ -4,3 +4,4 @@ db/
 test*
 *.csv
 *.xlsx
+*.pkl
