@@ -5,3 +5,4 @@ test*
 *.csv
 *.xlsx
 *.pkl
+*.pdf
