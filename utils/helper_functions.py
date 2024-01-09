@@ -97,7 +97,7 @@ def get_rows_after_date(df: pd.DataFrame, start_date: str) -> pd.DataFrame:
     return df[df.index >= pd.Timestamp(start_date)]
 
 def stack(df, new_col_name):
-    df_stacked = pd.DataFrame(df.stack(dropna=False))    
+    df_stacked = pd.DataFrame(df.stack(dropna=False))
     df_stacked.rename(columns={df_stacked.columns[0] : new_col_name}, inplace=True)
 
     return df_stacked
@@ -140,7 +140,18 @@ def get_days_since_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
 def get_days_since_max(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return n_past_days - df.rolling(window=n_past_days + 1).apply(lambda x: x.argmax(), raw=True)
 
-
+def classify_var(df_var: pd.DataFrame, thresholds: list[float]) -> pd.DataFrame:
+    def classify(value):
+        for index, threshold in enumerate(sorted_threholds):
+            if pd.isna(value):
+                return pd.NA
+            if value > threshold:
+                return index
+        return len(sorted_threholds)
+    
+    sorted_threholds = sorted(thresholds, reverse=True)
+    df_class = df_var.applymap(classify)
+    return df_class
 
 # SCIKIT LEARN
 def print_report(y_real, y_prediction):
