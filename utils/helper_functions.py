@@ -134,6 +134,11 @@ def calculate_volatility(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     volatility = pct_change.rolling(window=n_past_days).std()
     return volatility
 
+def calculate_n_ups(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
+    df_changes = df.diff()
+    df_n_ups = (df_changes > 0).rolling(window=n_past_days).sum()
+    return df_n_ups
+
 def get_days_since_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return n_past_days - df.rolling(window=n_past_days + 1).apply(lambda x: x.argmin(), raw=True)
 
