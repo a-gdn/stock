@@ -139,6 +139,17 @@ def calculate_n_ups(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     df_n_ups = (df_changes > 0).rolling(window=n_past_days).sum()
     return df_n_ups
 
+def calculate_rank(df:pd.DataFrame, n_past_days:int) -> pd.DataFrame:
+    df_var = calculate_variations(df, n_past_days, 0)
+    df_rank = df_var.rank(axis='columns', ascending=False)
+    return df_rank
+
+def calculate_performance_vs_market(df:pd.DataFrame, n_past_days:int) -> pd.DataFrame:
+    df_var = calculate_variations(df, n_past_days, 0)
+    row_average = df_var.mean(axis='columns')
+    df_performance_vs_market = df.div(row_average, axis='index')
+    return df_performance_vs_market
+
 def get_days_since_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return n_past_days - df.rolling(window=n_past_days + 1).apply(lambda x: x.argmin(), raw=True)
 

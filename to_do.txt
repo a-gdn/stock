@@ -1,2 +1,4 @@
-plot profit versus volume
-plot profit vs delta volume on watched_days
+dans classifier, ajouter comme inputs:
+- ratios de volume
+- volatilité des volumes
+- volatilité du marché
