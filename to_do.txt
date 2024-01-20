@@ -2,3 +2,4 @@ dans classifier, ajouter comme inputs:
 - ratios de volume
 - volatilité des volumes
 - volatilité du marché
+- variation du marché
