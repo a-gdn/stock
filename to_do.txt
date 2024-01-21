@@ -3,4 +3,4 @@ dans classifier, ajouter comme inputs:
 
 aussi simulation profits cumulés:
 1. calculer le minimum entre current day et high day. introduire un parametre limit_loss
-2. predict profits cumulés avec limit_loss
+2. step by step avec limit_loss
