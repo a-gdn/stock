@@ -114,7 +114,8 @@ def create_floor_mask(df: pd.DataFrame, low_df:pd.DataFrame, loss_limit:float, n
 def get_last_column(df):
     return df[df.columns[-1]]
 
-
+def calculate_averages(df:pd.DataFrame) -> pd.DataFrame:
+    return df.mean(axis='columns')
 
 # DATAFRAME CALCULATION
 def calculate_variations(df, n_past_days, n_future_days):
@@ -146,9 +147,14 @@ def calculate_rank(df:pd.DataFrame, n_past_days:int) -> pd.DataFrame:
 
 def calculate_performance_vs_market(df:pd.DataFrame, n_past_days:int) -> pd.DataFrame:
     df_var = calculate_variations(df, n_past_days, 0)
-    row_average = df_var.mean(axis='columns')
+    row_average = calculate_averages(df_var)
     df_performance_vs_market = df.div(row_average, axis='index')
     return df_performance_vs_market
+
+def calculate_market_variations(df:pd.DataFrame, n_past_days:int) -> pd.DataFrame:
+    row_average = calculate_averages(df)
+    row_average_var = calculate_variations(row_average, n_past_days, 0)
+    return row_average_var
 
 def get_days_since_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return n_past_days - df.rolling(window=n_past_days + 1).apply(lambda x: x.argmin(), raw=True)
