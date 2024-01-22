@@ -1,6 +1,3 @@
-dans classifier, ajouter comme inputs:
-- volatilité des volumes
-
 aussi simulation profits cumulés:
 1. calculer le minimum entre current day et high day. introduire un parametre limit_loss
 2. step by step avec limit_loss

@@ -133,7 +133,7 @@ def apply_fee(df: pd.DataFrame, fee: float) -> pd.DataFrame:
 def calculate_volatility(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     pct_change = df.pct_change()
     volatility = pct_change.rolling(window=n_past_days).std()
-    return volatility
+    return pd.DataFrame(volatility)
 
 def calculate_n_ups(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     df_changes = df.diff()
@@ -154,7 +154,7 @@ def calculate_performance_vs_market(df:pd.DataFrame, n_past_days:int) -> pd.Data
 def calculate_market_variations(df:pd.DataFrame, n_past_days:int) -> pd.DataFrame:
     row_average = calculate_averages(df)
     row_average_var = calculate_variations(row_average, n_past_days, 0)
-    return row_average_var
+    return pd.DataFrame(row_average_var)
 
 def get_days_since_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return n_past_days - df.rolling(window=n_past_days + 1).apply(lambda x: x.argmin(), raw=True)
