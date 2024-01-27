@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from datetime import datetime
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -61,6 +62,22 @@ def get_future_rolling_min(min_df: pd.DataFrame, n_future_days: int) -> pd.DataF
 def get_future_rolling_max(max_df: pd.DataFrame, n_future_days: int) -> pd.DataFrame:
     indexer = get_forward_indexer(n_future_days)
     return max_df.rolling(window=indexer).max()
+
+def get_future_rolling_max_position(max_df: pd.DataFrame, n_future_days: int) -> pd.DataFrame:
+    indexer = get_forward_indexer(n_future_days)
+    rolling_max_position = max_df.rolling(window=indexer).apply(lambda x: int(np.argmax(x)) if np.any(x) else np.nan, raw=True)
+    return rolling_max_position
+
+def get_future_rolling_min_value(row, col, min_df, n_future_days_df):
+    n_future_days = n_future_days_df.iloc[row, col] + 1
+    min_value = min_df.iloc[row:row + int(n_future_days), col].min() if not np.isnan(n_future_days) else np.nan
+    return min_value
+
+# def get_future_rolling_min_in_variable_window(min_df, n_future_days_df):
+#     rolling_min_df = min_df.apply(lambda col: col.index.map(
+#             lambda row: get_future_rolling_min_value(row, min_df.columns.get_loc(col.name), min_df, n_future_days_df)
+#         ))
+#     return rolling_min_df
 
 def get_pivot(rolling_max_df: pd.DataFrame, rolling_min_df: pd.DataFrame, close_df:pd.DataFrame) -> pd.DataFrame:
     return (rolling_max_df + rolling_min_df + close_df) / 3
