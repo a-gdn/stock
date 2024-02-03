@@ -144,8 +144,11 @@ def calculate_positive_rate(df: pd.DataFrame) -> float:
 
     return (positive_values_count / total_count) if total_count != 0 else float('nan')
 
+def get_fee_coef(fee: float) -> pd.DataFrame:
+    return (1 - fee) / (1 + fee)
+
 def apply_fee(df: pd.DataFrame, fee: float) -> pd.DataFrame:
-    return df * (1 - fee) / (1 + fee)
+    return df * get_fee_coef(fee)
 
 def calculate_volatility(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     pct_change = df.pct_change()
