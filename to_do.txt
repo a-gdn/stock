@@ -1,3 +1,12 @@
-aussi simulation profits cumulés:
-1. calculer le minimum entre current day et high day. introduire un parametre limit_loss
-2. step by step avec limit_loss
+1. in this section, do not create new dfs, but add columns to df_data:
+    df_test_vs_prediction = get_df_test_vs_prediction(model, X_test, y_test,
+                                           predicted_n_first_classes, accepted_n_first_classes,
+                                           cumulated_probs_target)
+    
+    df_prediction_true = get_df_prediction_true(df_data, df_test_vs_prediction)
+    loss_limit_result = get_loss_limit_result(df_prediction_true, accepted_n_first_classes,
+                                            loss_limit, sell_at_target)
+
+2. create a new alternative to output_class, called output_class_alt,
+    which predicts if threhold is exceeded
+    and if loss_limit will be reached
