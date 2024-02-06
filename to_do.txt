@@ -7,6 +7,10 @@
     loss_limit_result = get_loss_limit_result(df_prediction_true, accepted_n_first_classes,
                                             loss_limit, sell_at_target)
 
-2. create a new alternative to output_class, called output_class_alt,
+2. add a 'is_win' (True/False) column to df_data
+
+3. filter on 'is_win' == True, to identify if there is one single value raising the average up
+
+4. create a new alternative to output_class, called output_class_alt,
     which predicts if threhold is exceeded
     and if loss_limit will be reached
