@@ -1,15 +1,3 @@
-1. in this section, do not create new dfs, but add columns to df_data:
-    df_test_vs_prediction = get_df_test_vs_prediction(model, X_test, y_test,
-                                           predicted_n_first_classes, accepted_n_first_classes,
-                                           cumulated_probs_target)
-    
-    df_prediction_true = get_df_prediction_true(df_data, df_test_vs_prediction)
-    loss_limit_result = get_loss_limit_result(df_prediction_true, accepted_n_first_classes,
-                                            loss_limit, sell_at_target)
-
-2. add a 'is_win' (True/False) column to df_data
-
-3. filter on 'is_win' == True, to identify if there is one single value raising the average up
 
 4. create a new alternative to output_class, called output_class_alt,
     which predicts if threhold is exceeded
