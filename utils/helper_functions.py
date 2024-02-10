@@ -103,6 +103,10 @@ def concat_dfs(df_list: list[pd.DataFrame], column_list: list[str]) -> pd.DataFr
     df = pd.concat(df_list, axis=1, keys=column_list)
     return df.dropna()
 
+def concat_dfs_different_indexes(df1: pd.DataFrame, df2:pd.DataFrame) -> pd.DataFrame:
+    df2.index = df1.index
+    return pd.concat([df1, df2], axis=1)
+
 def get_last_characters_from_index(df: pd.DataFrame, n_last_characters: int) -> pd.DataFrame:
     return df.index.get_level_values(0).astype(str).str[:n_last_characters]
 
