@@ -1,4 +1,2 @@
-
-4. create a new alternative to output_class, called output_class_alt,
-    which predicts if threhold is exceeded
-    and if loss_limit will be reached
+- add win_limit for sell?
+- predict future rank rather than future var?
