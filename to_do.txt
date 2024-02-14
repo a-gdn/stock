@@ -1,2 +1,7 @@
+- df_data = add_predictions(model, X_all, df_data,
+                            predicted_n_first_classes, accepted_n_first_classes,
+                            cumulated_probs_target)
+    replace X_all by X_test and add to the end of df_data
+- converge using hyperopt with objective = median_profit * count
 - add win_limit for sell?
-- predict future rank rather than future var?
+- predict future rank rather than future var? predict future number 1

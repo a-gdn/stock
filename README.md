@@ -1,3 +1,1 @@
-# Stock portfolio management
-
-* Language: Python
+# Stock
