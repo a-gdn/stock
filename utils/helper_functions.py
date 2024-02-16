@@ -118,7 +118,7 @@ def get_rows_after_date(df: pd.DataFrame, start_date: str) -> pd.DataFrame:
     return df[df.index >= pd.Timestamp(start_date)]
 
 def stack(df, new_col_name):
-    df_stacked = pd.DataFrame(df.stack(dropna=False))
+    df_stacked = pd.DataFrame(df.stack(future_stack=True))
     df_stacked.rename(columns={df_stacked.columns[0] : new_col_name}, inplace=True)
 
     return df_stacked
@@ -196,7 +196,7 @@ def classify_var(df_var: pd.DataFrame, thresholds: list[float]) -> pd.DataFrame:
         return len(sorted_threholds)
     
     sorted_threholds = sorted(thresholds, reverse=True)
-    df_class = df_var.applymap(classify)
+    df_class = df_var.map(classify)
     return df_class
 
 # SCIKIT LEARN
