@@ -155,7 +155,8 @@ def apply_fee(df: pd.DataFrame, fee: float) -> pd.DataFrame:
     return df * get_fee_coef(fee)
 
 def calculate_volatility(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
-    pct_change = df.pct_change()
+    pct_change = df.pct_change(fill_method=None)
+    # pct_change = df.pct_change()
     volatility = pct_change.rolling(window=n_past_days).std()
     return pd.DataFrame(volatility)
 
