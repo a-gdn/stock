@@ -16,15 +16,17 @@ def get_num_combinations(list_of_lists: list[list]) -> int:
 
     return num_combinations
 
-# def print_combination(current_combination: int, total_combinations: int):
-#     print(f'\r step: {current_combination}/{total_combinations}', end='')
+def print_combination(current_combination: int, total_combinations: int):
+    print(f'step: {current_combination}/{total_combinations}')
 
-def print_num_combinations(param_dict: dict) -> None:
+def get_num_combinations(param_dict: dict) -> None:
     num_combinations = 1
     for key, value in param_dict.items():
         num_combinations *= len(value)
 
     print('number of combinations:', num_combinations)
+
+    return num_combinations 
 
 def print_progress(current_iteration, total_iterations):
     if current_iteration <= 0:
@@ -52,6 +54,13 @@ def get_date() -> str:
 
 def pct(number: float) -> float:
     return round(number * 100, 2)
+
+def get_trimmed_average(df: pd.Series, pct_to_trim: float) -> float:
+    sorted_df = df.sort_values()
+    num_to_trim = round(len(sorted_df) * pct_to_trim)
+    trimmed_df = sorted_df[:-num_to_trim]
+    trimmed_average = trimmed_df.mean()
+    return trimmed_average
 
 def get_rolling_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return df.rolling(window=n_past_days, closed='left').min() # closed = 'left' excludes the last row (i.e. current row)
