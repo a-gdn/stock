@@ -1,4 +1,2 @@
-- in df_results, add % of is_loss_limit_reached == True
-- converge using hyperopt with objective = median_profit * count
 - add win_limit for sell?
 - predict future rank rather than future var? predict future number 1
