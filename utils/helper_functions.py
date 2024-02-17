@@ -19,6 +19,13 @@ def get_num_combinations(list_of_lists: list[list]) -> int:
 # def print_combination(current_combination: int, total_combinations: int):
 #     print(f'\r step: {current_combination}/{total_combinations}', end='')
 
+def print_num_combinations(param_dict: dict) -> None:
+    num_combinations = 1
+    for key, value in param_dict.items():
+        num_combinations *= len(value)
+
+    print('number of combinations:', num_combinations)
+
 def print_progress(current_iteration, total_iterations):
     if current_iteration <= 0:
         return "Invalid current iteration"
