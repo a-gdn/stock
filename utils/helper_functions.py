@@ -47,7 +47,7 @@ def print_progress(current_iteration, total_iterations):
         estimated_end_hour: {estimated_end_hour}""", end='')
 
 def get_date() -> str:
-    return datetime.today().strftime('%Y-%m-%d-%H:%M')
+    return datetime.today().strftime('%Y-%m-%d')
 
 
 # SUPPORT & RESISTANCE
