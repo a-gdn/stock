@@ -1,4 +1,1 @@
-- hyperopt to converge to the best performance
-- output class to avoid loss_limit
-- add win_limit for sell?
 - predict future rank rather than future var? predict future number 1
