@@ -1,3 +1,4 @@
 - explain how loss loss_limit_reached_pct = 0.04 and loss_limit = 0.995
-- 
+- create an output future rank
+- plot graphs of future rank vs profit
 - predict future rank rather than future var? predict future number 1

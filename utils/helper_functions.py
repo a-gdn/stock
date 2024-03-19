@@ -181,8 +181,8 @@ def calculate_n_ups(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     df_n_ups = (df_changes > 0).rolling(window=n_past_days).sum()
     return df_n_ups
 
-def calculate_rank(df:pd.DataFrame, n_past_days:int) -> pd.DataFrame:
-    df_var = calculate_variations(df, n_past_days, 0)
+def calculate_rank(df:pd.DataFrame, n_past_days:int, n_future_days:int) -> pd.DataFrame:
+    df_var = calculate_variations(df, n_past_days, n_future_days)
     df_rank = df_var.rank(axis='columns', ascending=False)
     return df_rank
 
