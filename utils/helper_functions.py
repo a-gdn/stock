@@ -55,9 +55,9 @@ def get_date() -> str:
 def pct(number: float) -> float:
     return round(number * 100, 2)
 
-def get_trimmed_average(df: pd.Series, pct_to_trim: float) -> float:
+def get_trimmed_average(df: pd.Series, pct_to_trim: float, min_num_to_trim: int) -> float:
     sorted_df = df.sort_values()
-    num_to_trim = round(len(sorted_df) * pct_to_trim)
+    num_to_trim = max(min_num_to_trim, round(len(sorted_df) * pct_to_trim))
     trimmed_df = sorted_df[:-num_to_trim]
     trimmed_average = trimmed_df.mean()
     return trimmed_average

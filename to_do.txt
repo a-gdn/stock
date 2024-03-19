@@ -1,1 +1,3 @@
+- explain how loss loss_limit_reached_pct = 0.04 and loss_limit = 0.995
+- 
 - predict future rank rather than future var? predict future number 1
