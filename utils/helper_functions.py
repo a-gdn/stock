@@ -155,6 +155,9 @@ def calculate_averages(df:pd.DataFrame) -> pd.DataFrame:
     return df.mean(axis='columns')
 
 # DATAFRAME CALCULATION
+def get_num_tickers(df: pd.DataFrame) -> int:
+    return df.shape[1]
+
 def calculate_variations(df, n_past_days, n_future_days):
     return df.shift(-n_future_days) / df.shift(n_past_days)
 
