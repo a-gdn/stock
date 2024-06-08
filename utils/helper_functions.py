@@ -207,7 +207,7 @@ def get_days_since_max(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return n_past_days - df.rolling(window=n_past_days + 1).apply(lambda x: x.argmax(), raw=True)
 
 def classify_var(df_var: pd.DataFrame, thresholds: list[float]) -> pd.DataFrame:
-    def classify(value):
+    def classify_with_max_values_first(value):
         for index, threshold in enumerate(sorted_threholds):
             if pd.isna(value):
                 return pd.NA
@@ -216,7 +216,21 @@ def classify_var(df_var: pd.DataFrame, thresholds: list[float]) -> pd.DataFrame:
         return len(sorted_threholds)
     
     sorted_threholds = sorted(thresholds, reverse=True)
-    df_class = df_var.map(classify)
+    df_class = df_var.map(classify_with_max_values_first)
+    return df_class
+
+def classify_rank(df_rank: pd.DataFrame, thresholds:list[float]) -> pd.DataFrame:
+    def classify_with_min_values_first(value):
+        for index, threshold in enumerate(sorted_threholds):
+            if pd.isna(value):
+                return pd.NA
+            if value < threshold:
+                return index
+        return len(sorted_threholds)
+    
+    sorted_threholds = sorted(thresholds)
+    df_class = df_rank.map(classify_with_min_values_first)
+
     return df_class
 
 # SCIKIT LEARN
