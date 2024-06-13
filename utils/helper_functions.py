@@ -3,7 +3,6 @@ import numpy as np
 from datetime import datetime
 from sklearn.metrics import classification_report, confusion_matrix
 
-
 # GENERAL
 def get_num_combinations(list_of_lists: list[list]) -> int:
     lengths = [len(sublist) for sublist in list_of_lists]
