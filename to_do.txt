@@ -1,2 +1,11 @@
+day to day usage:
+- predict tool using saved model
+
+inputs:
+- pendant la nuit, pas de stop loss!
+- corriger erreur sur inputs market
+- corriger erreurs calcul buying_time & selling_time 'close'
+- ajouter un input jour d'achat (lundi, mardi, etc.)
+
+evaluate:
 - plot graphs of future rank vs profit
-- predict future rank rather than future var? predict future number 1
