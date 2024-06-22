@@ -48,6 +48,11 @@ def print_progress(current_iteration, total_iterations):
 def get_date() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
+def fillnavalues(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.interpolate(limit_area='inside') #interpolation when only one value ('inside') is missing
+    df = df.ffill() #forward fill otherwise
+
+    return df
 
 # SUPPORT & RESISTANCE
 
