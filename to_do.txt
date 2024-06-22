@@ -1,5 +1,6 @@
 day to day usage:
-- predict tool using saved model
+- add yesterday's volume next to prediction or re-train with less tickers (largest volumes only)
+- scrape today's open value
 
 inputs:
 - pendant la nuit, pas de stop loss!
