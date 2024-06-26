@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import pickle
 from datetime import datetime
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -53,6 +54,16 @@ def fillnavalues(df: pd.DataFrame) -> pd.DataFrame:
     df = df.ffill() #forward fill otherwise
 
     return df
+
+def save_object(obj, filename):
+    """Save a Python object to a file using pickle."""
+    with open(filename, 'wb') as file:
+        pickle.dump(obj, file)
+
+def load_object(filename):
+    """Load a Python object from a file using pickle."""
+    with open(filename, 'rb') as file:
+        return pickle.load(file)
 
 # SUPPORT & RESISTANCE
 
