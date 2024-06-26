@@ -1,6 +1,5 @@
 day to day usage:
-- add yesterday's volume next to prediction or re-train with less tickers (largest volumes only)
-- scrape today's open value
+- in predict.ipynb, import a xlsx file with yahoo tickers and matching bourso tickers
 
 inputs:
 - pendant la nuit, pas de stop loss!
