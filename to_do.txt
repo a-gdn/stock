@@ -2,6 +2,8 @@ day to day usage:
 - in predict.ipynb, import a xlsx file with yahoo tickers and matching bourso tickers
 
 inputs:
+- ajouter input: country market var
+- ajouter input: average volume 30 last days
 - pendant la nuit, pas de stop loss!
 - corriger erreur sur inputs market
 - corriger erreurs calcul buying_time & selling_time 'close'
