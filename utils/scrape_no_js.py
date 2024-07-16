@@ -10,15 +10,15 @@ import pandas as pd
 nest_asyncio.apply()
 
 async def fetch_theoretical_opening_price(session, ticker):
-    url = f'https://bourse.fortuneo.fr/actions/{ticker}'
+    url = f'https://www.boursorama.com/cours/{ticker}'
     try:
         async with session.get(url) as response:
             if response.status == 200:
                 html = await response.text()
                 soup = BeautifulSoup(html, 'html.parser')
-                span = soup.find('span', class_='header-devise')
+                span = soup.find('span', class_='c-faceplate__indicative-value')
                 if span:
-                    price_str = span.text.strip().replace(',', '.').replace(' ', '').replace('EUR', '')
+                    price_str = span.text.strip().replace(',', '.').replace(' ', '')
                     theoretical_opening_price = float(price_str)
                 else:
                     theoretical_opening_price = None
@@ -45,16 +45,14 @@ def get_theoretical_opening_prices(tickers):
     return df
 
 
+# file_path = './db/tickers_euronext_regulated_euro_500k€.xlsx'
 
+# df = pd.read_excel(file_path)
+# tickers = df['bourso'].iloc[1:872].values.tolist()
 
-file_path = './db/tickers_euronext_regulated_euro_500k€.xlsx'
+# print(tickers)
 
-df = pd.read_excel(file_path)
-tickers = df['fortuneo'].iloc[1:872].values.tolist()
+# df_prices = get_theoretical_opening_prices(tickers)
 
-print(tickers)
-
-df_prices = get_theoretical_opening_prices(tickers)
-
-pd.set_option('display.max_rows', None)
-print(df_prices)
+# pd.set_option('display.max_rows', None)
+# print(df_prices)

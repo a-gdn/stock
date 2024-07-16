@@ -32,7 +32,7 @@ async def fetch_theoretical_opening_price(ticker):
             span = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, 'header-instrument-price'))
             )
-            price_str = span.text.strip().replace(',', '.').replace(' ', '').replace('EUR', '')
+            price_str = span.text.strip().replace(',', '')
             theoretical_opening_price = float(price_str)
         except Exception as e:
             print(f"Error fetching price for {ticker}: {e}")
@@ -68,14 +68,14 @@ def get_theoretical_opening_prices(tickers, max_concurrent_tasks=10):
     return df
 
 
-file_path = './db/tickers_euronext_regulated_euro_500k€_short.xlsx'
+# file_path = './db/tickers_euronext_regulated_euro_500k€.xlsx'
 
-df = pd.read_excel(file_path)
-tickers = df['euronext'].iloc[1:872].values.tolist()
+# df = pd.read_excel(file_path)
+# tickers = df['euronext'].iloc[1:872].values.tolist()
 
-print(tickers)
+# print(tickers)
 
-df_prices = get_theoretical_opening_prices(tickers)
+# df_prices = get_theoretical_opening_prices(tickers)
 
-pd.set_option('display.max_rows', None)
-print(df_prices)
+# pd.set_option('display.max_rows', None)
+# print(df_prices)
