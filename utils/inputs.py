@@ -77,9 +77,11 @@ def get_market_volatility(df, past_days):
 
     return volatility_stacked
 
-def get_volume_volability(df, past_days):
-    volatility = hf.calculate_volatility(df, past_days)
-    volatility_stacked = hf.stack(volatility, f'input_volume_volatility_{past_days}d')
+def get_volume_volability(df, past_start_day, past_end_day):
+    df_shifted = df.shift(past_end_day)
+    window_size = past_start_day - past_end_day + 1
+    volatility = hf.calculate_volatility(df_shifted, window_size)
+    volatility_stacked = hf.stack(volatility, f'input_volume_volatility_{past_start_day}-{past_end_day}d')
 
     return volatility_stacked
 
@@ -152,10 +154,10 @@ def get_inputs(df_buy, dfs_ohlcv):
     # market_volatility_10 = get_market_volatility(df_buy, past_days=10)
     # market_volatility_2 = get_market_volatility(df_buy, past_days=2)
 
-    volume_volability_90 = get_volume_volability(dfs_ohlcv['df_volume'], past_days=90)
-    volume_volability_30 = get_volume_volability(dfs_ohlcv['df_volume'], past_days=30)
-    volume_volability_10 = get_volume_volability(dfs_ohlcv['df_volume'], past_days=10)
-    volume_volability_2 = get_volume_volability(dfs_ohlcv['df_volume'], past_days=2)
+    volume_volability_90_1 = get_volume_volability(dfs_ohlcv['df_volume'], past_start_day=90, past_end_day=1)
+    volume_volability_30_1 = get_volume_volability(dfs_ohlcv['df_volume'], past_start_day=30, past_end_day=1)
+    volume_volability_10_1 = get_volume_volability(dfs_ohlcv['df_volume'], past_start_day=10, past_end_day=1)
+    volume_volability_2_1 = get_volume_volability(dfs_ohlcv['df_volume'], past_start_day=2, past_end_day=1)
 
     n_ups_90 = get_n_ups(df_buy, past_days=90)
     n_ups_30 = get_n_ups(df_buy, past_days=30)
@@ -187,7 +189,7 @@ def get_inputs(df_buy, dfs_ohlcv):
             days_since_max_30, days_since_max_10,
             volatility_30, volatility_10, volatility_2,
             # market_volatility_30, market_volatility_10, market_volatility_2,
-            volume_volability_90, volume_volability_30, volume_volability_10, volume_volability_2,
+            volume_volability_90_1, volume_volability_30_1, volume_volability_10_1, volume_volability_2_1,
             n_ups_90, n_ups_30, n_ups_5,
             rank_90, rank_30, rank_10, rank_5, rank_2, rank_1,
             perf_vs_market_90, perf_vs_market_30, perf_vs_market_10, perf_vs_market_5,
