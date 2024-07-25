@@ -30,7 +30,7 @@ async def fetch_theoretical_opening_price(ticker):
             # Wait for the necessary element to load
             span = WebDriverWait(driver, 10).until(
                 # EC.presence_of_element_located((By.ID, 'header-instrument-price'))
-                EC.presence_of_element_located((By.XPATH, "//span[contains(text(), ' Cours Théorique d'Ouverture')]/following-sibling::span"))
+                EC.presence_of_element_located((By.XPATH, "//span[contains(text(), \"Cours Théorique d'Ouverture\")]/following-sibling::span"))
             )
             price_str = span.text.strip().replace(',', '.')
             theoretical_opening_price = float(price_str)
