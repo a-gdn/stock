@@ -1,6 +1,5 @@
 import asyncio
 import nest_asyncio
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -30,9 +29,10 @@ async def fetch_theoretical_opening_price(ticker):
         try:
             # Wait for the necessary element to load
             span = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, 'header-instrument-price'))
+                # EC.presence_of_element_located((By.ID, 'header-instrument-price'))
+                EC.presence_of_element_located((By.XPATH, "//span[contains(text(), ' Cours Théorique d'Ouverture')]/following-sibling::span"))
             )
-            price_str = span.text.strip().replace(',', '')
+            price_str = span.text.strip().replace(',', '.')
             theoretical_opening_price = float(price_str)
         except Exception as e:
             print(f"Error fetching price for {ticker}: {e}")
@@ -57,25 +57,21 @@ async def fetch_theoretical_opening_prices(tickers, max_concurrent_tasks=10):
 
 # Function to be called from another file
 def get_theoretical_opening_prices(tickers, max_concurrent_tasks=10):
-    start_time = time.time()  # Record start time
     ticker_data = asyncio.run(fetch_theoretical_opening_prices(tickers, max_concurrent_tasks))
-    end_time = time.time()  # Record end time
 
-    df = pd.DataFrame(ticker_data, columns=['ticker', 'theoretical_opening_price'])
-
-    print(f"Time taken to fetch data: {end_time - start_time:.2f} seconds")
+    df = pd.DataFrame(ticker_data, columns=['ticker', 'euronext_theor_open_price'])
 
     return df
 
+if __name__ == "__main__":
+    file_path = './db/tickers_euronext_regulated_euro_500k€.xlsx'
 
-# file_path = './db/tickers_euronext_regulated_euro_500k€.xlsx'
+    df = pd.read_excel(file_path)
+    tickers = df['euronext'].iloc[1:6].values.tolist()
 
-# df = pd.read_excel(file_path)
-# tickers = df['euronext'].iloc[1:872].values.tolist()
+    print(tickers)
 
-# print(tickers)
+    df_prices = get_theoretical_opening_prices(tickers)
 
-# df_prices = get_theoretical_opening_prices(tickers)
-
-# pd.set_option('display.max_rows', None)
-# print(df_prices)
+    pd.set_option('display.max_rows', None)
+    print(df_prices)

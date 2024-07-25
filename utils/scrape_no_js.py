@@ -53,7 +53,7 @@ def get_theoretical_opening_prices(tickers):
 
     ticker_data = asyncio.run(fetch_theoretical_opening_prices(tickers))
 
-    df = pd.DataFrame(ticker_data, columns=['ticker', 'theoretical_opening_price'])
+    df = pd.DataFrame(ticker_data, columns=['ticker', 'bourso_theor_open_price'])
 
     return df
 
