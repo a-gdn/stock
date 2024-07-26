@@ -9,9 +9,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 
-# Apply nest_asyncio to allow nesting of the event loop
-nest_asyncio.apply()
-
 # Initialize Selenium WebDriver
 def init_driver():
     chrome_options = Options()
@@ -28,18 +25,18 @@ async def fetch_theoretical_opening_price(ticker):
         driver.get(url)
         try:
             # Wait for the necessary element to load
-            span = WebDriverWait(driver, 10).until(
+            span = WebDriverWait(driver, 3).until(
                 # EC.presence_of_element_located((By.ID, 'header-instrument-price'))
-                EC.presence_of_element_located((By.XPATH, "//span[contains(text(), \"Cours Théorique d'Ouverture\")]/following-sibling::span"))
+                EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Theoretical Opening Price')]/following-sibling::span"))
             )
             price_str = span.text.strip().replace(',', '.')
             theoretical_opening_price = float(price_str)
         except Exception as e:
-            print(f"Error fetching price for {ticker}: {e}")
+            print(f"Error fetching html tag price for {ticker}")
             theoretical_opening_price = None
         return ticker, theoretical_opening_price
     except Exception as e:
-        print(f"Error fetching {ticker}: {e}")
+        print(f"Error fetching webpage for {ticker}")
         return ticker, None
     finally:
         driver.quit()
@@ -57,6 +54,9 @@ async def fetch_theoretical_opening_prices(tickers, max_concurrent_tasks=10):
 
 # Function to be called from another file
 def get_theoretical_opening_prices(tickers, max_concurrent_tasks=10):
+    # Apply nest_asyncio to allow nesting of the event loop
+    nest_asyncio.apply()
+
     ticker_data = asyncio.run(fetch_theoretical_opening_prices(tickers, max_concurrent_tasks))
 
     df = pd.DataFrame(ticker_data, columns=['ticker', 'euronext_theor_open_price'])
@@ -67,7 +67,8 @@ if __name__ == "__main__":
     file_path = './db/tickers_euronext_regulated_euro_500k€.xlsx'
 
     df = pd.read_excel(file_path)
-    tickers = df['euronext'].iloc[1:6].values.tolist()
+    # tickers = df['euronext'].iloc[1:6].values.tolist()
+    tickers = ['NL0010949392-XPAR', 'NL0013267909-XAMS']
 
     print(tickers)
 
