@@ -109,7 +109,7 @@ def get_rank(df, past_days, future_days):
     
     return rank_stacked
 
-def get_inputs(df_buy, dfs_ohlcv):
+def get_inputs(df_buy, dfs_ohlcv, buying_time):
     var_90 = calculate_var(df_buy, past_days=90, future_days=0)
     var_60 = calculate_var(df_buy, past_days=60, future_days=0)
     var_30 = calculate_var(df_buy, past_days=30, future_days=0)
@@ -195,6 +195,13 @@ def get_inputs(df_buy, dfs_ohlcv):
             perf_vs_market_90, perf_vs_market_30, perf_vs_market_10, perf_vs_market_5,
             perf_vs_market_2, perf_vs_market_1
         ], axis='columns')
+    
+    if buying_time == 'Close':
+        var_vs_open_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_open'], past_days=0, title='open')
+        var_vs_low_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_low'], past_days=0, title='low')
+        var_vs_high_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_high'], past_days=0, title='high')
+
+        df_data = pd.concat([df_data, var_vs_open_0, var_vs_low_0, var_vs_high_0], axis='columns')
 
     # df_data = df_data.dropna()
 
