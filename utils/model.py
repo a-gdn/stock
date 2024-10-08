@@ -2,8 +2,8 @@ import config as cfg
 import utils.helper_functions as hf
 
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, BatchNormalization, Dropout
+from tensorflow.keras.models import Sequential # type: ignore
+from tensorflow.keras.layers import Dense, BatchNormalization, Dropout # type: ignore
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
