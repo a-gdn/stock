@@ -83,32 +83,38 @@ def get_rolling_min(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
 def get_rolling_max(df: pd.DataFrame, n_past_days: int) -> pd.DataFrame:
     return df.rolling(window=n_past_days, closed='left').max()
 
-def get_forward_indexer(n_future_days: int):
-    return pd.api.indexers.FixedForwardWindowIndexer(window_size=n_future_days) # between current day and day before n_days_future
+def get_forward_rolling_df(df: pd.DataFrame, n_future_days: int, buying_time: str, selling_time: str) -> pd.DataFrame:
+    if buying_time == 'Open' and selling_time == 'Open':
+        window_size = n_future_days
+    elif buying_time == 'Close' and selling_time == 'Open':
+        df = df.shift(-1)
+        window_size = n_future_days - 1
+    elif buying_time == 'Open' and selling_time == 'Close':
+        window_size = n_future_days + 1
+    elif buying_time == 'Close' and selling_time == 'Close':
+        df = df.shift(-1)
+        window_size = n_future_days
+    
+    forward_window = pd.api.indexers.FixedForwardWindowIndexer(window_size=window_size)
+    return df.rolling(window=forward_window)
+    
+def get_future_rolling_min(min_df: pd.DataFrame, n_future_days: int, buying_time: str, selling_time: str) -> pd.DataFrame:
+    forward_rolling_min_df = get_forward_rolling_df(min_df, n_future_days, buying_time, selling_time)
+    return forward_rolling_min_df.min()
 
-def get_future_rolling_min(min_df: pd.DataFrame, n_future_days: int) -> pd.DataFrame:
-    indexer = get_forward_indexer(n_future_days)
-    return min_df.rolling(window=indexer).min()
+def get_future_rolling_max(max_df: pd.DataFrame, n_future_days: int, buying_time: str, selling_time: str) -> pd.DataFrame:
+    forward_rolling_max_df = get_forward_rolling_df(max_df, n_future_days, buying_time, selling_time)
+    return forward_rolling_max_df.max()
 
-def get_future_rolling_max(max_df: pd.DataFrame, n_future_days: int) -> pd.DataFrame:
-    indexer = get_forward_indexer(n_future_days)
-    return max_df.rolling(window=indexer).max()
-
-def get_future_rolling_max_position(max_df: pd.DataFrame, n_future_days: int) -> pd.DataFrame:
-    indexer = get_forward_indexer(n_future_days)
-    rolling_max_position = max_df.rolling(window=indexer).apply(lambda x: int(np.argmax(x)) if np.any(x) else np.nan, raw=True)
+def get_future_rolling_max_position(max_df: pd.DataFrame, n_future_days: int, buying_time: str, selling_time: str) -> pd.DataFrame:
+    forward_rolling_max_df = get_forward_rolling_df(max_df, n_future_days, buying_time, selling_time)
+    rolling_max_position = forward_rolling_max_df.apply(lambda x: int(np.argmax(x)) if np.any(x) else np.nan, raw=True)
     return rolling_max_position
 
 def get_future_rolling_min_value(row, col, min_df, n_future_days_df):
     n_future_days = n_future_days_df.iloc[row, col] + 1
     min_value = min_df.iloc[row:row + int(n_future_days), col].min() if not np.isnan(n_future_days) else np.nan
     return min_value
-
-# def get_future_rolling_min_in_variable_window(min_df, n_future_days_df):
-#     rolling_min_df = min_df.apply(lambda col: col.index.map(
-#             lambda row: get_future_rolling_min_value(row, min_df.columns.get_loc(col.name), min_df, n_future_days_df)
-#         ))
-#     return rolling_min_df
 
 def get_pivot(rolling_max_df: pd.DataFrame, rolling_min_df: pd.DataFrame, close_df:pd.DataFrame) -> pd.DataFrame:
     return (rolling_max_df + rolling_min_df + close_df) / 3

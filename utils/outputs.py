@@ -11,22 +11,22 @@ def get_future_end_var(df_buy, df_sell, future_days):
     
     return future_end_var_stacked
 
-def get_future_max_var(df_buy, df_high, future_days):
-    future_rolling_max = hf.get_future_rolling_max(df_high, future_days+1)
+def get_future_max_var(df_buy, df_high, future_days, buying_time, selling_time):
+    future_rolling_max = hf.get_future_rolling_max(df_high, future_days, buying_time, selling_time)
     future_max_var = future_rolling_max / df_buy
     future_max_var_stacked = hf.stack(future_max_var, f'output_future_max_var')
-        
+    
     return future_max_var_stacked
 
-def get_future_min_var(df_buy, df_low, future_days):
-    future_rolling_min = hf.get_future_rolling_min(df_low, future_days+1)
+def get_future_min_var(df_buy, df_low, future_days, buying_time, selling_time):
+    future_rolling_min = hf.get_future_rolling_min(df_low, future_days, buying_time, selling_time)
     future_min_var = future_rolling_min / df_buy
     future_min_var_stacked = hf.stack(future_min_var, f'output_future_min_var')
     
     return future_min_var_stacked
 
-def get_future_min_var_before_max(df_buy, df_sell, df_low, future_days):
-    rolling_max_positions = hf.get_future_rolling_max_position(df_sell, future_days)
+def get_future_min_var_before_max(df_buy, df_sell, df_low, future_days, buying_time, selling_time):
+    rolling_max_positions = hf.get_future_rolling_max_position(df_sell, future_days, buying_time, selling_time)
 
     df_low = df_low.reset_index(drop=True)
     rolling_min = df_low.apply(lambda col: col.index.map(
@@ -56,17 +56,19 @@ def classify_rank(df_rank, thresholds, col_name):
     return df_thresholds_stacked
 
 def add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, **hyperparams):
+    buying_time = hyperparams.get('buying_time')
+    selling_time = hyperparams.get('selling_time')
     target_future_days = hyperparams.get('target_future_days')
     sell_at_target = hyperparams.get('sell_at_target')
     
     future_end_var = get_future_end_var(df_buy, df_sell, target_future_days)
-    future_max_var = get_future_max_var(df_buy, dfs_ohlcv['df_high'], target_future_days)
-    future_min_var = get_future_min_var(df_buy, dfs_ohlcv['df_low'], target_future_days-1)
+    future_max_var = get_future_max_var(df_buy, dfs_ohlcv['df_high'], target_future_days, buying_time, selling_time)
+    future_min_var = get_future_min_var(df_buy, dfs_ohlcv['df_low'], target_future_days, buying_time, selling_time)
     
     df_data = pd.concat([df_data, future_end_var, future_max_var, future_min_var], axis='columns')
     
     if sell_at_target:
-        future_min_var_before_max = get_future_min_var_before_max(df_buy, df_sell, dfs_ohlcv['df_low'], target_future_days)
+        future_min_var_before_max = get_future_min_var_before_max(df_buy, df_sell, dfs_ohlcv['df_low'], target_future_days, buying_time, selling_time)
         df_data = pd.concat([df_data, future_min_var_before_max], axis='columns')
     
     return df_data

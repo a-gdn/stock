@@ -19,14 +19,14 @@ hyperopt_n_iterations = 40
 output_class_name = 'output_var_class' #'output_var_class' or 'output_rank_class'
 
 param_grid = {
-    'buying_time': ['Open'], 'selling_time': ['Open'],
-    'target_future_days': [1], 'loss_limit': [0.997],
-    'sell_at_target': [False],
+    'buying_time': ['Open', 'Close'], 'selling_time': ['Open', 'Close'],
+    'target_future_days': [1,2,3,5], 'loss_limit': [0.1, 0.997],
+    'sell_at_target': [False, True],
     'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
     'dropout_rate': [0.1], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
     'n_first_classes': [[0,0]],
     'cumulated_probs_target': [0.9],
-    'thresholds': [[1.0184]],
+    'thresholds': [[1.0184],[1.01],[1.04]],
     'rank_pct_thresholds': [[0.45]]
 }
 

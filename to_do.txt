@@ -1,5 +1,4 @@
 - pendant la nuit, pas de stop loss!
-- corriger erreurs selling_time 'close'
 
 inputs:
 - ajouter input: country market var
