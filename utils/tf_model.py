@@ -39,7 +39,7 @@ def get_test_train_data(df_input, df_output, test_size):
 
     return {'X_train': X_train, 'X_test': X_test, 'y_train': y_train, 'y_test': y_test}
 
-def create_model(**kwargs):
+def create_tf_model(**kwargs):
     X_train = kwargs.get('X_train')
     X_test = kwargs.get('X_test')
     y_train = kwargs.get('y_train')
@@ -81,7 +81,7 @@ def create_model(**kwargs):
 
     model.save(cfg.model_path)
 
-def load_model(df_data, hyperparams):
+def load_tf_model(df_data, hyperparams):
     df_input, df_output = get_dfs_input_output(df_data, cfg.output_class_name)
 
     test_train_data = get_test_train_data(df_input, df_output, cfg.test_size)
@@ -90,7 +90,7 @@ def load_model(df_data, hyperparams):
         print(f'using existing {cfg.model_path}')
     else:
         print(f'need to create {cfg.model_path}')
-        create_model(**{**test_train_data, **hyperparams})
+        create_tf_model(**{**test_train_data, **hyperparams})
     
     model = tf.keras.models.load_model(cfg.model_path)
 
