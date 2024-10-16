@@ -7,14 +7,14 @@ model_path = './outputs/classifier_model.keras'
 
 fee = 0.002
 
-use_hyperopt = False
+use_hyperopt = True
 use_saved_transformed_data = False
 use_saved_model = False
 
 start_date = '2008-01-01' #'2013-01-01'
 test_size = 60000
 epochs = 1
-hyperopt_n_iterations = 40
+hyperopt_n_iterations = 100
 
 output_class_name = 'output_var_class' #'output_var_class' or 'output_rank_class'
 
@@ -32,7 +32,7 @@ param_grid = {
 
 search_space = {
     'buying_time': hp.choice('buying_time', ['Close']),
-    'selling_time': hp.choice('selling_time', ['Open']),
+    'selling_time': hp.choice('selling_time', ['Open', 'Close']),
     'target_future_days': hp.choice('target_future_days', [1,2,3]), #hp.randint('param', 1, 60), #1, 60
     'loss_limit': hp.uniform('loss_limit', 0.98, 1),
     'sell_at_target': hp.choice('sell_at_target', [False]), #[True, False]
