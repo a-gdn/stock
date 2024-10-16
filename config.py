@@ -7,7 +7,7 @@ model_path = './outputs/classifier_model.keras'
 
 fee = 0.002
 
-use_hyperopt = True
+use_hyperopt = False
 use_saved_transformed_data = False
 use_saved_model = False
 
@@ -19,14 +19,14 @@ hyperopt_n_iterations = 100
 output_class_name = 'output_var_class' #'output_var_class' or 'output_rank_class'
 
 param_grid = {
-    'buying_time': ['Open', 'Close'], 'selling_time': ['Open'], #'Open', 
-    'target_future_days': [1,2,3], 'loss_limit': [0.997],
+    'buying_time': ['Close'], 'selling_time': ['Close'], #'Open', 
+    'target_future_days': [1,2,3,5,10], 'loss_limit': [0.98,0.99,0.994,0.997],
     'sell_at_target': [False],
     'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
     'dropout_rate': [0.1], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
     'n_first_classes': [[0,0]],
-    'cumulated_probs_target': [0.9],
-    'thresholds': [[1.0184]], #,[1.01],[1.04]
+    'cumulated_probs_target': [0.8,0.9],
+    'thresholds': [[1.0184],[1.01],[1.03],[1.04]], #,[1.01],[1.04]
     'rank_pct_thresholds': [[0.45]]
 }
 
