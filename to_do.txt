@@ -1,5 +1,3 @@
-- pendant la nuit, pas de stop loss!
-
 inputs:
 - ajouter input: country market var
 - ajouter input: average volume 30 last days
