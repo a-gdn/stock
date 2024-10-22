@@ -62,14 +62,14 @@ def classify_rank(df_rank, thresholds, col_name):
 
     return df_thresholds_stacked
 
-def get_loss_limit_price(df_buy, **hyperparams):
+def get_loss_limit_prices(df_buy, **hyperparams):
     loss_limit = hyperparams.get('loss_limit')
     df_loss_limit_price = loss_limit * df_buy
 
     return df_loss_limit_price
 
-def get_loss_price(dfs_ohlcv, df_loss_limit_price):
-    df_loss_price = dfs_ohlcv['df_open'].where(
+def get_loss_prices(dfs_ohlcv, df_loss_limit_price):
+    df_loss_prices = dfs_ohlcv['df_open'].where(
         dfs_ohlcv['df_open'] <= df_loss_limit_price, # Condition 1: During the night, loss_limit is reached
         other=df_loss_limit_price.where(
             dfs_ohlcv['df_low'] <= df_loss_limit_price, # Condition 2: During the day, loss_limit is reached
@@ -77,9 +77,15 @@ def get_loss_price(dfs_ohlcv, df_loss_limit_price):
         )
     )
 
-    return df_loss_price
+    return df_loss_prices
 
-def add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, df_loss_price, has_min_max_values, **hyperparams):
+# def add_loss_price(df_data, df_loss_price):
+#     df_loss_prices_stacked = hf.stack(df_loss_price, 'output_loss_price')
+#     df_data = pd.concat([df_data, df_loss_prices_stacked], axis='columns')
+
+#     return df_data
+
+def add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, df_loss_prices, has_min_max_values, **hyperparams):
     buying_time = hyperparams.get('buying_time')
     selling_time = hyperparams.get('selling_time')
     target_future_days = hyperparams.get('target_future_days')
@@ -89,7 +95,7 @@ def add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, df_loss_price, has_min_
         
     if has_min_max_values:
         future_max_var = get_future_max_var(df_buy, dfs_ohlcv['df_high'], target_future_days, buying_time, selling_time)
-        future_min_var = get_future_min_var(df_buy, df_loss_price, target_future_days, buying_time, selling_time)
+        future_min_var = get_future_min_var(df_buy, df_loss_prices, target_future_days, buying_time, selling_time)
     else:
         future_max_var = future_end_var.copy()
         future_max_var.rename(columns={'output_future_end_var': 'output_future_max_var'}, inplace=True)
@@ -98,7 +104,7 @@ def add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, df_loss_price, has_min_
         future_min_var.rename(columns={'output_future_end_var': 'output_future_min_var'}, inplace=True)
     
     if sell_at_target:
-        future_min_var = get_future_min_var_before_max(df_buy, df_sell, df_loss_price, target_future_days, buying_time, selling_time)
+        future_min_var = get_future_min_var_before_max(df_buy, df_sell, df_loss_prices, target_future_days, buying_time, selling_time)
 
     df_data = pd.concat([df_data, future_end_var, future_max_var, future_min_var], axis='columns')
     
@@ -135,7 +141,6 @@ def add_output_is_buy(df, output_class_name, **hyperparams):
 def add_output_profit(df, fee, **hyperparams):
     thresholds = hyperparams.get('thresholds')
     accepted_n_first_classes = hyperparams.get('n_first_classes')[1]
-    loss_limit = hyperparams.get('loss_limit')
     sell_at_target = hyperparams.get('sell_at_target')
 
     accepted_var = thresholds[accepted_n_first_classes]
@@ -149,7 +154,7 @@ def add_output_profit(df, fee, **hyperparams):
             reached_target_condition  # Condition for buy and reached target condition
         ],
         [
-            loss_limit,  # Value if buy and meets loss condition
+            df['output_future_min_var'],  # Value if buy and meets loss condition
             accepted_var  # Value if buy and meets target condition
         ],
         default=df['output_future_end_var']  # Default value for buy condition not meeting the above
@@ -177,11 +182,12 @@ def add_output_rank_class(df_data, num_tickers, **hyperparams):
     return df_data
 
 def add_outputs(df_data, df_buy, df_sell, dfs_ohlcv, num_tickers, output_class_name, fee, **hyperparams):
-    df_loss_limit_price = get_loss_limit_price(df_buy, **hyperparams)
-    df_loss_price = get_loss_price(dfs_ohlcv, df_loss_limit_price)
+    df_loss_limit_prices = get_loss_limit_prices(df_buy, **hyperparams)
+    df_loss_prices = get_loss_prices(dfs_ohlcv, df_loss_limit_prices)
     has_min_max_values = get_has_min_max_values(**hyperparams)
 
-    df_data = add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, df_loss_price, has_min_max_values, **hyperparams)
+    # df_data = add_loss_price(df_data, df_loss_prices)    
+    df_data = add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, df_loss_prices, has_min_max_values, **hyperparams)
     df_data = add_output_is_loss_limit_reached(df_data, **hyperparams)
     df_data = add_output_var_class(df_data, **hyperparams)
 
