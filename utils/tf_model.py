@@ -92,6 +92,6 @@ def load_tf_model(df_data, hyperparams):
         print(f'need to create {cfg.model_path}')
         create_tf_model(**{**test_train_data, **hyperparams})
     
-    model = tf.keras.models.load_model(cfg.model_path)
+    tf_model = tf.keras.models.load_model(cfg.model_path)
 
-    return test_train_data, model
+    return test_train_data, tf_model

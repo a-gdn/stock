@@ -79,30 +79,45 @@ def get_performance_score(trimmed_average_profit, is_buy_count, num_tickers):
 def evaluate_model(df_data, model, test_train_data, num_tickers, num_combinations, hyperparams):
     df_test = slice_df_test(df_data, cfg.test_size)
     df_test = add_predictions(df_test, model, test_train_data['X_test'], **hyperparams)
-    
-    market_rate = get_market_rate(test_train_data['y_test'], **hyperparams)
 
-    binary_classification = get_binary_classification(df_test)
-    
-    df_prediction_is_buy = df_test[(df_test['prediction_is_buy'] == True)]
-    if (not cfg.use_hyperopt and num_combinations == 1):
-        print(df_prediction_is_buy.to_markdown())
-        df_prediction_is_buy.to_excel(f'./outputs/{hf.get_date()}_classifier_df_prediction_is_buy.xlsx')
+    if df_test['prediction_is_buy'].any():
+        market_rate = get_market_rate(test_train_data['y_test'], **hyperparams)
 
-    profits = get_profits(df_prediction_is_buy)
-    prediction_is_buy_count = len(df_prediction_is_buy['output_profit'])
-    loss_limit_reached_pct = get_loss_limit_pct(df_prediction_is_buy)
-    performance_score = get_performance_score(profits['trimmed_average_profit'],
-                                              prediction_is_buy_count, num_tickers)
+        binary_classification = get_binary_classification(df_test)
+        
+        df_prediction_is_buy = df_test[(df_test['prediction_is_buy'] == True)]
+        if (not cfg.use_hyperopt and num_combinations == 1):
+            print(df_prediction_is_buy.to_markdown())
+            df_prediction_is_buy.to_excel(f'./outputs/{hf.get_date()}_classifier_df_prediction_is_buy.xlsx')
 
-    performance_metrics = {
-        'performance_score': performance_score,
-        **profits,
-        'prediction_is_buy_count': prediction_is_buy_count,
-        'loss_limit_reached_pct': loss_limit_reached_pct,
-        'market_rate': market_rate,
-        **binary_classification,
-        'winning_rate_vs_market': binary_classification['winning_rate'] - market_rate,
-    }
+        profits = get_profits(df_prediction_is_buy)
+        prediction_is_buy_count = len(df_prediction_is_buy['output_profit'])
+        loss_limit_reached_pct = get_loss_limit_pct(df_prediction_is_buy)
+        performance_score = get_performance_score(profits['trimmed_average_profit'],
+                                                prediction_is_buy_count, num_tickers)
+
+        performance_metrics = {
+            'performance_score': performance_score,
+            **profits,
+            'prediction_is_buy_count': prediction_is_buy_count,
+            'loss_limit_reached_pct': loss_limit_reached_pct,
+            **binary_classification,
+            'market_rate': market_rate,
+            'winning_rate_vs_market': binary_classification['winning_rate'] - market_rate,
+        }
+    else:
+        performance_metrics = {
+            'performance_score': 0,
+            'trimmed_average_profit': 0,
+            'average_profit': 0,
+            'median_profit': 0,
+            'prediction_is_buy_count': 0,
+            'loss_limit_reached_pct': 0,
+            'true_positives': 'not calculated', 'true_negatives': 'not calculated',
+            'false_positives': 'not calculated', 'false_negatives': 'not calculated',
+            'winning_rate': 'not calculated',
+            'market_rate': 'not calculated',
+            'winning_rate_vs_market': 'not calculated',
+        }
 
     return performance_metrics
