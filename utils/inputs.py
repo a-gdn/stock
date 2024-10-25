@@ -177,32 +177,33 @@ def get_inputs(df_buy, dfs_ohlcv, buying_time):
     perf_vs_market_2 = get_performance_vs_market(df_buy, past_days=2)
     perf_vs_market_1 = get_performance_vs_market(df_buy, past_days=1)
 
-    df_data = pd.concat([
-            var_90, var_60, var_30, var_10, var_5, var_2, var_1,
-            var_vs_close_1, var_vs_high_1, var_vs_low_1,
-            # volume_1,
-            volume_var_90_1, volume_var_60_1, volume_var_30_1, volume_var_10_1, volume_var_2_1, volume_var_3_1,
-            # market_var_90, market_var_30, market_var_10, market_var_5, market_var_1,
-            min_var_90, min_var_30, min_var_10, min_var_5, min_var_2,
-            max_var_90, max_var_30, max_var_10, max_var_5, max_var_2,
-            days_since_min_30, days_since_min_10,
-            days_since_max_30, days_since_max_10,
-            volatility_30, volatility_10, volatility_2,
-            # market_volatility_30, market_volatility_10, market_volatility_2,
-            volume_volability_90_1, volume_volability_30_1, volume_volability_10_1, volume_volability_2_1,
-            n_ups_90, n_ups_30, n_ups_5,
-            rank_90, rank_30, rank_10, rank_5, rank_2, rank_1,
-            perf_vs_market_90, perf_vs_market_30, perf_vs_market_10, perf_vs_market_5,
-            perf_vs_market_2, perf_vs_market_1
-        ], axis='columns')
+    input_list = [
+        var_90, var_60, var_30, var_10, var_5, var_2, var_1,
+        var_vs_close_1, var_vs_high_1, var_vs_low_1,
+        # volume_1,
+        volume_var_90_1, volume_var_60_1, volume_var_30_1, volume_var_10_1, volume_var_2_1, volume_var_3_1,
+        # market_var_90, market_var_30, market_var_10, market_var_5, market_var_1,
+        min_var_90, min_var_30, min_var_10, min_var_5, min_var_2,
+        max_var_90, max_var_30, max_var_10, max_var_5, max_var_2,
+        days_since_min_30, days_since_min_10,
+        days_since_max_30, days_since_max_10,
+        volatility_30, volatility_10, volatility_2,
+        # market_volatility_30, market_volatility_10, market_volatility_2,
+        volume_volability_90_1, volume_volability_30_1, volume_volability_10_1, volume_volability_2_1,
+        n_ups_90, n_ups_30, n_ups_5,
+        rank_90, rank_30, rank_10, rank_5, rank_2, rank_1,
+        perf_vs_market_90, perf_vs_market_30, perf_vs_market_10, perf_vs_market_5,
+        perf_vs_market_2, perf_vs_market_1
+    ]
     
     if buying_time == 'Close':
         var_vs_open_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_open'], past_days=0, title='open')
         var_vs_low_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_low'], past_days=0, title='low')
         var_vs_high_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_high'], past_days=0, title='high')
 
-        df_data = pd.concat([df_data, var_vs_open_0, var_vs_low_0, var_vs_high_0], axis='columns')
+        input_list += [var_vs_open_0, var_vs_low_0, var_vs_high_0]
 
+    df_inputs = pd.concat(input_list, axis='columns')
     # df_data = df_data.dropna()
 
-    return df_data
+    return df_inputs

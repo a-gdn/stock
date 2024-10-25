@@ -28,7 +28,7 @@ def get_class_cumulative_percentages(y_test):
     percentages = percentages[np.argsort(unique_values)]
     cumulative_percentages = np.cumsum(percentages)
 
-    print(f'market cumulative % per class: {cumulative_percentages}')
+    # print(f'market cumulative % per class: {cumulative_percentages}')
 
     return cumulative_percentages
 

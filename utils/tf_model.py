@@ -34,8 +34,8 @@ def get_test_train_data(df_input, df_output, test_size):
 
     hf.save_object(scaler, './outputs/scaler.pkl')
 
-    print(f"number of elements in y_train: {len(y_train)}")
-    print(f"number of elements in y_test: {len(y_test)}")
+    # print(f"number of elements in y_train: {len(y_train)}")
+    # print(f"number of elements in y_test: {len(y_test)}")
 
     return {'X_train': X_train, 'X_test': X_test, 'y_train': y_train, 'y_test': y_test}
 
@@ -86,10 +86,8 @@ def load_tf_model(df_data, hyperparams):
 
     test_train_data = get_test_train_data(df_input, df_output, cfg.test_size)
 
-    if os.path.exists(cfg.model_path) and cfg.use_saved_model:
-        print(f'using existing {cfg.model_path}')
-    else:
-        print(f'need to create {cfg.model_path}')
+    if not os.path.exists(cfg.model_path) or not cfg.use_saved_model:
+        # print(f'need to create {cfg.model_path}')
         create_tf_model(**{**test_train_data, **hyperparams})
     
     tf_model = tf.keras.models.load_model(cfg.model_path)
