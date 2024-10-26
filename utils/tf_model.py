@@ -28,6 +28,9 @@ def get_test_train_data(df_input, df_output, test_size):
     X_test = df_input.tail(test_size).values
     y_test = df_output.tail(test_size).values.ravel().astype(int)
 
+    if cfg.use_hyperopt and X_train.shape[0] == 0:
+        raise ValueError("Empty training set, skipping this trial")
+    
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
