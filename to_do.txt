@@ -1,3 +1,6 @@
+- ajouter eval positive_rate
+- optionnel: ajouter eval different_ticker_count
+
 inputs:
 - ajouter input: country market var
 - ajouter input: average volume 30 last days
