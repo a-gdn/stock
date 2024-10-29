@@ -76,12 +76,15 @@ def get_profitable_rate(df):
 
     return profitable_rate
 
-def get_performance_score(trimmed_average_profit, is_buy_count, num_tickers):
-    estimated_days = cfg.test_size / num_tickers
-    adjusted_profit = trimmed_average_profit # to decrease small values, e.g. 0.8 ** 2 = 0.8^2 = 0.64
-    performance_score = adjusted_profit * min(is_buy_count, estimated_days)
+def get_performance_score(trimmed_average_profit, is_buy_count, num_tickers, **hyperparams):
+    estimated_total_days = cfg.test_size / num_tickers
+    investment_total_days = min(is_buy_count, estimated_total_days)
+    stock_holding_days = hyperparams['target_future_days']
 
-    if adjusted_profit < 1:
+    # adjusted_profit = trimmed_average_profit # to decrease small values, e.g. 0.8 ** 2 = 0.8^2 = 0.64
+    performance_score = trimmed_average_profit ** (investment_total_days / stock_holding_days)
+
+    if trimmed_average_profit < 1:
         performance_score /= 10000
     
     return performance_score
@@ -103,8 +106,8 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
         prediction_is_buy_count = len(df_prediction_is_buy['output_profit'])
         loss_limit_reached_pct = get_loss_limit_pct(df_prediction_is_buy)
         profitable_rate = get_profitable_rate(df_prediction_is_buy)
-        performance_score = get_performance_score(profits['trimmed_average_profit'],
-                                                prediction_is_buy_count, num_tickers)
+        performance_score = get_performance_score(profits['trimmed_average_profit'], prediction_is_buy_count,
+                                                  num_tickers, **hyperparams)
 
         performance_metrics = {
             'performance_score': performance_score,
