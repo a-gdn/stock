@@ -72,7 +72,7 @@ def get_loss_limit_pct(df):
 def get_profitable_rate(df):
     profitable_count = (df['output_profit'] > 1).sum()
     total_count = df['output_profit'].count()
-    profitable_rate = round((profitable_count / total_count) * 100, 2)
+    profitable_rate = round((profitable_count / total_count) * 100, 2) if total_count > 0 else 0
 
     return profitable_rate
 
@@ -127,7 +127,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
             **binary_classification,
             'market_rate': market_rate,
             'winning_rate_vs_market': binary_classification['winning_rate'] - market_rate,
-            'profitable_rate': profitable_rate
+            'profitable_rate': 0
         }
 
     return performance_metrics
