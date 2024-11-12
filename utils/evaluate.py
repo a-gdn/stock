@@ -85,7 +85,7 @@ def get_performance_score(trimmed_average_profit, is_buy_count, num_tickers, **h
     performance_score = trimmed_average_profit ** (investment_total_days / stock_holding_days)
 
     if trimmed_average_profit < 1:
-        performance_score /= 10000
+        performance_score /= 100
     
     return performance_score
 

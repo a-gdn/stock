@@ -7,33 +7,36 @@ model_path = './outputs/classifier_model.keras'
 
 fee = 0.002
 
-use_hyperopt = True
+use_hyperopt = False
 use_saved_transformed_data = False
 use_saved_model = False
 
 start_date = '2008-01-01' #'2013-01-01'
 test_size = 60000
 epochs = 2
-hyperopt_n_iterations = 750
+hyperopt_n_iterations = 300
+save_every_n_iterations = 20
 
 output_class_name = 'output_var_class' #'output_var_class' or 'output_rank_class'
 
 param_grid = {
-    'buying_time': ['Open'], 'selling_time': ['Close'], #'Open', 
-    'target_future_days': [0], 'loss_limit': [0.997],
-    'sell_at_target': [True],
+    'buying_time': ['Close'], 'selling_time': ['Close'], #'Open', 
+    'target_future_days': [3],
+    'loss_limit': [0.4, 0.55, 0.7, 0.85, 0.95, 0.98, 0.99, 0.997],
+    'sell_at_target': [False],
     'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
-    'dropout_rate': [0.1], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
+    'dropout_rate': [0.05, 0.1, 0.15], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
     'n_first_classes': [[0,0]],
-    'cumulated_probs_target': [0.7,0.8,0.9],
-    'thresholds': [[1.02],[1.03],[1.04]], #,[1.01],[1.04]
+    'cumulated_probs_target': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+    'thresholds': [[1], [1.005], [1.01], [1.015], [1.02], [1.025], [1.03], [1.05],
+                    [1.08], [1.15], [1.3], [1.8]],
     'rank_pct_thresholds': [[0.45]]
 }
 
 search_space = {
     'buying_time': hp.choice('buying_time', ['Close']),
     'selling_time': hp.choice('selling_time', ['Close']),
-    'target_future_days': hp.randint('target_future_days', 1, 60), #hp.randint('target_future_days', 1, 60), #1, 60
+    'target_future_days': hp.randint('target_future_days', 4, 7), #hp.randint('target_future_days', 1, 60), #1, 60
     'loss_limit': hp.uniform('loss_limit', 0.1, 1),
     'sell_at_target': hp.choice('sell_at_target', [False]), #[True, False]
     'size_layer_1': hp.choice('size_layer_1', [128]),
