@@ -22,7 +22,7 @@ output_class_name = 'output_var_class' #'output_var_class' or 'output_rank_class
 param_grid = {
     'buying_time': ['Close'], 'selling_time': ['Close'], #'Open', 
     'target_future_days': [3],
-    'loss_limit': [0.4, 0.55, 0.7, 0.85, 0.95, 0.98, 0.99, 0.997],
+    'loss_limit': [0.85, 0.95, 0.98, 0.99, 0.997], #0.4, 0.55, 0.7, 
     'sell_at_target': [False],
     'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
     'dropout_rate': [0.05, 0.1, 0.15], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],

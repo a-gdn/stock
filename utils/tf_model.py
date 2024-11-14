@@ -3,7 +3,7 @@ import utils.helper_functions as hf
 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential # type: ignore
-from tensorflow.keras.layers import Dense, BatchNormalization, Dropout # type: ignore
+from tensorflow.keras.layers import Dense, BatchNormalization, Dropout, Input # type: ignore
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -61,7 +61,10 @@ def create_tf_model(**kwargs):
 
     model = Sequential()
 
-    model.add(Dense(size_layer_1, input_shape=(X_train.shape[1],), activation='relu'))
+    model.add(Input(shape=(X_train.shape[1],)))
+
+    # model.add(Dense(size_layer_1, input_shape=(X_train.shape[1],), activation='relu'))
+    model.add(Dense(size_layer_1, activation='relu'))
     model.add(BatchNormalization())
     model.add(Dropout(dropout_rate))
     model.add(Dense(size_layer_2, activation='relu'))
@@ -91,6 +94,7 @@ def load_tf_model(df_data, hyperparams):
 
     if not os.path.exists(cfg.model_path) or not cfg.use_saved_model:
         # print(f'need to create {cfg.model_path}')
+        tf.keras.backend.clear_session()
         create_tf_model(**{**test_train_data, **hyperparams})
     
     tf_model = tf.keras.models.load_model(cfg.model_path)

@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import pickle
+import random
+import string
 from datetime import datetime
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -64,6 +66,10 @@ def load_object(filename):
     """Load a Python object from a file using pickle."""
     with open(filename, 'rb') as file:
         return pickle.load(file)
+    
+def get_random_string(length):
+    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    return random_string
 
 # SUPPORT & RESISTANCE
 
