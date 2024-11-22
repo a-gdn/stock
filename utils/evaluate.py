@@ -82,7 +82,7 @@ def get_performance_score(trimmed_average_profit, is_buy_count, num_tickers, **h
     stock_holding_days = hyperparams['target_future_days']
 
     # adjusted_profit = trimmed_average_profit # to decrease small values, e.g. 0.8 ** 2 = 0.8^2 = 0.64
-    performance_score = trimmed_average_profit ** (investment_total_days / stock_holding_days)
+    performance_score = trimmed_average_profit ** (investment_total_days / max(1, stock_holding_days))
 
     if trimmed_average_profit < 1:
         performance_score /= 100
