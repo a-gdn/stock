@@ -18,6 +18,7 @@ hyperopt_n_iterations = 50
 save_every_n_iterations = 20
 
 output_class_name = 'output_var_class' #'output_var_class' or 'output_rank_class'
+output_regression = 'output_future_end_var'
 
 param_grid = {
     'buying_time': ['Open', 'Close'], 'selling_time': ['Open', 'Close'], #'Open', 
