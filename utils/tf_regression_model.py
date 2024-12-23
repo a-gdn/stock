@@ -40,10 +40,11 @@ def get_test_train_data(df_input, df_output, test_size):
 
     return {'X_train': X_train, 'X_test': X_test, 'y_train': y_train, 'y_test': y_test}
 
-def quantile_loss(y_true, y_pred, quantile):
-    residual = y_true - y_pred
-    return K.mean(K.maximum(quantile * residual, (quantile - 1) * residual))
-
+def get_quantile_loss(quantile):
+    def quantile_loss(y_true, y_pred):
+        residual = y_true - y_pred
+        return tf.reduce_mean(tf.maximum(quantile * residual, (quantile - 1) * residual))
+    return quantile_loss
 
 def create_tf_model(**kwargs):
     X_train = kwargs.get('X_train')
@@ -72,9 +73,13 @@ def create_tf_model(**kwargs):
     model.add(Dense(size_layer_3, activation='relu'))
     model.add(BatchNormalization())
     model.add(Dropout(dropout_rate))
-    model.add(Dense(1), optimizer='adam', loss=lambda y_true, y_pred: quantile_loss(y_true, y_pred, quantile), metrics=['mae'])
+    model.add(Dense(1))
 
-    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.compile(
+        optimizer='adam',
+        loss=get_quantile_loss(quantile),
+        metrics=['mae']
+    )
 
     if (balance_data):
         counter = Counter(y_train)

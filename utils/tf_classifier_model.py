@@ -57,7 +57,7 @@ def create_tf_model(**kwargs):
     balance_data = kwargs.get('balance_data')
     batch_size = kwargs.get('batch_size')
 
-    last_layers_size = len(thresholds) + 1
+    # last_layers_size = len(thresholds) + 1
 
     model = Sequential()
 
@@ -73,9 +73,11 @@ def create_tf_model(**kwargs):
     model.add(Dense(size_layer_3, activation='relu'))
     model.add(BatchNormalization())
     model.add(Dropout(dropout_rate))
-    model.add(Dense(last_layers_size, activation='softmax'))
+    # model.add(Dense(last_layers_size, activation='softmax'))
+    model.add(Dense(1, activation='sigmoid'))
 
-    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    # model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
     if (balance_data):
         counter = Counter(y_train)
@@ -88,7 +90,7 @@ def create_tf_model(**kwargs):
     model.save(cfg.model_path)
 
 def load_tf_model(df_data, hyperparams):
-    df_input, df_output = get_dfs_input_output(df_data, cfg.output_class_name)
+    df_input, df_output = get_dfs_input_output(df_data, cfg.output_binary_name)
 
     test_train_data = get_test_train_data(df_input, df_output, cfg.test_size)
 

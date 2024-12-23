@@ -9,35 +9,22 @@ def slice_df_test(df_data, test_size):
 def add_predictions(df, model, X_test, **hyperparams):
     print(f'X_test shape: {X_test.shape}')
     
-    predicted_n_first_classes = hyperparams['n_first_classes'][0]
-    cumulated_probs_target = hyperparams['cumulated_probs_target']
+    proba_target = hyperparams['proba_target']
 
-    prediction_y_test_lists = model.predict(X_test)
-    prediction_y_test_array = np.array(prediction_y_test_lists)
+    prediction_y_test_array = model.predict(X_test).flatten()
     df['prediction_probs'] = prediction_y_test_array.tolist()
 
-    df['prediction_cumulated_probs'] = [sum(row[:predicted_n_first_classes+1]) for row in df['prediction_probs']]
-    df['prediction_is_buy'] = (df['prediction_cumulated_probs'] > cumulated_probs_target)
-    df['prediction_is_buy_is_correct'] = (df['output_is_buy'] == df['prediction_is_buy'])
+    df['prediction_is_buy'] = (df['prediction_probs'] > proba_target)
+
+    if cfg.output_binary_name not in {'output_var_binary', 'output_rank_binary'}:
+        raise ValueError(f'output_binary_name must be either "output_var_binary" or "output_rank_binary"')
+
+    df['prediction_is_buy_is_correct'] = (df[cfg.output_binary_name] == df['prediction_is_buy'])
 
     return df
 
-def get_class_cumulative_percentages(y_test):
-    unique_values, counts = np.unique(y_test, return_counts=True)
-    percentages = counts / len(y_test)
-    percentages = percentages[np.argsort(unique_values)]
-    cumulative_percentages = np.cumsum(percentages)
-
-    # print(f'market cumulative % per class: {cumulative_percentages}')
-
-    return cumulative_percentages
-
-def get_market_rate(y_test, **hyperparams):
-    accepted_n_first_classes = hyperparams['n_first_classes'][1]
-
-    class_cumulative_percentages = get_class_cumulative_percentages(y_test)
-    market_rate = class_cumulative_percentages[accepted_n_first_classes]
-
+def get_market_rate(y_test):
+    market_rate = np.sum(y_test) / len(y_test) # Calculate the proportion of positive class (1's) in y_test
     return market_rate
 
 def get_binary_classification(df):
@@ -93,7 +80,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
     df_test = slice_df_test(df_data, cfg.test_size)
     df_test = add_predictions(df_test, model, test_train_data['X_test'], **hyperparams)
     
-    market_rate = get_market_rate(test_train_data['y_test'], **hyperparams)
+    market_rate = get_market_rate(test_train_data['y_test'])
     binary_classification = get_binary_classification(df_test)
 
     if df_test['prediction_is_buy'].any():

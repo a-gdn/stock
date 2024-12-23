@@ -13,25 +13,23 @@ use_saved_model = False
 
 start_date = '2008-01-01' #'2013-01-01'
 test_size = 60000
-epochs = 2
-hyperopt_n_iterations = 50
+epochs = 1
+hyperopt_n_iterations = 10
 save_every_n_iterations = 20
 
-output_class_name = 'output_var_class' #'output_var_class' or 'output_rank_class'
+output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
 output_regression = 'output_future_end_var'
 
 param_grid = {
     'buying_time': ['Open', 'Close'], 'selling_time': ['Open', 'Close'], #'Open', 
-    'target_future_days': [0, 1],
-    'loss_limit': [0.5, 0.8, 0.9, 0.98, 0.99], #0.4, 0.55, 0.7, 
+    'target_future_days': [1],
+    'loss_limit': [0.98], #0.4, 0.55, 0.7, 
     'sell_at_target': [False],
     'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
-    'dropout_rate': [0.05, 0.1, 0.15], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
-    'n_first_classes': [[0,0]],
-    'cumulated_probs_target': [0.7, 0.8, 0.9],
-    'thresholds': [[1.005], [1.01], [1.015], [1.04]], #[1], [1.005], [1.01], [1.015], [1.02], [1.025], [1.03], [1.05],
-                    # [1.08], [1.15], [1.3], [1.8]
-    'rank_pct_thresholds': [[0.45]]
+    'dropout_rate': [0.1], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
+    'proba_target': [0.7],
+    'var_threshold': [1.005, 1.01, 1.05],
+    'rank_pct_threshold': [0.45]
 }
 
 search_space = {
@@ -46,10 +44,7 @@ search_space = {
     'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.15), #hp.uniform('dropout_rate', 0.05, 0.1), #0, 0.3
     'balance_data': hp.choice('balance_data', [False]),
     'batch_size': hp.choice('batch_size', [128]), #[32, 64, 128]
-    'n_first_classes': hp.choice('n_first_classes', [[0, 0]]),
-    'cumulated_probs_target': hp.uniform('cumulated_probs_target', 0.5, 1),
-    'thresholds': hp.choice('thresholds', [[1.01], [1.015]]),
-    # 'thresholds': hp.choice('thresholds', [[1.08, 1.04, 1.02, 1], [1.06, 1.03, 1.01], [1.05, 1.025, 1], [1.1, 1.05, 1.01]]),
-    # 'rank_pct_thresholds': hp.uniform('rank_pct_thresholds', 0.002, 0.5),
-    'rank_pct_thresholds': hp.choice('rank_pct_thresholds', [[0.08, 0.2, 0.33]])
+    'proba_target': hp.uniform('cumulated_probs_target', 0.5, 1),
+    'var_threshold': hp.uniform('var_threshold', 1, 3),
+    'rank_pct_threshold': hp.uniform('rank_pct_threshold', 0, 1)
 }
