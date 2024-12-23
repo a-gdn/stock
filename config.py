@@ -27,7 +27,7 @@ param_grid = {
     'sell_at_target': [False],
     'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
     'dropout_rate': [0.1], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
-    'proba_target': [0.7],
+    'confidence_threshold': [0.7],
     'var_threshold': [1.005, 1.01, 1.05],
     'rank_pct_threshold': [0.45]
 }
@@ -44,7 +44,7 @@ search_space = {
     'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.15), #hp.uniform('dropout_rate', 0.05, 0.1), #0, 0.3
     'balance_data': hp.choice('balance_data', [False]),
     'batch_size': hp.choice('batch_size', [128]), #[32, 64, 128]
-    'proba_target': hp.uniform('cumulated_probs_target', 0.5, 1),
+    'confidence_threshold': hp.uniform('confidence_threshold', 0.5, 1),
     'var_threshold': hp.uniform('var_threshold', 1, 3),
     'rank_pct_threshold': hp.uniform('rank_pct_threshold', 0, 1)
 }

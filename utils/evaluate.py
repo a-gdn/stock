@@ -9,12 +9,12 @@ def slice_df_test(df_data, test_size):
 def add_predictions(df, model, X_test, **hyperparams):
     print(f'X_test shape: {X_test.shape}')
     
-    proba_target = hyperparams['proba_target']
+    confidence_threshold = hyperparams['confidence_threshold']
 
     prediction_y_test_array = model.predict(X_test).flatten()
     df['prediction_probs'] = prediction_y_test_array.tolist()
 
-    df['prediction_is_buy'] = (df['prediction_probs'] > proba_target)
+    df['prediction_is_buy'] = (df['prediction_probs'] > confidence_threshold)
 
     if cfg.output_binary_name not in {'output_var_binary', 'output_rank_binary'}:
         raise ValueError(f'output_binary_name must be either "output_var_binary" or "output_rank_binary"')

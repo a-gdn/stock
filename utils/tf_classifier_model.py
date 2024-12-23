@@ -47,8 +47,6 @@ def create_tf_model(**kwargs):
     X_test = kwargs.get('X_test')
     y_train = kwargs.get('y_train')
     y_test = kwargs.get('y_test')
-
-    thresholds = kwargs.get('thresholds')
     
     size_layer_1 = kwargs.get('size_layer_1')
     size_layer_2 = kwargs.get('size_layer_2')
