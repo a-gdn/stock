@@ -1,4 +1,5 @@
-- ajouter eval positive_rate
+- essayer d'autre performance_score qui maximise le profitable_rate en plus du profit
+
 - optionnel: ajouter eval different_ticker_count
 
 inputs:

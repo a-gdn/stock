@@ -16,7 +16,7 @@ use_saved_model = False
 start_date = '2008-01-01' #'2013-01-01'
 test_size = 60000
 epochs = 2
-hyperopt_n_iterations = 750
+hyperopt_n_iterations = 3500
 save_every_n_iterations = 20
 
 output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
@@ -34,8 +34,8 @@ param_grid = {
 }
 
 search_space = {
-    'buying_time': hp.choice('buying_time', ['Open', 'Close']),
-    'selling_time': hp.choice('selling_time', ['Close', 'Open']),
+    'buying_time': hp.choice('buying_time', ['Close', 'Close']),
+    'selling_time': hp.choice('selling_time', ['Close', 'Close']),
     'target_future_days': hp.randint('target_future_days', 0, 60), #hp.randint('target_future_days', 1, 60), #1, 60
     'loss_limit': hp.uniform('loss_limit', 0, 1),
     'sell_at_target': hp.choice('sell_at_target', [True, False]), #[True, False]
