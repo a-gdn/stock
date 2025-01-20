@@ -16,7 +16,7 @@ use_saved_model = False
 start_date = '2008-01-01' #'2013-01-01'
 test_size = 60000
 epochs = 2
-hyperopt_n_iterations = 3500
+hyperopt_n_iterations = 500
 save_every_n_iterations = 20
 
 output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'

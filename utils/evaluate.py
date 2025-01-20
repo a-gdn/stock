@@ -59,17 +59,17 @@ def get_loss_limit_pct(df):
 def get_profitable_rate(df):
     profitable_count = (df['output_profit'] > 1).sum()
     total_count = df['output_profit'].count()
-    profitable_rate = round((profitable_count / total_count) * 100, 2) if total_count > 0 else 0
+    profitable_rate = round((profitable_count / total_count), 3) if total_count > 0 else 0
 
     return profitable_rate
 
-def get_performance_score(trimmed_average_profit, profitable_rate, is_buy_count, num_tickers, **hyperparams):
+def get_performance_score(trimmed_average_profit, profitable_rate, true_positives, num_tickers, **hyperparams):
     # estimated_total_days = cfg.test_size / num_tickers
     # holding_total_days = min(is_buy_count, estimated_total_days)
     # holding_rate = holding_total_days / estimated_total_days
 
     min_is_buy_count = 125
-    is_buy_count_score = min(1, is_buy_count / min_is_buy_count)
+    is_buy_count_score = min(1, true_positives / min_is_buy_count)
 
     # adjusted_profit = trimmed_average_profit # to decrease small values, e.g. 0.8 ** 2 = 0.8^2 = 0.64
     # performance_score = trimmed_average_profit ** (investment_total_days / max(1, stock_holding_days))
@@ -86,6 +86,8 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
     
     market_rate = get_market_rate(test_train_data['y_test'])
     binary_classification = get_binary_classification(df_test)
+    true_positives = binary_classification['true_positives']
+    
 
     if df_test['prediction_is_buy'].any():
         df_prediction_is_buy = df_test[(df_test['prediction_is_buy'] == True)]
@@ -97,7 +99,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
         prediction_is_buy_count = len(df_prediction_is_buy['output_profit'])
         loss_limit_reached_pct = get_loss_limit_pct(df_prediction_is_buy)
         profitable_rate = get_profitable_rate(df_prediction_is_buy)
-        performance_score = get_performance_score(profits['trimmed_average_profit'], profitable_rate, prediction_is_buy_count,
+        performance_score = get_performance_score(profits['trimmed_average_profit'], profitable_rate, true_positives,
                                                   num_tickers, **hyperparams)
 
         performance_metrics = {
