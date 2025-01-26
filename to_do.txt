@@ -1,5 +1,3 @@
-- essayer d'autre performance_score qui maximise le profitable_rate (par ex 0.7 et non 70) en plus du profit et le nombre de true_positives (et non is_buy_count)
-
 - optionnel: ajouter eval different_ticker_count
 
 inputs:

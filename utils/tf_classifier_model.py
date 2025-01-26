@@ -4,6 +4,7 @@ import utils.helper_functions as hf
 import tensorflow as tf
 from tensorflow.keras.models import Sequential # type: ignore
 from tensorflow.keras.layers import Dense, BatchNormalization, Dropout, Input # type: ignore
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -77,13 +78,36 @@ def create_tf_model(**kwargs):
     # model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
+    # Define callbacks
+    early_stopping = EarlyStopping(
+        monitor='val_loss', patience=cfg.early_stopping_patience, restore_best_weights=True
+    )
+    lr_scheduler = ReduceLROnPlateau(
+        monitor='val_loss', factor=cfg.lr_reduction_factor, patience=cfg.lr_reduction_patience, min_lr=cfg.min_learning_rate
+    )
+    callbacks = [early_stopping, lr_scheduler]
+
+
     if (balance_data):
         counter = Counter(y_train)
         max_count = max(counter.values())
         class_weights = {cls: max_count / count for cls, count in counter.items()}
-        model.fit(X_train, y_train, epochs=cfg.epochs, batch_size=batch_size, validation_data=(X_test, y_test), class_weight=class_weights)
+        model.fit(
+            X_train, y_train,
+            epochs=cfg.max_epochs,
+            batch_size=batch_size,
+            validation_data=(X_test, y_test),
+            class_weight=class_weights,
+            callbacks=callbacks
+        )
     else:
-        model.fit(X_train, y_train, epochs=cfg.epochs, batch_size=batch_size, validation_data=(X_test, y_test))
+        model.fit(
+            X_train, y_train,
+            epochs=cfg.max_epochs,
+            batch_size=batch_size,
+            validation_data=(X_test, y_test),
+            callbacks=callbacks
+        )
 
     model.save(cfg.model_path)
 
