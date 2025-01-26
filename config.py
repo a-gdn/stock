@@ -22,7 +22,7 @@ lr_reduction_factor = 0.1
 lr_reduction_patience = 3
 min_learning_rate = 1e-6
 
-hyperopt_n_iterations = 1500
+hyperopt_n_iterations = 50
 save_every_n_iterations = 20
 
 output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
