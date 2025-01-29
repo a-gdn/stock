@@ -22,26 +22,26 @@ lr_reduction_factor = 0.1
 lr_reduction_patience = 3
 min_learning_rate = 1e-6
 
-hyperopt_n_iterations = 50
-save_every_n_iterations = 20
+hyperopt_n_iterations = 300
+save_every_n_iterations = 3
 
 output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
 
 param_grid = {
-    'buying_time': ['Open', 'Close'], 'selling_time': ['Open', 'Close'], #'Open', 
-    'target_future_days': [1],
-    'loss_limit': [0.98], #0.4, 0.55, 0.7, 
-    'sell_at_target': [False],
+    'buying_time': ['Open'], 'selling_time': ['Close'], #'Open', 
+    'target_future_days': [0,1],
+    'loss_limit': [0.05], #0.4, 0.55, 0.7, 
+    'sell_at_target': [False,True],
     'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
-    'dropout_rate': [0.1], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
-    'confidence_threshold': [0.7],
-    'var_threshold': [1.005, 1.01, 1.05],
+    'dropout_rate': [0.05], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
+    'confidence_threshold': [0.65,0.75,0.96,0.97,0.98],
+    'var_threshold': [1, 1.5, 1.7],
     'rank_pct_threshold': [0.45]
 }
 
 search_space = {
-    'buying_time': hp.choice('buying_time', ['Close', 'Close']),
-    'selling_time': hp.choice('selling_time', ['Close', 'Close']),
+    'buying_time': hp.choice('buying_time', ['Open', 'Open']),
+    'selling_time': hp.choice('selling_time', ['Open', 'Open']),
     'target_future_days': hp.randint('target_future_days', 0, 60), #hp.randint('target_future_days', 1, 60), #1, 60
     'loss_limit': hp.uniform('loss_limit', 0, 1),
     'sell_at_target': hp.choice('sell_at_target', [True, False]), #[True, False]

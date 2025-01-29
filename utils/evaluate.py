@@ -105,7 +105,9 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
         prediction_is_buy_count = len(df_prediction_is_buy['output_profit'])
         loss_limit_reached_pct = get_loss_limit_pct(df_prediction_is_buy)
         profitable_rate = get_profitable_rate(df_prediction_is_buy)
-        performance_score = get_performance_score(profits['trimmed_average_profit'], profitable_rate,
+        performance_score = get_performance_score(profits['trimmed_average_profit'],
+                                                  prediction_is_buy_count,
+                                                  profitable_rate,
                                                   binary_classification['true_positives'],
                                                   num_tickers, **hyperparams)
 

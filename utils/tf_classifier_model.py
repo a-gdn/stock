@@ -92,7 +92,7 @@ def create_tf_model(**kwargs):
         counter = Counter(y_train)
         max_count = max(counter.values())
         class_weights = {cls: max_count / count for cls, count in counter.items()}
-        model.fit(
+        history = model.fit(
             X_train, y_train,
             epochs=cfg.max_epochs,
             batch_size=batch_size,
@@ -101,13 +101,15 @@ def create_tf_model(**kwargs):
             callbacks=callbacks
         )
     else:
-        model.fit(
+        history = model.fit(
             X_train, y_train,
             epochs=cfg.max_epochs,
             batch_size=batch_size,
             validation_data=(X_test, y_test),
             callbacks=callbacks
         )
+
+    print(f"Number of epochs used: {len(history.epoch)}")
 
     model.save(cfg.model_path)
 
