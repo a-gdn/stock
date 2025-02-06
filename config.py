@@ -22,8 +22,8 @@ lr_reduction_factor = 0.1
 lr_reduction_patience = 3
 min_learning_rate = 1e-6
 
-hyperopt_n_iterations = 300
-save_every_n_iterations = 3
+hyperopt_n_iterations = 900
+save_every_n_iterations = 5
 
 output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
 
@@ -40,8 +40,8 @@ param_grid = {
 }
 
 search_space = {
-    'buying_time': hp.choice('buying_time', ['Open', 'Open']),
-    'selling_time': hp.choice('selling_time', ['Open', 'Open']),
+    'buying_time': hp.choice('buying_time', ['Open', 'Close']),
+    'selling_time': hp.choice('selling_time', ['Open', 'Close']),
     'target_future_days': hp.randint('target_future_days', 0, 60), #hp.randint('target_future_days', 1, 60), #1, 60
     'loss_limit': hp.uniform('loss_limit', 0, 1),
     'sell_at_target': hp.choice('sell_at_target', [True, False]), #[True, False]

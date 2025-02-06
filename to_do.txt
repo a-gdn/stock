@@ -1,6 +1,11 @@
+1. iterations sur de nombreux cas (incluant buy_time=Open) et regarder la stabilité pour des params similaire
+2. prévoir les prix d'achat pour un confidence_threshold donné
+3. créer les achats intelligents basé pour les tickers les prometteurs (25 premiers?) au vu des PTO
+
 - optionnel: ajouter eval different_ticker_count
 
 inputs:
+- ajouter input: nombre de ups et downs >1% >2% >4% >target sur 1 jours, sur target_future_days
 - ajouter input: country market var
 - ajouter input: average volume 30 last days
 - corriger erreur sur inputs market
