@@ -49,6 +49,8 @@ def create_tf_model(**kwargs):
     y_train = kwargs.get('y_train')
     y_test = kwargs.get('y_test')
     
+    print(f"X_train shape: {X_train.shape}")
+
     size_layer_1 = kwargs.get('size_layer_1')
     size_layer_2 = kwargs.get('size_layer_2')
     size_layer_3 = kwargs.get('size_layer_3')

@@ -9,20 +9,20 @@ results_path = './outputs/results.xlsx'
 
 fee = 0.002
 
-use_hyperopt = True
+use_hyperopt = False
 use_saved_transformed_data = False
 use_saved_model = False
 
 start_date = '2008-01-01' #'2013-01-01'
 test_size = 60000
 
-max_epochs = 50
-early_stopping_patience = 5
+max_epochs = 7
+early_stopping_patience = 3
 lr_reduction_factor = 0.1
-lr_reduction_patience = 3
+lr_reduction_patience = 2
 min_learning_rate = 1e-6
 
-hyperopt_n_iterations = 900
+hyperopt_n_iterations = 1405
 save_every_n_iterations = 5
 
 output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
@@ -30,12 +30,12 @@ output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_bi
 param_grid = {
     'buying_time': ['Open'], 'selling_time': ['Close'], #'Open', 
     'target_future_days': [0,1],
-    'loss_limit': [0.05], #0.4, 0.55, 0.7, 
+    'loss_limit': [0.05,0.95,0.98], #0.4, 0.55, 0.7, 
     'sell_at_target': [False,True],
     'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
     'dropout_rate': [0.05], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
-    'confidence_threshold': [0.65,0.75,0.96,0.97,0.98],
-    'var_threshold': [1, 1.5, 1.7],
+    'confidence_threshold': [0.3,0.65,0.8,0.9,0.97],
+    'var_threshold': [1, 1.02, 1.05],
     'rank_pct_threshold': [0.45]
 }
 

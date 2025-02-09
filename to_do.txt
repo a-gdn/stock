@@ -2,14 +2,16 @@
 2. prévoir les prix d'achat pour un confidence_threshold donné
 3. créer les achats intelligents basé pour les tickers les prometteurs (25 premiers?) au vu des PTO
 
-- optionnel: ajouter eval different_ticker_count
+1. tester performance_score indépendant du temps
 
 inputs:
 - ajouter input: nombre de ups et downs >1% >2% >4% >target sur 1 jours, sur target_future_days
-- ajouter input: country market var
 - ajouter input: average volume 30 last days
+- ajouter input: country market var
+- ajouter input: calcul de matrice de corrélation et inputs des autres valeurs (bcp de params en plus)
+- ajouter tickers: ETFs dans database
 - corriger erreur sur inputs market
-- ajouter un input jour d'achat (lundi, mardi, etc.)
+- ajouter input: jour d'achat (lundi, mardi, etc.)
 
 evaluate:
 - plot graphs of future rank vs profit

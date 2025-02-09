@@ -1,9 +1,3 @@
-# Cell
-# import tracemalloc
-
-# tracemalloc.start()
-# snapshot1 = tracemalloc.take_snapshot()
-
 import config as cfg
 from utils import helper_functions as hf
 from utils import inputs
@@ -27,16 +21,13 @@ os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'  # Disable file validation in
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0: All logs (default setting), 1: Filter out INFO logs, up to 3
 pd.options.mode.copy_on_write = True  # Avoid making unnecessary copies of DataFrames or Series
 
-# Cell
 num_combinations = cfg.hyperopt_n_iterations if cfg.use_hyperopt else hf.get_num_combinations(cfg.param_grid)
 
 print(num_combinations)
 
-# Cell
 def is_valid_combination(hyperparams):
     return hyperparams['target_future_days'] != 0 or (hyperparams['buying_time'] == 'Open' and hyperparams['selling_time'] == 'Close')
 
-# Cell
 df = pd.read_pickle(cfg.db_path)
 df = hf.get_rows_after_date(df, cfg.start_date)
 df = hf.fillnavalues(df)
@@ -59,7 +50,6 @@ def get_ohlcv_dfs(df):
 num_tickers = hf.get_num_tickers(get_single_level_df(df, 'Open'))
 print(f'Number of tickers: {num_tickers}')
 
-# Cell
 def get_df_data(hyperparams):
     df_buy = get_single_level_df(df, hyperparams['buying_time'])
     df_sell = get_single_level_df(df, hyperparams['selling_time'])
@@ -76,7 +66,6 @@ def get_df_data(hyperparams):
 
     return df_data
 
-# Cell
 def load_results(path):
     if os.path.exists(path):
         print(f"Loading results from {path}")
@@ -116,7 +105,6 @@ def release_memory(*args):
         del var
     gc.collect()
 
-# Cell
 from itertools import product
 
 def get_model_result(hyperparams):
@@ -126,7 +114,7 @@ def get_model_result(hyperparams):
     test_train_data, model = tf_classifier_model.load_tf_model(df_data, hyperparams)
     performance_metrics = eval.evaluate_model(df_data, model, test_train_data, num_tickers, num_combinations, hyperparams)
 
-    result = {**performance_metrics, **hyperparams, 'epochs': cfg.max_epochs}
+    result = {**performance_metrics, **hyperparams}
     print(f"Result: {result}")
 
     release_memory(df_data, model, test_train_data)
@@ -181,32 +169,23 @@ def grid_search(results):
             
             result = get_model_result(hyperparams)
             results.append(result)
-            save_results_if_needed(results, None, i, num_combinations)
+            save_results_if_needed(results, None, i, num_combinations, cfg.results_path, cfg.trials_path)
 
         except Exception as e:
             print(f"Error at combination {i}/{num_combinations}: {e}")
 
-# Main workflow
 def main():
     results = load_results(cfg.results_path)
 
     if cfg.use_hyperopt:
         trials = hyperopt_search(results)
     else:
+        trials = None
         grid_search(results)
 
-    save_results(results, trials if cfg.use_hyperopt else None, cfg.results_path, cfg.trials_path)
+    save_results(results, trials, cfg.results_path, cfg.trials_path)
     print_results(results)
 
-# snapshot2 = tracemalloc.take_snapshot()
-# top_stats = snapshot2.compare_to(snapshot1, 'lineno')
-
-# for stat in top_stats[:6]:
-#     print(stat)
-
-# tracemalloc.stop()
-
-# Cell
 caffeinate_process = subprocess.Popen(["caffeinate", "-dims"])
 print("Caffeinate started...")
 
@@ -217,5 +196,4 @@ finally:
     print("Caffeinate stopped.")
 
 if __name__ == "__main__":
-    # Entry point
     pass
