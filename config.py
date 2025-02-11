@@ -32,7 +32,7 @@ param_grid = {
     'target_future_days': [0,1],
     'loss_limit': [0.05,0.95,0.98], #0.4, 0.55, 0.7, 
     'sell_at_target': [False,True],
-    'size_layer_1': [128], 'size_layer_2': [128], 'size_layer_3': [128],
+    'size_layer_1': [128], 'size_layer_2': [64], 'size_layer_3': [64],
     'dropout_rate': [0.05], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
     'confidence_threshold': [0.3,0.65,0.8,0.9,0.97],
     'var_threshold': [1, 1.02, 1.05],
@@ -46,9 +46,9 @@ search_space = {
     'loss_limit': hp.uniform('loss_limit', 0, 1),
     'sell_at_target': hp.choice('sell_at_target', [True, False]), #[True, False]
     'size_layer_1': hp.choice('size_layer_1', [128]),
-    'size_layer_2': hp.choice('size_layer_2', [128]),
-    'size_layer_3': hp.choice('size_layer_3', [128]), #[64, 128, 256]
-    'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.2), #0, 0.3
+    'size_layer_2': hp.choice('size_layer_2', [64]),
+    'size_layer_3': hp.choice('size_layer_3', [64]), #[64, 128, 256]
+    'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.5), #0, 0.3
     'balance_data': hp.choice('balance_data', [True, False]),
     'batch_size': hp.choice('batch_size', [128]), #[32, 64, 128]
     'confidence_threshold': hp.uniform('confidence_threshold', 0.3, 1),
