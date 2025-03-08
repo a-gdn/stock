@@ -1,8 +1,8 @@
 import utils.helper_functions as hf
-import utils.inputs as inputs
 
 import pandas as pd
 import numpy as np
+import logging
 
 def get_has_min_max_values(**hyperparams):
     buying_time = hyperparams.get('buying_time')
@@ -84,9 +84,9 @@ def add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, df_loss_prices, has_min
     if sell_at_target:
         future_min_var = get_future_min_var_before_max(df_buy, df_sell, df_loss_prices, target_future_days, buying_time, selling_time)
 
-    df_data = pd.concat([df_data, future_end_var, future_max_var, future_min_var], axis='columns')
+    future_vars = pd.concat([df_data, future_end_var, future_max_var, future_min_var], axis='columns')
     
-    return df_data
+    return future_vars
 
 def add_output_is_loss_limit_reached(df, **hyperparams):
     loss_limit = hyperparams.get('loss_limit')
@@ -109,7 +109,11 @@ def add_output_var_binary(df_data, **hyperparams):
 
 def add_future_rank(df_data, df_buy, **hyperparams):
     target_future_days = hyperparams.get('target_future_days')
-    df_data['output_future_end_rank'] = inputs.get_rank(df_buy, past_days=0, future_days=target_future_days)
+
+    rank = hf.calculate_rank(df_buy, n_past_days=0, n_future_days=target_future_days)
+    rank_stacked = hf.stack(rank, 'output_future_end_rank')
+
+    df_data['output_future_end_rank'] = rank_stacked
     
     return df_data
 
@@ -154,6 +158,7 @@ def add_outputs(df_data, df_buy, df_sell, dfs_ohlcv, num_tickers, output_class_n
     df_loss_limit_prices = get_loss_limit_prices(df_buy, **hyperparams)
     df_loss_prices = get_loss_prices(dfs_ohlcv, df_loss_limit_prices)
     has_min_max_values = get_has_min_max_values(**hyperparams)
+
 
     df_data = add_future_vars(df_data, df_buy, df_sell, dfs_ohlcv, df_loss_prices, has_min_max_values, **hyperparams)
     df_data = add_output_is_loss_limit_reached(df_data, **hyperparams)

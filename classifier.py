@@ -17,6 +17,8 @@ import os
 import subprocess
 import gc
 
+from itertools import product
+
 os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'  # Disable file validation in the debugger
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0: All logs (default setting), 1: Filter out INFO logs, up to 3
 pd.options.mode.copy_on_write = True  # Avoid making unnecessary copies of DataFrames or Series
@@ -28,9 +30,11 @@ print(num_combinations)
 def is_valid_combination(hyperparams):
     return hyperparams['target_future_days'] != 0 or (hyperparams['buying_time'] == 'Open' and hyperparams['selling_time'] == 'Close')
 
-df = pd.read_pickle(cfg.db_path)
-df = hf.get_rows_after_date(df, cfg.start_date)
-df = hf.fillnavalues(df)
+def load_db(path):    
+    df = pd.read_pickle(path)
+    df = hf.get_rows_after_date(df, cfg.start_date)
+    df = hf.fillnavalues(df)
+    return df
 
 def get_single_level_df(df, ohlcv):
     new_df = df[[ohlcv]]
@@ -47,24 +51,29 @@ def get_ohlcv_dfs(df):
     return {'df_open': df_open, 'df_high': df_high, 'df_low': df_low,
             'df_close': df_close, 'df_volume': df_volume}
 
-num_tickers = hf.get_num_tickers(get_single_level_df(df, 'Open'))
-print(f'Number of tickers: {num_tickers}')
-
 def get_df_data(hyperparams):
+    df = load_db(cfg.db_path)
+
+    num_tickers = hf.get_num_tickers(get_single_level_df(df, 'Open'))
+    print(f'Number of tickers: {num_tickers}')
+    
     df_buy = get_single_level_df(df, hyperparams['buying_time'])
     df_sell = get_single_level_df(df, hyperparams['selling_time'])
     dfs_ohlcv = get_ohlcv_dfs(df)
 
+    df_sp500 = load_db(cfg.sp500_db_path)
+    df_vix = load_db(cfg.vix_db_path)
+
     if os.path.exists(cfg.transformed_data_path) and cfg.use_saved_transformed_data:
         df_data = pd.read_pickle(cfg.transformed_data_path)
     else:
-        df_data = inputs.get_inputs(df_buy, dfs_ohlcv, hyperparams['buying_time'])
+        df_data = inputs.get_inputs(df_buy, dfs_ohlcv, df_sp500, df_vix, hyperparams['buying_time'])
         df_data.to_pickle(cfg.transformed_data_path)
 
-    df_data = outputs.add_outputs(df_data, df_buy, df_sell, dfs_ohlcv, num_tickers, cfg.output_binary_name, cfg.fee, **hyperparams)
-    df_data = df_data.dropna()
+    df_data = outputs.add_outputs(df_data, df_buy, df_sell, dfs_ohlcv, num_tickers, cfg.output_binary_name, cfg.fee, **hyperparams)    
+    df_data = df_data.dropna(axis='rows', how='all') # Drop rows with all NaN values
 
-    return df_data
+    return df_data, num_tickers
 
 def load_results(path):
     if os.path.exists(path):
@@ -105,12 +114,11 @@ def release_memory(*args):
         del var
     gc.collect()
 
-from itertools import product
-
 def get_model_result(hyperparams):
     print(f"Evaluating hyperparameters: {hyperparams}")
 
-    df_data = get_df_data(hyperparams)
+    df_data, num_tickers = get_df_data(hyperparams)
+
     test_train_data, model = tf_classifier_model.load_tf_model(df_data, hyperparams)
     performance_metrics = eval.evaluate_model(df_data, model, test_train_data, num_tickers, num_combinations, hyperparams)
 
@@ -186,14 +194,12 @@ def main():
     save_results(results, trials, cfg.results_path, cfg.trials_path)
     print_results(results)
 
-caffeinate_process = subprocess.Popen(["caffeinate", "-dims"])
-print("Caffeinate started...")
-
-try:
-    main()
-finally:
-    caffeinate_process.terminate()
-    print("Caffeinate stopped.")
+with subprocess.Popen(["caffeinate", "-dims"]) as caffeinate_process:
+    print("Caffeinate started...")
+    try:
+        main()
+    finally:
+        print("Caffeinate stopped.")
 
 if __name__ == "__main__":
     pass

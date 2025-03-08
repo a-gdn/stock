@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 import random
 import string
+import logging
 from datetime import datetime
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -54,6 +55,7 @@ def get_date() -> str:
 def fillnavalues(df: pd.DataFrame) -> pd.DataFrame:
     df = df.interpolate(limit_area='inside') #interpolation when only one value ('inside') is missing
     df = df.ffill() #forward fill otherwise
+    df = df.bfill() #backward fill for the first rows
 
     return df
 
@@ -160,9 +162,15 @@ def get_rows_after_date(df: pd.DataFrame, start_date: str) -> pd.DataFrame:
     #start_date formatted as 'YYYY-MM-DD'
     return df[df.index >= pd.Timestamp(start_date)]
 
+def rename_first_column(df: pd.DataFrame, new_col_name: str) -> pd.DataFrame:
+    df.rename(columns={df.columns[0] : new_col_name}, inplace=True)
+
+    return df
+
 def stack(df, new_col_name):
-    df_stacked = pd.DataFrame(df.stack(future_stack=True))
-    df_stacked.rename(columns={df_stacked.columns[0] : new_col_name}, inplace=True)
+    df_stacked = df.stack(future_stack=True) # Stack columns, using future_stack is to be Pandas 3.0 compatible
+    df_stacked = df_stacked.to_frame() # Convert to DataFrame
+    df_stacked = rename_first_column(df_stacked, new_col_name) # Rename the 1st (and only) column
 
     return df_stacked
 
@@ -185,8 +193,17 @@ def calculate_averages(df:pd.DataFrame) -> pd.DataFrame:
 def get_num_tickers(df: pd.DataFrame) -> int:
     return df.shape[1]
 
+def ensure_dataframe(input_data):
+    if isinstance(input_data, pd.Series):
+        return input_data.to_frame()
+    else:
+        return input_data
+    
 def calculate_variations(df, n_past_days, n_future_days):
-    return df.shift(-n_future_days) / df.shift(n_past_days)
+    var = df.shift(-n_future_days) / df.shift(n_past_days)
+    var = ensure_dataframe(var)
+    
+    return var
 
 def calculate_positive_rate(df: pd.DataFrame) -> float:
     positive_values_count = (df> 0).sum()
@@ -259,6 +276,48 @@ def classify_rank(df_rank: pd.DataFrame, thresholds:list[float]) -> pd.DataFrame
 
     return df_class
 
+# INDICATORS
+
+def validate_dataframe(df, function_name=""):
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("Input must be a pandas DataFrame.")
+
+    if df.empty:
+        raise ValueError(f"Input DataFrame is empty in {function_name}.")
+
+    if df.isnull().any().any():
+        logging.warning(f"DataFrame contains NaN values in {function_name}. Consider handling them before calculation.")
+
+def calculate_rsi(df, period=14):
+    delta = df.diff(1)
+    gain = (delta.where(delta > 0, 0)).rolling(window=period, min_periods=1).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period, min_periods=1).mean()
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
+
+def calculate_macd(df, short_period=12, long_period=26, signal_period=9):
+    short_ema = df.ewm(span=short_period, min_periods=1, adjust=False).mean()
+    long_ema = df.ewm(span=long_period, min_periods=1, adjust=False).mean()
+    macd = short_ema - long_ema
+    signal = macd.ewm(span=signal_period, min_periods=1, adjust=False).mean()
+    return macd, signal
+
+def calculate_atr(df_high, df_low, df_close, period=14):
+    high_low = df_high - df_low
+    high_close = np.abs(df_high - df_close.shift(1))
+    low_close = np.abs(df_low - df_close.shift(1))
+    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+    atr = tr.rolling(window=period, min_periods=1).mean()
+    return atr
+
+def calculate_bollinger_bands(df, period=20):
+    sma = df.rolling(window=period, min_periods=1).mean()
+    std = df.rolling(window=period, min_periods=1).std()
+    upper_band = sma + (std * 2)
+    lower_band = sma - (std * 2)
+    return upper_band, lower_band
+
 # SCIKIT LEARN
 def print_report(y_real, y_prediction):
     print("Classification Report:")
@@ -277,8 +336,6 @@ def print_report(y_real, y_prediction):
     False Positive (Acheté, mauvais choix): {fp}
     False Negative (Pas acheté, mauvais choix): {fn}
     """)
-
-
 
 # FILES
 

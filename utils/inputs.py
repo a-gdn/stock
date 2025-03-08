@@ -1,17 +1,52 @@
 import utils.helper_functions as hf
+import config as cfg
 
 import pandas as pd
 import numpy as np
 
-def calculate_var(df, past_days, future_days):
-    var = hf.calculate_variations(df, past_days, future_days)
-    var_stacked = hf.stack(var, f'input_var_past_{past_days}d_future_{future_days}d')
+def calculate_rsi(df, period=14):
+    hf.validate_dataframe(df, function_name="calculate_rsi")
+
+    rsi = hf.calculate_rsi(df, period)
+    return hf.stack(rsi, f'input_rsi_{period}d')
+
+def calculate_macd(df, short_period=12, long_period=26, signal_period=9):
+    hf.validate_dataframe(df, function_name="calculate_macd")
+
+    macd, signal = hf.calculate_macd(df, short_period, long_period, signal_period)
+    return hf.stack(macd, 'input_macd'), hf.stack(signal, 'input_macd_signal')
+
+def calculate_atr(df_high, df_low, df_close, period=14):
+    hf.validate_dataframe(df_high, function_name="calculate_atr - df_high")
+    hf.validate_dataframe(df_low, function_name="calculate_atr - df_low")
+    hf.validate_dataframe(df_close, function_name="calculate_atr - df_close")
+
+    atr = hf.calculate_atr(df_high, df_low, df_close, period)
+    atr = hf.ensure_dataframe(atr)
+    return hf.stack(atr, f'input_atr_{period}d')
+
+def calculate_bollinger_bands(df, period=20):
+    upper_band, lower_band = hf.calculate_bollinger_bands(df, period)
+    upper_band_stacked = hf.stack(upper_band, f'input_bollinger_upper_{period}d')
+    lower_band_stacked = hf.stack(lower_band, f'input_bollinger_lower_{period}d')
+    return upper_band_stacked, lower_band_stacked
+
+def get_market_wide_indicators(df_sp500, df_vix, df_correlation):
+    sp500_stacked = hf.stack(df_sp500, 'input_sp500')
+    vix_stacked = hf.stack(df_vix, 'input_vix')
+    correlation_stacked = hf.stack(df_correlation, 'input_market_correlation')
+    return sp500_stacked, vix_stacked, correlation_stacked
+
+
+def calculate_var(df, past_days, col_name):
+    var = hf.calculate_variations(df, past_days, n_future_days=0)
+    var_stacked = hf.stack(var, col_name)
 
     return var_stacked
 
-def calculate_var_vs_past_ohlcv(df, df_past, past_days, title):
+def calculate_var_vs_past_ohlcv(df, df_past, past_days, col_name):
     var = df / df_past.shift(past_days)
-    var_stacked = hf.stack(var, f'input_var_past_{title}_{past_days}d')
+    var_stacked = hf.stack(var, col_name)
 
     return var_stacked
 
@@ -97,38 +132,45 @@ def get_performance_vs_market(df, past_days):
 
     return performance_vs_market_stacked
 
-def get_rank(df, past_days, future_days):
-    rank = hf.calculate_rank(df, past_days, future_days)
-    
-    if future_days == 0:
-        rank_stacked = hf.stack(rank, f'input_rank_{past_days}d')
-    elif past_days == 0:
-        rank_stacked = hf.stack(rank, f'output_rank_{future_days}d')
-    else:
-        raise ValueError('Either past_days or future_days must be 0')
-    
-    return rank_stacked
+def get_rank(df, past_days):
+    rank = hf.calculate_rank(df, past_days, n_future_days=0)
+        
+    return hf.stack(rank, f'input_rank_{past_days}d')
 
-def get_inputs(df_buy, dfs_ohlcv, buying_time):
-    var_90 = calculate_var(df_buy, past_days=90, future_days=0)
-    var_60 = calculate_var(df_buy, past_days=60, future_days=0)
-    var_30 = calculate_var(df_buy, past_days=30, future_days=0)
-    var_10 = calculate_var(df_buy, past_days=10, future_days=0)
-    var_5 = calculate_var(df_buy, past_days=5, future_days=0)
-    var_2 = calculate_var(df_buy, past_days=2, future_days=0)
-    var_1 = calculate_var(df_buy, past_days=1, future_days=0)
+def format_ref(df, col_name, df_index):
+    df = hf.ensure_dataframe(df)
+    df = hf.rename_first_column(df, new_col_name=col_name)
+    df_reindexed = df_index.join(df, on='Date', how='left') # Apply index from another df
 
-    var_vs_close_1 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_close'], past_days=1, title='close')
-    var_vs_low_1 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_low'], past_days=1, title='low')
-    var_vs_high_1 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_high'], past_days=1, title='high')
+    return df_reindexed
+
+def calculate_ref_var(df, past_days, col_name, df_index):
+    var = hf.calculate_variations(df, past_days, n_future_days=0)
+    var_reindexed = format_ref(var, col_name, df_index)
+
+    return var_reindexed
+
+def get_inputs(df_buy, dfs_ohlcv, df_sp500, df_vix, buying_time):
+    var_90 = calculate_var(df_buy, past_days=90, col_name='input_var_90d')
+    var_30 = calculate_var(df_buy, past_days=30, col_name='input_var_30d')
+    var_10 = calculate_var(df_buy, past_days=10, col_name='input_var_10d')
+    var_1 = calculate_var(df_buy, past_days=1, col_name='input_var_1d')
+
+    sp500_var_90 = calculate_ref_var(df_sp500['Close'], past_days=90, col_name='input_sp500_var_90d', df_index=var_1)
+    sp500_var_30 = calculate_ref_var(df_sp500['Close'], past_days=30, col_name='input_sp500_var_30d', df_index=var_1)
+    sp500_var_10 = calculate_ref_var(df_sp500['Close'], past_days=10, col_name='input_sp500_var_10d', df_index=var_1)
+    sp500_var_1 = calculate_ref_var(df_sp500['Close'], past_days=1, col_name='input_sp500_var_1d', df_index=var_1)
+    vix = format_ref(df_vix['Close'], col_name='input_vix', df_index=var_1)
+
+    var_vs_close_1 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_close'], past_days=1, col_name='input_var_vs_close_1d')
+    var_vs_low_1 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_low'], past_days=1, col_name='input_var_vs_low_1d')
+    var_vs_high_1 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_high'], past_days=1, col_name='input_var_vs_high_1d')
 
     # volume_1 = get_volume(dfs_ohlcv['df_volume'], past_day=1)
     
     volume_var_90_1 = calculate_volume_var(dfs_ohlcv['df_volume'], past_start_day=90, past_end_day=1)
-    volume_var_60_1 = calculate_volume_var(dfs_ohlcv['df_volume'], past_start_day=60, past_end_day=1)
     volume_var_30_1 = calculate_volume_var(dfs_ohlcv['df_volume'], past_start_day=30, past_end_day=1)
     volume_var_10_1 = calculate_volume_var(dfs_ohlcv['df_volume'], past_start_day=10, past_end_day=1)
-    volume_var_3_1 = calculate_volume_var(dfs_ohlcv['df_volume'], past_start_day=3, past_end_day=1)
     volume_var_2_1 = calculate_volume_var(dfs_ohlcv['df_volume'], past_start_day=2, past_end_day=1)
     
     # market_var_90 = calculate_market_var(df_buy, past_days=90)
@@ -140,8 +182,6 @@ def get_inputs(df_buy, dfs_ohlcv, buying_time):
     min_var_90, max_var_90 = min_max_var(df_buy, past_days=90)
     min_var_30, max_var_30 = min_max_var(df_buy, past_days=30)
     min_var_10, max_var_10 = min_max_var(df_buy, past_days=10)
-    min_var_5, max_var_5 = min_max_var(df_buy, past_days=5)
-    min_var_2, max_var_2 = min_max_var(df_buy, past_days=2)
 
     days_since_min_30, days_since_max_30 = days_since_min_max(df_buy, past_days=30)
     days_since_min_10, days_since_max_10 = days_since_min_max(df_buy, past_days=10)
@@ -163,43 +203,47 @@ def get_inputs(df_buy, dfs_ohlcv, buying_time):
     n_ups_30 = get_n_ups(df_buy, past_days=30)
     n_ups_5 = get_n_ups(df_buy, past_days=5)
 
-    rank_90 = get_rank(df_buy, past_days=90, future_days=0)
-    rank_30 = get_rank(df_buy, past_days=30, future_days=0)
-    rank_10 = get_rank(df_buy, past_days=10, future_days=0)
-    rank_5 = get_rank(df_buy, past_days=5, future_days=0)
-    rank_2 = get_rank(df_buy, past_days=2, future_days=0)
-    rank_1 = get_rank(df_buy, past_days=1, future_days=0)
+    rank_90 = get_rank(df_buy, past_days=90)
+    rank_30 = get_rank(df_buy, past_days=30)
+    rank_10 = get_rank(df_buy, past_days=10)
+    rank_1 = get_rank(df_buy, past_days=1)
 
     perf_vs_market_90 = get_performance_vs_market(df_buy, past_days=90)
     perf_vs_market_30 = get_performance_vs_market(df_buy, past_days=30)
     perf_vs_market_10 = get_performance_vs_market(df_buy, past_days=10)
-    perf_vs_market_5 = get_performance_vs_market(df_buy, past_days=5)
-    perf_vs_market_2 = get_performance_vs_market(df_buy, past_days=2)
     perf_vs_market_1 = get_performance_vs_market(df_buy, past_days=1)
 
+    rsi_14 = calculate_rsi(df_buy, period=14)
+    macd, macd_signal = calculate_macd(df_buy)
+    atr_14 = calculate_atr(dfs_ohlcv['df_high'], dfs_ohlcv['df_low'], dfs_ohlcv['df_close'], period=14)
+    bollinger_upper, bollinger_lower = calculate_bollinger_bands(df_buy)
+
     input_list = [
-        var_90, var_60, var_30, var_10, var_5, var_2, var_1,
+        var_90, var_30, var_10, var_1,
         var_vs_close_1, var_vs_high_1, var_vs_low_1,
         # volume_1,
-        volume_var_90_1, volume_var_60_1, volume_var_30_1, volume_var_10_1, volume_var_2_1, volume_var_3_1,
+        volume_var_90_1, volume_var_30_1, volume_var_10_1, volume_var_2_1,
         # market_var_90, market_var_30, market_var_10, market_var_5, market_var_1,
-        min_var_90, min_var_30, min_var_10, min_var_5, min_var_2,
-        max_var_90, max_var_30, max_var_10, max_var_5, max_var_2,
+        min_var_90, min_var_30, min_var_10,
+        max_var_90, max_var_30, max_var_10,
         days_since_min_30, days_since_min_10,
         days_since_max_30, days_since_max_10,
         volatility_30, volatility_10, volatility_2,
         # market_volatility_30, market_volatility_10, market_volatility_2,
         volume_volability_90_1, volume_volability_30_1, volume_volability_10_1, volume_volability_2_1,
         n_ups_90, n_ups_30, n_ups_5,
-        rank_90, rank_30, rank_10, rank_5, rank_2, rank_1,
-        perf_vs_market_90, perf_vs_market_30, perf_vs_market_10, perf_vs_market_5,
-        perf_vs_market_2, perf_vs_market_1
+        rank_90, rank_30, rank_10, rank_1,
+        perf_vs_market_90, perf_vs_market_30, perf_vs_market_10, perf_vs_market_1,
+        rsi_14, macd, macd_signal,
+        # atr_14, bollinger_upper, bollinger_lower, # affected by stock absolute prices
+        sp500_var_90, sp500_var_30, sp500_var_10, sp500_var_1,
+        vix
     ]
     
     if buying_time == 'Close':
-        var_vs_open_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_open'], past_days=0, title='open')
-        var_vs_low_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_low'], past_days=0, title='low')
-        var_vs_high_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_high'], past_days=0, title='high')
+        var_vs_open_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_open'], past_days=0, col_name='input_var_vs_open_0d')
+        var_vs_low_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_low'], past_days=0, col_name='input_var_vs_low_0d')
+        var_vs_high_0 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_high'], past_days=0, col_name='input_var_vs_high_0d')
 
         input_list += [var_vs_open_0, var_vs_low_0, var_vs_high_0]
 

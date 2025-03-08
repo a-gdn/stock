@@ -2,6 +2,9 @@ import hyperopt as hp
 from hyperopt import hp, fmin, tpe
 
 db_path = './db/ohlcv_ntickers_593_2000-08-01_to_2024-11-20.pkl'
+sp500_db_path = './db/sp500_2000-08-01_to_2024-11-20.pkl'
+vix_db_path = './db/vix_2000-08-01_to_2024-11-20.pkl'
+
 transformed_data_path = './outputs/classifier_transformed_data.pkl'
 model_path = './outputs/classifier_model.keras'
 trials_path = './outputs/trials.pkl'
@@ -9,7 +12,7 @@ results_path = './outputs/results.xlsx'
 
 fee = 0.002
 
-use_hyperopt = False
+use_hyperopt = True
 use_saved_transformed_data = False
 use_saved_model = False
 
@@ -33,7 +36,7 @@ param_grid = {
     'loss_limit': [0.05,0.95,0.98], #0.4, 0.55, 0.7, 
     'sell_at_target': [False,True],
     'size_layer_1': [128], 'size_layer_2': [64], 'size_layer_3': [64],
-    'dropout_rate': [0.05], 'balance_data': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
+    'dropout_rate': [0.05], 'use_focal_loss': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
     'confidence_threshold': [0.3,0.65,0.8,0.9,0.97],
     'var_threshold': [1, 1.02, 1.05],
     'rank_pct_threshold': [0.45]
@@ -44,12 +47,12 @@ search_space = {
     'selling_time': hp.choice('selling_time', ['Open', 'Close']),
     'target_future_days': hp.randint('target_future_days', 0, 60), #hp.randint('target_future_days', 1, 60), #1, 60
     'loss_limit': hp.uniform('loss_limit', 0, 1),
-    'sell_at_target': hp.choice('sell_at_target', [True, False]), #[True, False]
+    'sell_at_target': hp.choice('sell_at_target', [False, False]), #[True, False]
     'size_layer_1': hp.choice('size_layer_1', [128]),
     'size_layer_2': hp.choice('size_layer_2', [64]),
     'size_layer_3': hp.choice('size_layer_3', [64]), #[64, 128, 256]
     'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.5), #0, 0.3
-    'balance_data': hp.choice('balance_data', [True, False]),
+    'use_focal_loss': hp.choice('use_focal_loss', [True, False]),
     'batch_size': hp.choice('batch_size', [128]), #[32, 64, 128]
     'confidence_threshold': hp.uniform('confidence_threshold', 0.3, 1),
     'var_threshold': hp.uniform('var_threshold', 1, 3),
