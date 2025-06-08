@@ -90,20 +90,36 @@ def get_dfs_input_output(df_data, output_class_name):
     df_output = df_data[[output_class_name]]
     return df_input, df_output
 
-def get_feature_importance(df_input, df_output):
+def get_feature_importance(df_input, df_output, sample_size=10000):
+    # Subsample the data to reduce SHAP computation time
+    if len(df_input) > sample_size:
+        df_sample_input = df_input.sample(n=sample_size, random_state=42)
+        df_sample_output = df_output.loc[df_sample_input.index]
+    else:
+        df_sample_input, df_sample_output = df_input, df_output
+
+    # Define & Train the Model (the model should be simple)
     model = tf.keras.Sequential([
         Dense(32, activation='relu'),
         Dense(1, activation='sigmoid')
     ])
     model.compile(optimizer='adam', loss='binary_crossentropy')
     
-    model.fit(df_input, df_output, epochs=1, verbose=0)
-    explainer = shap.Explainer(model, df_input)
-    shap_values = explainer(df_input)
-    importance_df = pd.DataFrame({'feature': df_input.columns, 'importance': np.abs(shap_values.values).mean(axis=0)})
+    model.fit(df_sample_input, df_sample_output, epochs=1, verbose=0)
+
+    # Use SHAP PermutationExplainer
+    explainer = shap.PermutationExplainer(model.predict, df_sample_input)
+    shap_values = explainer(df_sample_input)
+
+    # Compute Mean Absolute SHAP Values
+    importance_df = pd.DataFrame({
+        'feature': df_sample_input.columns,
+        'importance': np.abs(shap_values.values).mean(axis=0)
+    })
     
     importance_df = importance_df.sort_values(by='importance', ascending=False)
     logging.info(f"Top feature importances: {importance_df.head(10)}")
+
     return importance_df
 
 def focal_loss(gamma=2., alpha=0.25):

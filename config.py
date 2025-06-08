@@ -12,7 +12,7 @@ results_path = './outputs/results.xlsx'
 
 fee = 0.002
 
-use_hyperopt = True
+use_hyperopt = False
 use_saved_transformed_data = False
 use_saved_model = False
 
@@ -38,7 +38,7 @@ param_grid = {
     'size_layer_1': [128], 'size_layer_2': [64], 'size_layer_3': [64],
     'dropout_rate': [0.05], 'use_focal_loss': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
     'confidence_threshold': [0.3,0.65,0.8,0.9,0.97],
-    'var_threshold': [1, 1.02, 1.05],
+    'var_threshold': [1.005, 1.02, 1.05],
     'rank_pct_threshold': [0.45]
 }
 

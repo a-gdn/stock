@@ -1,6 +1,9 @@
+ajout d'inputs de william igon:
+    - PER: ideally around 7, <12%, ROE > 10%, increasing revenue
+    - PER: between 15 and 20%, every 6 months remove the least performing stocks
+analyse best input features using shap
 db_etf (qui servent d'inputs references market) et df_stocks. ajouter inputs ref_sp500, ref_cac40
 ajouter db (json?) actions et field. ajouter input field ref_field
-
 
 inputs:
 - ajouter input: nombre de ups et downs >1% >2% >4% >target sur 1 jours, sur target_future_days
