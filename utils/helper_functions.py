@@ -352,3 +352,36 @@ def save_df_as_xlsx(df: pd.DataFrame, folder_path: str, file_name: str):
     file_path = get_file_path(folder_path, file_name)
     print('Saving file xlsx file...')
     df.to_excel(f'{file_path}.xlsx')
+
+# FINBOX
+
+# Mapping between Yahoo suffixes and Finbox prefixes
+YAHOO_SUFFIX_TO_FINBOX_PREFIX = {
+    ".BR": "ENXTBR:",
+    ".MC": "BME:",
+    ".MI": "BIT:",
+    ".OL": "OB:",
+    ".AS": "ENXTAM:",
+    ".PA": "ENXTPA:"
+}
+
+# Reverse mapping from Finbox prefixes to Yahoo suffixes
+FINBOX_PREFIX_TO_YAHOO_SUFFIX = {
+    finbox_prefix: yahoo_suffix 
+    for yahoo_suffix, finbox_prefix in YAHOO_SUFFIX_TO_FINBOX_PREFIX.items()
+}
+
+def yahoo_to_finbox(yahoo_ticker):
+    for yahoo_suffix, finbox_prefix in YAHOO_SUFFIX_TO_FINBOX_PREFIX.items():
+        if yahoo_ticker.endswith(yahoo_suffix):
+            base_ticker = yahoo_ticker.removesuffix(yahoo_suffix)
+            return f"{finbox_prefix}{base_ticker}"
+    raise ValueError(f"Unrecognized Yahoo ticker format: {yahoo_ticker}")
+
+def finbox_to_yahoo(finbox_ticker):
+    for finbox_prefix, yahoo_suffix in FINBOX_PREFIX_TO_YAHOO_SUFFIX.items():
+        if finbox_ticker.startswith(finbox_prefix):
+            base_ticker = finbox_ticker.removeprefix(finbox_prefix)
+            return f"{base_ticker}{yahoo_suffix}"
+    raise ValueError(f"Unrecognized Finbox ticker format: {finbox_ticker}")
+

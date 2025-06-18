@@ -3,6 +3,7 @@ import os
 import json
 from pathlib import Path
 import pickle
+import utils.helper_functions as hf
 
 
 def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
@@ -24,6 +25,15 @@ def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
         print(f"Error: Directory not found at '{directory_path}'")
         return pd.DataFrame()
 
+    def extract_finbox_ticker_from_path(file_path: Path, base_directory: Path) -> str:
+        # Remove .json suffix and make path relative to base
+        relative_path = file_path.relative_to(base_directory).with_suffix('')  # e.g., total_rev_OB/SDRL
+        ticker_str = str(relative_path).replace(os.sep, ':')  # e.g., total_rev_OB:SDRL
+        ticker_parts = ticker_str.split('_')  # ['total', 'rev', 'OB:SDRL']
+        finbox_ticker = ticker_parts[-1]  # OB:SDRL
+        yahoo_ticker = hf.finbox_to_yahoo(finbox_ticker)
+        return yahoo_ticker
+
     all_series = []
 
     print(f"Scanning files in '{data_path.resolve()}'...")
@@ -41,7 +51,7 @@ def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
                 print(f"Warning: Skipping '{file_path.name}'. No 'chart' data found.")
                 continue
 
-            ticker = chart_data.get('full_tickers', [None])[0]
+            ticker = extract_finbox_ticker_from_path(file_path, data_path)
             metric = chart_data.get('metrics', [None])[0]
             
             # The actual time series is nested in another 'data' list
@@ -97,6 +107,8 @@ def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
     final_df.sort_index(axis=1, level=[0, 1], inplace=True)
     # Name the column levels for clarity
     final_df.columns.names = ['Ticker', 'Fundamental']
+    # Fill forward missing values
+    final_df.ffill(inplace=True)
     
     print("Processing complete.")
     return final_df
@@ -116,7 +128,7 @@ if not master_df.empty:
 
     # Example of how to access data
     print("\n--- Example: Accessing A2A's Current Ratio ---")
-    print(master_df['BIT:A2A']['current_ratio'].head())
+    print(master_df['A2A.MI']['current_ratio'].tail())
 
     pickle_file = os.path.join(fundamentals_directory, 'finbox_fundamentals.pkl')
     master_df.to_pickle(pickle_file)
