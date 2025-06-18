@@ -72,7 +72,7 @@ def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
             series = pd.Series(
                 data=processed_values,
                 index=pd.to_datetime(dates),
-                name=(ticker, metric)
+                name=(metric, ticker)
             )
 
             if series.index.duplicated().any():
@@ -106,9 +106,11 @@ def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
     # Sort columns first by Ticker (level 0), then by Fundamental (level 1)
     final_df.sort_index(axis=1, level=[0, 1], inplace=True)
     # Name the column levels for clarity
-    final_df.columns.names = ['Ticker', 'Fundamental']
+    final_df.columns.names = ['Fundamental', 'Ticker']
     # Fill forward missing values
     final_df.ffill(inplace=True)
+    # Set the index name for clarity
+    final_df.index.name = 'Date'
     
     print("Processing complete.")
     return final_df
@@ -128,7 +130,7 @@ if not master_df.empty:
 
     # Example of how to access data
     print("\n--- Example: Accessing A2A's Current Ratio ---")
-    print(master_df['A2A.MI']['current_ratio'].tail())
+    print(master_df['current_ratio']['A2A.MI'].tail())
 
     pickle_file = os.path.join(fundamentals_directory, 'finbox_fundamentals.pkl')
     master_df.to_pickle(pickle_file)
