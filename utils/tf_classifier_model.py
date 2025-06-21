@@ -182,6 +182,10 @@ def get_test_train_data(df_input, df_output, test_size):
     if cfg.use_hyperopt and X_train.shape[0] == 0:
         raise ValueError("Empty training set, skipping this trial")
     
+    print("NaN in X_train:", np.isnan(X_train).sum())
+    print("+Inf in X_train:", np.isposinf(X_train).sum())
+    print("-Inf in X_train:", np.isneginf(X_train).sum())
+
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
@@ -226,8 +230,8 @@ def load_tf_model(df_data, hyperparams):
     logging.info(df_data.tail())
 
     df_input, df_output = get_dfs_input_output(df_data, cfg.output_binary_name)
-    importance_df = get_feature_importance(df_input, df_output) # Calculate SHAP importances
-    df_input = remove_highly_correlated_features(df_input, importance_df) # Remove correlated features
+    # importance_df = get_feature_importance(df_input, df_output) # Calculate SHAP importances
+    # df_input = remove_highly_correlated_features(df_input, importance_df) # Remove correlated features
     test_train_data = get_test_train_data(df_input, df_output, cfg.test_size)
     
     if not os.path.exists(cfg.model_path) or not cfg.use_saved_model:

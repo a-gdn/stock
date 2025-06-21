@@ -5,6 +5,27 @@ from pathlib import Path
 import pickle
 import utils.helper_functions as hf
 
+def add_pct_change_columns(df: pd.DataFrame, periods: list[int]) -> pd.DataFrame:
+    all_pct_change_dfs = []
+
+    for period in periods:
+        pct_change_df = df.pct_change(periods=period, fill_method=None)
+
+        # Rename columns to indicate pct change
+        pct_change_df.columns = pd.MultiIndex.from_tuples(
+            [(f"{fundamental}_var_{period}", ticker) for fundamental, ticker in pct_change_df.columns],
+            names=df.columns.names
+        )
+
+        all_pct_change_dfs.append(pct_change_df)
+    
+    # Combine original with all pct_change DataFrames
+    combined_df = pd.concat([df] + all_pct_change_dfs, axis=1)
+
+    # Sort columns for cleanliness
+    combined_df = combined_df.sort_index(axis=1, level=[0, 1])
+
+    return combined_df
 
 def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
     """
@@ -111,6 +132,8 @@ def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
     final_df.ffill(inplace=True)
     # Set the index name for clarity
     final_df.index.name = 'Date'
+    # Add percentage change columns for specified periods
+    final_df = add_pct_change_columns(final_df, periods=[1, 2, 4])
     
     print("Processing complete.")
     return final_df

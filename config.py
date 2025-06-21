@@ -1,7 +1,7 @@
 import hyperopt as hp
 from hyperopt import hp, fmin, tpe
 
-db_path = './db/ohlcv_ntickers_593_2000-08-01_to_2024-11-20.pkl'
+db_path = './db/merged_ohlcv_fundamentals.pkl'
 sp500_db_path = './db/sp500_2000-08-01_to_2024-11-20.pkl'
 vix_db_path = './db/vix_2000-08-01_to_2024-11-20.pkl'
 
@@ -12,7 +12,7 @@ results_path = './outputs/results.xlsx'
 
 fee = 0.002
 
-use_hyperopt = False
+use_hyperopt = True
 use_saved_transformed_data = False
 use_saved_model = False
 
@@ -25,8 +25,8 @@ lr_reduction_factor = 0.1
 lr_reduction_patience = 2
 min_learning_rate = 1e-6
 
-hyperopt_n_iterations = 1405
-save_every_n_iterations = 5
+hyperopt_n_iterations = 200
+save_every_n_iterations = 4
 
 output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
 

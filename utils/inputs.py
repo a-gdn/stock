@@ -150,17 +150,17 @@ def calculate_ref_var(df, past_days, col_name, df_index):
 
     return var_reindexed
 
-def get_inputs(df_buy, dfs_ohlcv, df_sp500, df_vix, buying_time):
+def get_inputs(df_buy, dfs_ohlcv, buying_time):
     var_90 = calculate_var(df_buy, past_days=90, col_name='input_var_90d')
     var_30 = calculate_var(df_buy, past_days=30, col_name='input_var_30d')
     var_10 = calculate_var(df_buy, past_days=10, col_name='input_var_10d')
     var_1 = calculate_var(df_buy, past_days=1, col_name='input_var_1d')
 
-    sp500_var_90 = calculate_ref_var(df_sp500['Close'], past_days=90, col_name='input_sp500_var_90d', df_index=var_1)
-    sp500_var_30 = calculate_ref_var(df_sp500['Close'], past_days=30, col_name='input_sp500_var_30d', df_index=var_1)
-    sp500_var_10 = calculate_ref_var(df_sp500['Close'], past_days=10, col_name='input_sp500_var_10d', df_index=var_1)
-    sp500_var_1 = calculate_ref_var(df_sp500['Close'], past_days=1, col_name='input_sp500_var_1d', df_index=var_1)
-    vix = format_ref(df_vix['Close'], col_name='input_vix', df_index=var_1)
+    # sp500_var_90 = calculate_ref_var(df_sp500['Close'], past_days=90, col_name='input_sp500_var_90d', df_index=var_1)
+    # sp500_var_30 = calculate_ref_var(df_sp500['Close'], past_days=30, col_name='input_sp500_var_30d', df_index=var_1)
+    # sp500_var_10 = calculate_ref_var(df_sp500['Close'], past_days=10, col_name='input_sp500_var_10d', df_index=var_1)
+    # sp500_var_1 = calculate_ref_var(df_sp500['Close'], past_days=1, col_name='input_sp500_var_1d', df_index=var_1)
+    # vix = format_ref(df_vix['Close'], col_name='input_vix', df_index=var_1)
 
     var_vs_close_1 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_close'], past_days=1, col_name='input_var_vs_close_1d')
     var_vs_low_1 = calculate_var_vs_past_ohlcv(df_buy, dfs_ohlcv['df_low'], past_days=1, col_name='input_var_vs_low_1d')
@@ -213,10 +213,54 @@ def get_inputs(df_buy, dfs_ohlcv, df_sp500, df_vix, buying_time):
     perf_vs_market_10 = get_performance_vs_market(df_buy, past_days=10)
     perf_vs_market_1 = get_performance_vs_market(df_buy, past_days=1)
 
-    rsi_14 = calculate_rsi(df_buy, period=14)
-    macd, macd_signal = calculate_macd(df_buy)
-    atr_14 = calculate_atr(dfs_ohlcv['df_high'], dfs_ohlcv['df_low'], dfs_ohlcv['df_close'], period=14)
-    bollinger_upper, bollinger_lower = calculate_bollinger_bands(df_buy)
+    # rsi_14 = calculate_rsi(df_buy, period=14)
+    # macd, macd_signal = calculate_macd(df_buy)
+    # atr_14 = calculate_atr(dfs_ohlcv['df_high'], dfs_ohlcv['df_low'], dfs_ohlcv['df_close'], period=14)
+    # bollinger_upper, bollinger_lower = calculate_bollinger_bands(df_buy)
+
+    current_ratio = hf.stack(dfs_ohlcv['df_current_ratio'], 'input_current_ratio')
+    ev_to_ebitda_ltm =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm'], 'input_ev_to_ebitda_ltm')
+    fcf_yield_ltm =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm'], 'input_fcf_yield_ltm')
+    marketcap =  hf.stack(dfs_ohlcv['df_marketcap'], 'input_marketcap')
+    pe_ltm =  hf.stack(dfs_ohlcv['df_pe_ltm'], 'input_pe_ltm')
+    price_to_book =  hf.stack(dfs_ohlcv['df_price_to_book'], 'input_price_to_book')
+    roa =  hf.stack(dfs_ohlcv['df_roa'], 'input_roa')
+    roe =  hf.stack(dfs_ohlcv['df_roe'], 'input_roe')
+    total_debt =  hf.stack(dfs_ohlcv['df_total_debt'], 'input_total_debt')
+    total_rev =  hf.stack(dfs_ohlcv['df_total_rev'], 'input_total_rev')
+
+    current_ratio_var_1 =  hf.stack(dfs_ohlcv['df_current_ratio_var_1'], 'input_current_ratio_var_1')
+    ev_to_ebitda_ltm_var_1 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_1'], 'input_ev_to_ebitda_ltm_var_1')
+    fcf_yield_ltm_var_1 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_1'], 'input_fcf_yield_ltm_var_1')
+    marketcap_var_1 =  hf.stack(dfs_ohlcv['df_marketcap_var_1'], 'input_marketcap_var_1')
+    pe_ltm_var_1 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_1'], 'input_pe_ltm_var_1')
+    price_to_book_var_1 =  hf.stack(dfs_ohlcv['df_price_to_book_var_1'], 'input_price_to_book_var_1')
+    roa_var_1 =  hf.stack(dfs_ohlcv['df_roa_var_1'], 'input_roa_var_1')
+    roe_var_1 =  hf.stack(dfs_ohlcv['df_roe_var_1'], 'input_roe_var_1')
+    total_debt_var_1 =  hf.stack(dfs_ohlcv['df_total_debt_var_1'], 'input_total_debt_var_1')
+    total_rev_var_1 =  hf.stack(dfs_ohlcv['df_total_rev_var_1'], 'input_total_rev_var_1')
+
+    current_ratio_var_2 =  hf.stack(dfs_ohlcv['df_current_ratio_var_2'], 'input_current_ratio_var_2')
+    ev_to_ebitda_ltm_var_2 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_2'], 'input_ev_to_ebitda_ltm_var_2')
+    fcf_yield_ltm_var_2 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_2'], 'input_fcf_yield_ltm_var_2')
+    marketcap_var_2 =  hf.stack(dfs_ohlcv['df_marketcap_var_2'], 'input_marketcap_var_2')
+    pe_ltm_var_2 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_2'], 'input_pe_ltm_var_2')
+    price_to_book_var_2 =  hf.stack(dfs_ohlcv['df_price_to_book_var_2'], 'input_price_to_book_var_2')
+    roa_var_2 =  hf.stack(dfs_ohlcv['df_roa_var_2'], 'input_roa_var_2')
+    roe_var_2 =  hf.stack(dfs_ohlcv['df_roe_var_2'], 'input_roe_var_2')
+    total_debt_var_2 =  hf.stack(dfs_ohlcv['df_total_debt_var_2'], 'input_total_debt_var_2')
+    total_rev_var_2 =  hf.stack(dfs_ohlcv['df_total_rev_var_2'], 'input_total_rev_var_2')
+
+    current_ratio_var_4 =  hf.stack(dfs_ohlcv['df_current_ratio_var_4'], 'input_current_ratio_var_4')
+    ev_to_ebitda_ltm_var_4 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_4'], 'input_ev_to_ebitda_ltm_var_4')
+    fcf_yield_ltm_var_4 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_4'], 'input_fcf_yield_ltm_var_4')
+    marketcap_var_4 =  hf.stack(dfs_ohlcv['df_marketcap_var_4'], 'input_marketcap_var_4')
+    pe_ltm_var_4 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_4'], 'input_pe_ltm_var_4')
+    price_to_book_var_4 =  hf.stack(dfs_ohlcv['df_price_to_book_var_4'], 'input_price_to_book_var_4')
+    roa_var_4 =  hf.stack(dfs_ohlcv['df_roa_var_4'], 'input_roa_var_4')
+    roe_var_4 =  hf.stack(dfs_ohlcv['df_roe_var_4'], 'input_roe_var_4')
+    total_debt_var_4 =  hf.stack(dfs_ohlcv['df_total_debt_var_4'], 'input_total_debt_var_4')
+    total_rev_var_4 =  hf.stack(dfs_ohlcv['df_total_rev_var_4'], 'input_total_rev_var_4')
 
     input_list = [
         var_90, var_30, var_10, var_1,
@@ -234,10 +278,14 @@ def get_inputs(df_buy, dfs_ohlcv, df_sp500, df_vix, buying_time):
         n_ups_90, n_ups_30, n_ups_5,
         rank_90, rank_30, rank_10, rank_1,
         perf_vs_market_90, perf_vs_market_30, perf_vs_market_10, perf_vs_market_1,
-        rsi_14, macd, macd_signal,
+        # rsi_14, macd, macd_signal,
         # atr_14, bollinger_upper, bollinger_lower, # affected by stock absolute prices
-        sp500_var_90, sp500_var_30, sp500_var_10, sp500_var_1,
-        vix
+        # sp500_var_90, sp500_var_30, sp500_var_10, sp500_var_1,
+        # vix
+        current_ratio, ev_to_ebitda_ltm, fcf_yield_ltm, marketcap, pe_ltm, price_to_book, roa, roe, total_debt, total_rev,
+        current_ratio_var_1, ev_to_ebitda_ltm_var_1, fcf_yield_ltm_var_1, marketcap_var_1, pe_ltm_var_1, price_to_book_var_1, roa_var_1, roe_var_1, total_debt_var_1, total_rev_var_1,
+        current_ratio_var_2, ev_to_ebitda_ltm_var_2, fcf_yield_ltm_var_2, marketcap_var_2, pe_ltm_var_2, price_to_book_var_2, roa_var_2, roe_var_2, total_debt_var_2, total_rev_var_2,
+        current_ratio_var_4, ev_to_ebitda_ltm_var_4, fcf_yield_ltm_var_4, marketcap_var_4, pe_ltm_var_4, price_to_book_var_4, roa_var_4, roe_var_4, total_debt_var_4, total_rev_var_4
     ]
     
     if buying_time == 'Close':

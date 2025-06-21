@@ -47,9 +47,57 @@ def get_ohlcv_dfs(df):
     df_low = get_single_level_df(df, 'Low')
     df_close = get_single_level_df(df, 'Close')
     df_volume = get_single_level_df(df, 'Volume')
+
+    df_current_ratio = get_single_level_df(df, 'current_ratio')
+    df_ev_to_ebitda_ltm = get_single_level_df(df, 'ev_to_ebitda_ltm')
+    df_fcf_yield_ltm = get_single_level_df(df, 'fcf_yield_ltm')
+    df_marketcap = get_single_level_df(df, 'marketcap')
+    df_pe_ltm = get_single_level_df(df, 'pe_ltm')
+    df_price_to_book = get_single_level_df(df, 'price_to_book')
+    df_roa = get_single_level_df(df, 'roa')
+    df_roe = get_single_level_df(df, 'roe')
+    df_total_debt = get_single_level_df(df, 'total_debt')
+    df_total_rev = get_single_level_df(df, 'total_rev')
+
+    df_current_ratio_var_1 = get_single_level_df(df, 'current_ratio_var_1')
+    df_ev_to_ebitda_ltm_var_1 = get_single_level_df(df, 'ev_to_ebitda_ltm_var_1')
+    df_fcf_yield_ltm_var_1 = get_single_level_df(df, 'fcf_yield_ltm_var_1')
+    df_marketcap_var_1 = get_single_level_df(df, 'marketcap_var_1')
+    df_pe_ltm_var_1 = get_single_level_df(df, 'pe_ltm_var_1')
+    df_price_to_book_var_1 = get_single_level_df(df, 'price_to_book_var_1')
+    df_roa_var_1 = get_single_level_df(df, 'roa_var_1')
+    df_roe_var_1 = get_single_level_df(df, 'roe_var_1')
+    df_total_debt_var_1 = get_single_level_df(df, 'total_debt_var_1')
+    df_total_rev_var_1 = get_single_level_df(df, 'total_rev_var_1')
+
+    df_current_ratio_var_2 = get_single_level_df(df, 'current_ratio_var_2')
+    df_ev_to_ebitda_ltm_var_2 = get_single_level_df(df, 'ev_to_ebitda_ltm_var_2')
+    df_fcf_yield_ltm_var_2 = get_single_level_df(df, 'fcf_yield_ltm_var_2')
+    df_marketcap_var_2 = get_single_level_df(df, 'marketcap_var_2')
+    df_pe_ltm_var_2 = get_single_level_df(df, 'pe_ltm_var_2')
+    df_price_to_book_var_2 = get_single_level_df(df, 'price_to_book_var_2')
+    df_roa_var_2 = get_single_level_df(df, 'roa_var_2')
+    df_roe_var_2 = get_single_level_df(df, 'roe_var_2')
+    df_total_debt_var_2 = get_single_level_df(df, 'total_debt_var_2')
+    df_total_rev_var_2 = get_single_level_df(df, 'total_rev_var_2')
+
+    df_current_ratio_var_4 = get_single_level_df(df, 'current_ratio_var_4')
+    df_ev_to_ebitda_ltm_var_4 = get_single_level_df(df, 'ev_to_ebitda_ltm_var_4')
+    df_fcf_yield_ltm_var_4 = get_single_level_df(df, 'fcf_yield_ltm_var_4')
+    df_marketcap_var_4 = get_single_level_df(df, 'marketcap_var_4')
+    df_pe_ltm_var_4 = get_single_level_df(df, 'pe_ltm_var_4')
+    df_price_to_book_var_4 = get_single_level_df(df, 'price_to_book_var_4')
+    df_roa_var_4 = get_single_level_df(df, 'roa_var_4')
+    df_roe_var_4 = get_single_level_df(df, 'roe_var_4')
+    df_total_debt_var_4 = get_single_level_df(df, 'total_debt_var_4')
+    df_total_rev_var_4 = get_single_level_df(df, 'total_rev_var_4')
     
-    return {'df_open': df_open, 'df_high': df_high, 'df_low': df_low,
-            'df_close': df_close, 'df_volume': df_volume}
+    return {'df_open': df_open, 'df_high': df_high, 'df_low': df_low, 'df_close': df_close, 'df_volume': df_volume,
+            'df_current_ratio': df_current_ratio, 'df_ev_to_ebitda_ltm': df_ev_to_ebitda_ltm, 'df_fcf_yield_ltm': df_fcf_yield_ltm, 'df_marketcap': df_marketcap, 'df_pe_ltm': df_pe_ltm, 'df_price_to_book': df_price_to_book, 'df_roa': df_roa, 'df_roe': df_roe, 'df_total_debt': df_total_debt, 'df_total_rev': df_total_rev,
+            'df_current_ratio_var_1': df_current_ratio_var_1, 'df_ev_to_ebitda_ltm_var_1': df_ev_to_ebitda_ltm_var_1, 'df_fcf_yield_ltm_var_1': df_fcf_yield_ltm_var_1, 'df_marketcap_var_1': df_marketcap_var_1, 'df_pe_ltm_var_1': df_pe_ltm_var_1, 'df_price_to_book_var_1': df_price_to_book_var_1, 'df_roa_var_1': df_roa_var_1, 'df_roe_var_1': df_roe_var_1, 'df_total_debt_var_1': df_total_debt_var_1, 'df_total_rev_var_1': df_total_rev_var_1,
+            'df_current_ratio_var_2': df_current_ratio_var_2, 'df_ev_to_ebitda_ltm_var_2': df_ev_to_ebitda_ltm_var_2, 'df_fcf_yield_ltm_var_2': df_fcf_yield_ltm_var_2, 'df_marketcap_var_2': df_marketcap_var_2, 'df_pe_ltm_var_2': df_pe_ltm_var_2, 'df_price_to_book_var_2': df_price_to_book_var_2, 'df_roa_var_2': df_roa_var_2, 'df_roe_var_2': df_roe_var_2, 'df_total_debt_var_2': df_total_debt_var_2, 'df_total_rev_var_2': df_total_rev_var_2,
+            'df_current_ratio_var_4': df_current_ratio_var_4, 'df_ev_to_ebitda_ltm_var_4': df_ev_to_ebitda_ltm_var_4, 'df_fcf_yield_ltm_var_4': df_fcf_yield_ltm_var_4, 'df_marketcap_var_4': df_marketcap_var_4, 'df_pe_ltm_var_4': df_pe_ltm_var_4, 'df_price_to_book_var_4': df_price_to_book_var_4, 'df_roa_var_4': df_roa_var_4, 'df_roe_var_4': df_roe_var_4, 'df_total_debt_var_4': df_total_debt_var_4, 'df_total_rev_var_4': df_total_rev_var_4
+            }
 
 def get_df_data(hyperparams):
     df = load_db(cfg.db_path)
@@ -61,13 +109,13 @@ def get_df_data(hyperparams):
     df_sell = get_single_level_df(df, hyperparams['selling_time'])
     dfs_ohlcv = get_ohlcv_dfs(df)
 
-    df_sp500 = load_db(cfg.sp500_db_path)
-    df_vix = load_db(cfg.vix_db_path)
+    # df_sp500 = load_db(cfg.sp500_db_path)
+    # df_vix = load_db(cfg.vix_db_path)
 
     if os.path.exists(cfg.transformed_data_path) and cfg.use_saved_transformed_data:
         df_data = pd.read_pickle(cfg.transformed_data_path)
     else:
-        df_data = inputs.get_inputs(df_buy, dfs_ohlcv, df_sp500, df_vix, hyperparams['buying_time'])
+        df_data = inputs.get_inputs(df_buy, dfs_ohlcv, hyperparams['buying_time'])
         df_data.to_pickle(cfg.transformed_data_path)
 
     df_data = outputs.add_outputs(df_data, df_buy, df_sell, dfs_ohlcv, num_tickers, cfg.output_binary_name, cfg.fee, **hyperparams)    
