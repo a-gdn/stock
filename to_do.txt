@@ -1,3 +1,5 @@
+need to handles nan, -inf and +inf values
+
 ajout d'inputs de william igon:
     - PER: ideally around 7, <12%, ROE > 10%, increasing revenue
     - PER: between 15 and 20%, every 6 months remove the least performing stocks

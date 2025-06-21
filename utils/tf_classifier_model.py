@@ -195,15 +195,16 @@ def get_test_train_data(df_input, df_output, test_size):
 
 def create_tf_model(**kwargs):
     logging.info("Creating TensorFlow model...")
+    
     X_train = kwargs.get('X_train')
     X_test = kwargs.get('X_test')
     y_train = kwargs.get('y_train')
     y_test = kwargs.get('y_test')
     
-    size_layer_1 = kwargs.get('size_layer_1', cfg.size_layer_1)
-    size_layer_2 = kwargs.get('size_layer_2', cfg.size_layer_2)
-    dropout_rate = kwargs.get('dropout_rate', cfg.dropout_rate)
-    batch_size = kwargs.get('batch_size', cfg.batch_size)
+    size_layer_1 = kwargs.get('size_layer_1', 128)
+    size_layer_2 = kwargs.get('size_layer_2', 64)
+    dropout_rate = kwargs.get('dropout_rate', 0.05)
+    batch_size = kwargs.get('batch_size', 32)
     use_focal_loss = kwargs.get('use_focal_loss', False)
 
     model = Sequential([
