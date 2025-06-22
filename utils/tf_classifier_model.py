@@ -23,6 +23,20 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'  # Disable file validation in the debugger
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'  # Reduce TensorFlow logs
 
+@tf.keras.utils.register_keras_serializable()
+class FocalLoss(tf.keras.losses.Loss):
+    def __init__(self, gamma=2.0, alpha=0.25, **kwargs):
+        super().__init__(**kwargs)
+        self.gamma = gamma
+        self.alpha = alpha
+
+    def call(self, y_true, y_pred):
+        y_pred = tf.clip_by_value(y_pred, tf.keras.backend.epsilon(), 1. - tf.keras.backend.epsilon())
+        cross_entropy_loss = -y_true * tf.math.log(y_pred) - (1 - y_true) * tf.math.log(1 - y_pred)
+        loss_modulation = tf.pow((1 - y_pred), self.gamma)
+        loss = self.alpha * loss_modulation * cross_entropy_loss
+        return tf.reduce_mean(loss)
+
 def remove_highly_correlated_features(df, importance_df, threshold=0.9):
     """
     Removes highly correlated features from a DataFrame, prioritizing dropping the
@@ -122,33 +136,6 @@ def get_feature_importance(df_input, df_output, sample_size=10000):
 
     return importance_df
 
-def focal_loss(gamma=2., alpha=0.25):
-    """
-    Focal Loss for binary classification.
-    Args:
-        gamma (float): Focusing parameter to down-weight easy examples. Default is 2.0.
-        alpha (float): Balance parameter to adjust for class imbalance. Default is 0.25.
-    Returns:
-        Loss function that can be used in model compilation.
-    """
-
-    def focal_loss_fixed(y_true, y_pred):
-        # Clip predictions to avoid log(0) issues
-        y_pred = tf.clip_by_value(y_pred, tf.keras.backend.epsilon(), 1. - tf.keras.backend.epsilon())
-        
-        # Cross entropy loss for each example
-        cross_entropy_loss = -y_true * tf.math.log(y_pred) - (1 - y_true) * tf.math.log(1 - y_pred)
-        
-        # Compute the modulating factor (1 - p_t)^gamma
-        loss_modulation = tf.pow((1 - y_pred), gamma)
-        
-        # Compute the focal loss
-        loss = alpha * loss_modulation * cross_entropy_loss
-        
-        return tf.reduce_mean(loss)
-
-    return focal_loss_fixed
-
 def get_test_train_data(df_input, df_output, test_size):
     """
     Splits data into training and testing sets, scales the input features,
@@ -181,10 +168,6 @@ def get_test_train_data(df_input, df_output, test_size):
 
     if cfg.use_hyperopt and X_train.shape[0] == 0:
         raise ValueError("Empty training set, skipping this trial")
-    
-    print("NaN in X_train:", np.isnan(X_train).sum())
-    print("+Inf in X_train:", np.isposinf(X_train).sum())
-    print("-Inf in X_train:", np.isneginf(X_train).sum())
 
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
@@ -195,12 +178,12 @@ def get_test_train_data(df_input, df_output, test_size):
 
 def create_tf_model(**kwargs):
     logging.info("Creating TensorFlow model...")
-    
+
     X_train = kwargs.get('X_train')
     X_test = kwargs.get('X_test')
     y_train = kwargs.get('y_train')
     y_test = kwargs.get('y_test')
-    
+
     size_layer_1 = kwargs.get('size_layer_1', 128)
     size_layer_2 = kwargs.get('size_layer_2', 64)
     dropout_rate = kwargs.get('dropout_rate', 0.05)
@@ -214,21 +197,21 @@ def create_tf_model(**kwargs):
         Dense(1, activation='sigmoid')
     ])
 
-    loss = focal_loss(gamma=2., alpha=0.25) if use_focal_loss else 'binary_crossentropy'
+    loss = FocalLoss(gamma=2., alpha=0.25) if use_focal_loss else 'binary_crossentropy'
     model.compile(optimizer=AdamW(learning_rate=cfg.learning_rate), loss=loss, metrics=['accuracy'])
-    
+
     early_stopping = EarlyStopping(monitor='val_loss', patience=cfg.early_stopping_patience, restore_best_weights=True)
     lr_scheduler = ReduceLROnPlateau(monitor='val_loss', factor=cfg.lr_reduction_factor, patience=cfg.lr_reduction_patience, min_lr=cfg.min_learning_rate)
     callbacks = [early_stopping, lr_scheduler]
-    
+
     history = model.fit(X_train, y_train, epochs=cfg.max_epochs, batch_size=batch_size, validation_data=(X_test, y_test), callbacks=callbacks)
-    
+
     logging.info(f"Number of epochs used: {len(history.epoch)}")
     model.save(cfg.model_path)
 
 def load_tf_model(df_data, hyperparams):
     logging.info("Loading TensorFlow model...")
-    logging.info(df_data.tail())
+    # logging.info(df_data.tail())
 
     df_input, df_output = get_dfs_input_output(df_data, cfg.output_binary_name)
     # importance_df = get_feature_importance(df_input, df_output) # Calculate SHAP importances

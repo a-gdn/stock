@@ -19,7 +19,7 @@ use_saved_model = False
 start_date = '2015-06-01' #'2013-01-01'
 test_size = 60000
 
-max_epochs = 7
+max_epochs = 3
 early_stopping_patience = 3
 lr_reduction_factor = 0.1
 lr_reduction_patience = 2

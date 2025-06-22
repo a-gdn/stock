@@ -218,49 +218,49 @@ def get_inputs(df_buy, dfs_ohlcv, buying_time):
     # atr_14 = calculate_atr(dfs_ohlcv['df_high'], dfs_ohlcv['df_low'], dfs_ohlcv['df_close'], period=14)
     # bollinger_upper, bollinger_lower = calculate_bollinger_bands(df_buy)
 
-    # current_ratio = hf.stack(dfs_ohlcv['df_current_ratio'], 'input_current_ratio')
-    # ev_to_ebitda_ltm =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm'], 'input_ev_to_ebitda_ltm')
-    # fcf_yield_ltm =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm'], 'input_fcf_yield_ltm')
-    # marketcap =  hf.stack(dfs_ohlcv['df_marketcap'], 'input_marketcap')
-    # pe_ltm =  hf.stack(dfs_ohlcv['df_pe_ltm'], 'input_pe_ltm')
-    # price_to_book =  hf.stack(dfs_ohlcv['df_price_to_book'], 'input_price_to_book')
-    # roa =  hf.stack(dfs_ohlcv['df_roa'], 'input_roa')
-    # roe =  hf.stack(dfs_ohlcv['df_roe'], 'input_roe')
-    # total_debt =  hf.stack(dfs_ohlcv['df_total_debt'], 'input_total_debt')
-    # total_rev =  hf.stack(dfs_ohlcv['df_total_rev'], 'input_total_rev')
+    current_ratio = hf.stack(dfs_ohlcv['df_current_ratio'], 'input_current_ratio')
+    ev_to_ebitda_ltm =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm'], 'input_ev_to_ebitda_ltm')
+    fcf_yield_ltm =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm'], 'input_fcf_yield_ltm')
+    marketcap =  hf.stack(dfs_ohlcv['df_marketcap'], 'input_marketcap')
+    pe_ltm =  hf.stack(dfs_ohlcv['df_pe_ltm'], 'input_pe_ltm')
+    price_to_book =  hf.stack(dfs_ohlcv['df_price_to_book'], 'input_price_to_book')
+    roa =  hf.stack(dfs_ohlcv['df_roa'], 'input_roa')
+    roe =  hf.stack(dfs_ohlcv['df_roe'], 'input_roe')
+    total_debt =  hf.stack(dfs_ohlcv['df_total_debt'], 'input_total_debt')
+    total_rev =  hf.stack(dfs_ohlcv['df_total_rev'], 'input_total_rev')
 
-    # current_ratio_var_1 =  hf.stack(dfs_ohlcv['df_current_ratio_var_1'], 'input_current_ratio_var_1')
-    # ev_to_ebitda_ltm_var_1 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_1'], 'input_ev_to_ebitda_ltm_var_1')
-    # fcf_yield_ltm_var_1 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_1'], 'input_fcf_yield_ltm_var_1')
-    # marketcap_var_1 =  hf.stack(dfs_ohlcv['df_marketcap_var_1'], 'input_marketcap_var_1')
-    # pe_ltm_var_1 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_1'], 'input_pe_ltm_var_1')
-    # price_to_book_var_1 =  hf.stack(dfs_ohlcv['df_price_to_book_var_1'], 'input_price_to_book_var_1')
-    # roa_var_1 =  hf.stack(dfs_ohlcv['df_roa_var_1'], 'input_roa_var_1')
-    # roe_var_1 =  hf.stack(dfs_ohlcv['df_roe_var_1'], 'input_roe_var_1')
-    # total_debt_var_1 =  hf.stack(dfs_ohlcv['df_total_debt_var_1'], 'input_total_debt_var_1')
-    # total_rev_var_1 =  hf.stack(dfs_ohlcv['df_total_rev_var_1'], 'input_total_rev_var_1')
+    current_ratio_var_1 =  hf.stack(dfs_ohlcv['df_current_ratio_var_1'], 'input_current_ratio_var_1')
+    ev_to_ebitda_ltm_var_1 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_1'], 'input_ev_to_ebitda_ltm_var_1')
+    fcf_yield_ltm_var_1 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_1'], 'input_fcf_yield_ltm_var_1')
+    marketcap_var_1 =  hf.stack(dfs_ohlcv['df_marketcap_var_1'], 'input_marketcap_var_1')
+    pe_ltm_var_1 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_1'], 'input_pe_ltm_var_1')
+    price_to_book_var_1 =  hf.stack(dfs_ohlcv['df_price_to_book_var_1'], 'input_price_to_book_var_1')
+    roa_var_1 =  hf.stack(dfs_ohlcv['df_roa_var_1'], 'input_roa_var_1')
+    roe_var_1 =  hf.stack(dfs_ohlcv['df_roe_var_1'], 'input_roe_var_1')
+    total_debt_var_1 =  hf.stack(dfs_ohlcv['df_total_debt_var_1'], 'input_total_debt_var_1')
+    total_rev_var_1 =  hf.stack(dfs_ohlcv['df_total_rev_var_1'], 'input_total_rev_var_1')
 
-    # current_ratio_var_2 =  hf.stack(dfs_ohlcv['df_current_ratio_var_2'], 'input_current_ratio_var_2')
-    # ev_to_ebitda_ltm_var_2 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_2'], 'input_ev_to_ebitda_ltm_var_2')
-    # fcf_yield_ltm_var_2 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_2'], 'input_fcf_yield_ltm_var_2')
-    # marketcap_var_2 =  hf.stack(dfs_ohlcv['df_marketcap_var_2'], 'input_marketcap_var_2')
-    # pe_ltm_var_2 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_2'], 'input_pe_ltm_var_2')
-    # price_to_book_var_2 =  hf.stack(dfs_ohlcv['df_price_to_book_var_2'], 'input_price_to_book_var_2')
-    # roa_var_2 =  hf.stack(dfs_ohlcv['df_roa_var_2'], 'input_roa_var_2')
-    # roe_var_2 =  hf.stack(dfs_ohlcv['df_roe_var_2'], 'input_roe_var_2')
-    # total_debt_var_2 =  hf.stack(dfs_ohlcv['df_total_debt_var_2'], 'input_total_debt_var_2')
-    # total_rev_var_2 =  hf.stack(dfs_ohlcv['df_total_rev_var_2'], 'input_total_rev_var_2')
+    current_ratio_var_2 =  hf.stack(dfs_ohlcv['df_current_ratio_var_2'], 'input_current_ratio_var_2')
+    ev_to_ebitda_ltm_var_2 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_2'], 'input_ev_to_ebitda_ltm_var_2')
+    fcf_yield_ltm_var_2 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_2'], 'input_fcf_yield_ltm_var_2')
+    marketcap_var_2 =  hf.stack(dfs_ohlcv['df_marketcap_var_2'], 'input_marketcap_var_2')
+    pe_ltm_var_2 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_2'], 'input_pe_ltm_var_2')
+    price_to_book_var_2 =  hf.stack(dfs_ohlcv['df_price_to_book_var_2'], 'input_price_to_book_var_2')
+    roa_var_2 =  hf.stack(dfs_ohlcv['df_roa_var_2'], 'input_roa_var_2')
+    roe_var_2 =  hf.stack(dfs_ohlcv['df_roe_var_2'], 'input_roe_var_2')
+    total_debt_var_2 =  hf.stack(dfs_ohlcv['df_total_debt_var_2'], 'input_total_debt_var_2')
+    total_rev_var_2 =  hf.stack(dfs_ohlcv['df_total_rev_var_2'], 'input_total_rev_var_2')
 
-    # current_ratio_var_4 =  hf.stack(dfs_ohlcv['df_current_ratio_var_4'], 'input_current_ratio_var_4')
-    # ev_to_ebitda_ltm_var_4 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_4'], 'input_ev_to_ebitda_ltm_var_4')
-    # fcf_yield_ltm_var_4 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_4'], 'input_fcf_yield_ltm_var_4')
-    # marketcap_var_4 =  hf.stack(dfs_ohlcv['df_marketcap_var_4'], 'input_marketcap_var_4')
-    # pe_ltm_var_4 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_4'], 'input_pe_ltm_var_4')
-    # price_to_book_var_4 =  hf.stack(dfs_ohlcv['df_price_to_book_var_4'], 'input_price_to_book_var_4')
-    # roa_var_4 =  hf.stack(dfs_ohlcv['df_roa_var_4'], 'input_roa_var_4')
-    # roe_var_4 =  hf.stack(dfs_ohlcv['df_roe_var_4'], 'input_roe_var_4')
-    # total_debt_var_4 =  hf.stack(dfs_ohlcv['df_total_debt_var_4'], 'input_total_debt_var_4')
-    # total_rev_var_4 =  hf.stack(dfs_ohlcv['df_total_rev_var_4'], 'input_total_rev_var_4')
+    current_ratio_var_4 =  hf.stack(dfs_ohlcv['df_current_ratio_var_4'], 'input_current_ratio_var_4')
+    ev_to_ebitda_ltm_var_4 =  hf.stack(dfs_ohlcv['df_ev_to_ebitda_ltm_var_4'], 'input_ev_to_ebitda_ltm_var_4')
+    fcf_yield_ltm_var_4 =  hf.stack(dfs_ohlcv['df_fcf_yield_ltm_var_4'], 'input_fcf_yield_ltm_var_4')
+    marketcap_var_4 =  hf.stack(dfs_ohlcv['df_marketcap_var_4'], 'input_marketcap_var_4')
+    pe_ltm_var_4 =  hf.stack(dfs_ohlcv['df_pe_ltm_var_4'], 'input_pe_ltm_var_4')
+    price_to_book_var_4 =  hf.stack(dfs_ohlcv['df_price_to_book_var_4'], 'input_price_to_book_var_4')
+    roa_var_4 =  hf.stack(dfs_ohlcv['df_roa_var_4'], 'input_roa_var_4')
+    roe_var_4 =  hf.stack(dfs_ohlcv['df_roe_var_4'], 'input_roe_var_4')
+    total_debt_var_4 =  hf.stack(dfs_ohlcv['df_total_debt_var_4'], 'input_total_debt_var_4')
+    total_rev_var_4 =  hf.stack(dfs_ohlcv['df_total_rev_var_4'], 'input_total_rev_var_4')
 
     input_list = [
         var_90, var_30, var_10, var_1,
@@ -282,10 +282,10 @@ def get_inputs(df_buy, dfs_ohlcv, buying_time):
         # atr_14, bollinger_upper, bollinger_lower, # affected by stock absolute prices
         # sp500_var_90, sp500_var_30, sp500_var_10, sp500_var_1,
         # vix
-        # current_ratio, ev_to_ebitda_ltm, fcf_yield_ltm, marketcap, pe_ltm, price_to_book, roa, roe, total_debt, total_rev,
-        # current_ratio_var_1, ev_to_ebitda_ltm_var_1, fcf_yield_ltm_var_1, marketcap_var_1, pe_ltm_var_1, price_to_book_var_1, roa_var_1, roe_var_1, total_debt_var_1, total_rev_var_1,
-        # current_ratio_var_2, ev_to_ebitda_ltm_var_2, fcf_yield_ltm_var_2, marketcap_var_2, pe_ltm_var_2, price_to_book_var_2, roa_var_2, roe_var_2, total_debt_var_2, total_rev_var_2,
-        # current_ratio_var_4, ev_to_ebitda_ltm_var_4, fcf_yield_ltm_var_4, marketcap_var_4, pe_ltm_var_4, price_to_book_var_4, roa_var_4, roe_var_4, total_debt_var_4, total_rev_var_4
+        current_ratio, ev_to_ebitda_ltm, fcf_yield_ltm, marketcap, pe_ltm, price_to_book, roa, roe, total_debt, total_rev,
+        current_ratio_var_1, ev_to_ebitda_ltm_var_1, fcf_yield_ltm_var_1, marketcap_var_1, pe_ltm_var_1, price_to_book_var_1, roa_var_1, roe_var_1, total_debt_var_1, total_rev_var_1,
+        current_ratio_var_2, ev_to_ebitda_ltm_var_2, fcf_yield_ltm_var_2, marketcap_var_2, pe_ltm_var_2, price_to_book_var_2, roa_var_2, roe_var_2, total_debt_var_2, total_rev_var_2,
+        current_ratio_var_4, ev_to_ebitda_ltm_var_4, fcf_yield_ltm_var_4, marketcap_var_4, pe_ltm_var_4, price_to_book_var_4, roa_var_4, roe_var_4, total_debt_var_4, total_rev_var_4
     ]
     
     if buying_time == 'Close':

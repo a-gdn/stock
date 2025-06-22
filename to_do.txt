@@ -1,4 +1,4 @@
-need to handles nan, -inf and +inf values
+restore fundamental inputs
 
 ajout d'inputs de william igon:
     - PER: ideally around 7, <12%, ROE > 10%, increasing revenue
