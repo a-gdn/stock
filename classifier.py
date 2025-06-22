@@ -171,7 +171,9 @@ def get_model_result(hyperparams):
     performance_metrics = eval.evaluate_model(df_data, model, test_train_data, num_tickers, num_combinations, hyperparams)
 
     result = {**performance_metrics, **hyperparams}
-    print(f"Result: {result}")
+    print(f"Result:")
+    for k, v in result.items():
+        print(f"- {k}: {v}")
 
     release_memory(df_data, model, test_train_data)
 
