@@ -101,6 +101,18 @@ if __name__ == "__main__":
     master_df = create_fundamentals_dataframe(fundamentals_directory)
 
     if not master_df.empty:
+        # Find columns where all values are NaN
+        nan_columns = master_df.columns[master_df.isna().all()]
+
+        # Group by ticker (second level of the MultiIndex)
+        tickers_with_all_nan = set(nan_columns.get_level_values('Ticker'))
+
+        print(f"\nTickers with at least one column fully filled with NaN values:")
+        for ticker in sorted(tickers_with_all_nan):
+            print(ticker)
+        
+        print(f"number of tickers with nan values: {len(tickers_with_all_nan)}")
+
         print("\n--- DataFrame Info ---")
         master_df.info()
 

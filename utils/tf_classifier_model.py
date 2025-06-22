@@ -31,10 +31,21 @@ class FocalLoss(tf.keras.losses.Loss):
         self.alpha = alpha
 
     def call(self, y_true, y_pred):
-        y_pred = tf.clip_by_value(y_pred, tf.keras.backend.epsilon(), 1. - tf.keras.backend.epsilon())
-        cross_entropy_loss = -y_true * tf.math.log(y_pred) - (1 - y_true) * tf.math.log(1 - y_pred)
-        loss_modulation = tf.pow((1 - y_pred), self.gamma)
-        loss = self.alpha * loss_modulation * cross_entropy_loss
+        # Clip the predictions to prevent log(0) error
+        epsilon = tf.keras.backend.epsilon()
+        y_pred = tf.clip_by_value(y_pred, epsilon, 1. - epsilon)
+
+        # Compute the cross entropy loss
+        ce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
+
+        # Compute p_t
+        p_t = tf.where(tf.equal(y_true, 1), y_pred, 1 - y_pred)
+
+        # Compute the modulating factor
+        modulating_factor = tf.pow(1.0 - p_t, self.gamma)
+
+        # Compute the final loss
+        loss = self.alpha * modulating_factor * ce
         return tf.reduce_mean(loss)
 
 def remove_highly_correlated_features(df, importance_df, threshold=0.9):
@@ -162,10 +173,13 @@ def get_test_train_data(df_input, df_output, test_size):
         raise ValueError(f"test_size ({test_size}) must be smaller than the total number of samples ({n_samples}).")
     
     X_train = df_input[:-test_size].values
-    y_train = df_output[:-test_size].values.ravel().astype(int)
-    X_test = df_input.tail(test_size).values
-    y_test = df_output.tail(test_size).values.ravel().astype(int)
+    # y_train = df_output[:-test_size].values.ravel().astype(int)
+    y_train = df_output[:-test_size].values.astype(np.float32)
 
+    X_test = df_input.tail(test_size).values
+    # y_test = df_output.tail(test_size).values.ravel().astype(int)
+    y_test = df_output.tail(test_size).values.astype(np.float32)
+    
     if cfg.use_hyperopt and X_train.shape[0] == 0:
         raise ValueError("Empty training set, skipping this trial")
 
@@ -183,6 +197,15 @@ def create_tf_model(**kwargs):
     X_test = kwargs.get('X_test')
     y_train = kwargs.get('y_train')
     y_test = kwargs.get('y_test')
+
+    def print_nan_stats(name, array):
+        print(f"{name} shape: {array.shape}")
+        print(f"{name} NaN count: {np.isnan(array).sum()}\n")
+
+    print_nan_stats("X_train", X_train)
+    print_nan_stats("y_train", y_train)
+    print_nan_stats("X_test", X_test)
+    print_nan_stats("y_test", y_test)
 
     size_layer_1 = kwargs.get('size_layer_1', 128)
     size_layer_2 = kwargs.get('size_layer_2', 64)
