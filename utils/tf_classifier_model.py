@@ -198,14 +198,14 @@ def create_tf_model(**kwargs):
     y_train = kwargs.get('y_train')
     y_test = kwargs.get('y_test')
 
-    def print_nan_stats(name, array):
-        print(f"{name} shape: {array.shape}")
-        print(f"{name} NaN count: {np.isnan(array).sum()}\n")
+    # def print_nan_stats(name, array):
+    #     print(f"{name} shape: {array.shape}")
+    #     print(f"{name} NaN count: {np.isnan(array).sum()}\n")
 
-    print_nan_stats("X_train", X_train)
-    print_nan_stats("y_train", y_train)
-    print_nan_stats("X_test", X_test)
-    print_nan_stats("y_test", y_test)
+    # print_nan_stats("X_train", X_train)
+    # print_nan_stats("y_train", y_train)
+    # print_nan_stats("X_test", X_test)
+    # print_nan_stats("y_test", y_test)
 
     size_layer_1 = kwargs.get('size_layer_1', 128)
     size_layer_2 = kwargs.get('size_layer_2', 64)

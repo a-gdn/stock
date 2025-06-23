@@ -297,12 +297,7 @@ def get_inputs(df_buy, dfs_ohlcv, buying_time):
 
     df_inputs = pd.concat(input_list, axis='columns')
     # df_inputs = df_inputs.dropna()
-
-    # def print_column_stats(df):
-    #     stats = df.describe().T  # basic stats: count, mean, std, min, 25%, 50%, 75%, max
-    #     stats['nan_count'] = df.isna().sum()
-    #     stats['nan_percent'] = 100 * stats['nan_count'] / len(df)
-    #     print(stats[['count', 'nan_count', 'nan_percent', 'mean', 'std', 'min', 'max']])
-    # print_column_stats(df_inputs)
+    df_inputs.ffill(inplace=True)
+    df_inputs.bfill(inplace=True)
 
     return df_inputs

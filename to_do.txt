@@ -1,3 +1,7 @@
+fix val_loss: nan
+
+caveat: risk of data leakage with fundamentals?
+
 fix ticker code for:
 ABG.OL
 ABN.AS
@@ -71,10 +75,6 @@ URW.AS
 US.MI
 VLK.AS
 WDP.BR
-
-fix val_loss: nan
-
-caveat: risk of data leakage with fundamentals?
 
 ajout d'inputs de william igon:
     - PER: ideally around 7, <12%, ROE > 10%, increasing revenue
