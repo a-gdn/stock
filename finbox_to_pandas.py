@@ -27,6 +27,26 @@ def extract_finbox_ticker_from_path(file_path: Path, base_directory: Path) -> st
     yahoo_ticker = hf.finbox_to_yahoo(finbox_ticker)
     return yahoo_ticker
 
+def remove_tickers_with_all_nan(df: pd.DataFrame) -> pd.DataFrame:
+    tickers = df.columns.get_level_values('Ticker').unique()
+    tickers_to_drop = set()
+
+    for ticker in tickers:
+        ticker_df = df.xs(ticker, axis=1, level='Ticker', drop_level=False)
+        
+        # If any column for this ticker is fully NaN → mark for drop
+        if ticker_df.isna().all().any():
+            tickers_to_drop.add(ticker)
+
+    print(f"\nTickers with at least one column fully NaN (to be removed):")
+    for ticker in sorted(tickers_to_drop):
+        print(ticker)
+
+    print(f"Number of tickers removed due to a nan column: {len(tickers_to_drop)}")
+
+    df = df.drop(columns=tickers_to_drop, level='Ticker')
+    return df
+
 def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
     data_path = Path(directory_path)
     if not data_path.is_dir():
@@ -90,6 +110,7 @@ def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
     final_df.columns.names = ['Fundamental', 'Ticker']
     final_df.ffill(inplace=True)
     final_df.index.name = 'Date'
+    final_df = remove_tickers_with_all_nan(final_df)
     final_df = add_pct_change_columns(final_df, periods=[1, 2, 4])
     final_df.replace([float('inf'), -float('inf')], [1e6, -1e6], inplace=True)
 
@@ -101,18 +122,6 @@ if __name__ == "__main__":
     master_df = create_fundamentals_dataframe(fundamentals_directory)
 
     if not master_df.empty:
-        # Find columns where all values are NaN
-        nan_columns = master_df.columns[master_df.isna().all()]
-
-        # Group by ticker (second level of the MultiIndex)
-        tickers_with_all_nan = set(nan_columns.get_level_values('Ticker'))
-
-        print(f"\nTickers with at least one column fully filled with NaN values:")
-        for ticker in sorted(tickers_with_all_nan):
-            print(ticker)
-        
-        print(f"number of tickers with nan values: {len(tickers_with_all_nan)}")
-
         print("\n--- DataFrame Info ---")
         master_df.info()
 

@@ -74,6 +74,8 @@ WDP.BR
 
 fix val_loss: nan
 
+caveat: risk of data leakage with fundamentals?
+
 ajout d'inputs de william igon:
     - PER: ideally around 7, <12%, ROE > 10%, increasing revenue
     - PER: between 15 and 20%, every 6 months remove the least performing stocks
