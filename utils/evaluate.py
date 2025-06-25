@@ -56,14 +56,14 @@ def get_profits(df_prediction_is_buy):
 def get_loss_limit_pct(df):
     return df['output_is_loss_limit_reached'].sum() / len(df) if len(df) > 0 else 0
 
-def get_profitable_rate(df):
-    profitable_count = (df['output_profit'] > 1).sum()
-    total_count = df['output_profit'].count()
+def get_profitable_rate(df_prediction_is_buy_output_profit):
+    profitable_count = (df_prediction_is_buy_output_profit > 1).sum()
+    total_count = len(df_prediction_is_buy_output_profit)
     profitable_rate = round((profitable_count / total_count), 3) if total_count > 0 else 0
 
     return profitable_rate
 
-def get_performance_score(trimmed_average_profit, is_buy_count, profitable_rate, true_positives, num_tickers, **hyperparams):
+def get_performance_score(trimmed_average_profit, is_buy_count, true_positives, num_tickers, **hyperparams):
     estimated_total_days = cfg.test_size / num_tickers
     holding_total_days = min(is_buy_count, estimated_total_days)
     stock_holding_days = hyperparams['target_future_days']
@@ -74,17 +74,13 @@ def get_performance_score(trimmed_average_profit, is_buy_count, profitable_rate,
     min_is_buy_count = 100
     is_buy_count_score = min(1, true_positives / min_is_buy_count)
 
-    # Apply penalty factor
-    penalty_factor = 0.1 if trimmed_average_profit < 1 else 1
-
     # Emphasize profitability
-    adjusted_profit = trimmed_average_profit ** 3
-
-    performance_score = (
-        penalty_factor
-        * is_buy_count_score
-        * (adjusted_profit ** (holding_total_days / (stock_holding_days + 1)))
+    adjusted_profit = (
+        trimmed_average_profit ** 3 if trimmed_average_profit > 1
+        else trimmed_average_profit * 0.1
     )
+
+    performance_score = is_buy_count_score * (adjusted_profit ** (holding_total_days / (stock_holding_days + 1)))
 
     return performance_score
 
@@ -104,10 +100,9 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
         profits = get_profits(df_prediction_is_buy)
         prediction_is_buy_count = len(df_prediction_is_buy['output_profit'])
         loss_limit_reached_pct = get_loss_limit_pct(df_prediction_is_buy)
-        profitable_rate = get_profitable_rate(df_prediction_is_buy)
+        profitable_rate = get_profitable_rate(df_prediction_is_buy['output_profit'])
         performance_score = get_performance_score(profits['trimmed_average_profit'],
                                                   prediction_is_buy_count,
-                                                  profitable_rate,
                                                   binary_classification['true_positives'],
                                                   num_tickers, **hyperparams)
 
