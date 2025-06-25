@@ -12,7 +12,7 @@ results_path = './outputs/results.xlsx'
 
 fee = 0.002
 
-use_hyperopt = True
+use_hyperopt = False
 use_saved_transformed_data = False
 use_saved_model = False
 
@@ -26,20 +26,20 @@ lr_reduction_patience = 2
 min_learning_rate = 1e-6
 learning_rate = 1e-3
 
-hyperopt_n_iterations = 200
+hyperopt_n_iterations = 1000
 save_every_n_iterations = 10
 
 output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
 
 param_grid = {
-    'buying_time': ['Open'], 'selling_time': ['Close'], #'Open', 
-    'target_future_days': [0,1],
-    'loss_limit': [0.05,0.95,0.98], #0.4, 0.55, 0.7, 
-    'sell_at_target': [False,True],
+    'buying_time': ['Close'], 'selling_time': ['Close'], #'Open', 
+    'target_future_days': [44],
+    'loss_limit': [0.2], #0.4, 0.55, 0.7, 
+    'sell_at_target': [False],
     'size_layer_1': [128], 'size_layer_2': [64], 'size_layer_3': [64],
-    'dropout_rate': [0.05], 'use_focal_loss': [True], 'batch_size': [32], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
-    'confidence_threshold': [0.3,0.65,0.8,0.9,0.97],
-    'var_threshold': [1.005, 1.02, 1.05],
+    'dropout_rate': [0.35], 'use_focal_loss': [True], 'batch_size': [128], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
+    'confidence_threshold': [0.7],
+    'var_threshold': [1.005],
     'rank_pct_threshold': [0.45]
 }
 
@@ -53,9 +53,9 @@ search_space = {
     'size_layer_2': hp.choice('size_layer_2', [64]),
     'size_layer_3': hp.choice('size_layer_3', [64]), #[64, 128, 256]
     'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.5), #0, 0.3
-    'use_focal_loss': hp.choice('use_focal_loss', [True, False]),
+    'use_focal_loss': hp.choice('use_focal_loss', [True, True]),
     'batch_size': hp.choice('batch_size', [128]), #[32, 64, 128]
-    'confidence_threshold': hp.uniform('confidence_threshold', 0.3, 1),
+    'confidence_threshold': hp.uniform('confidence_threshold', 0.5, 1),
     'var_threshold': hp.uniform('var_threshold', 1, 3),
     'rank_pct_threshold': hp.uniform('rank_pct_threshold', 0, 1)
 }

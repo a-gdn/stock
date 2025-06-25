@@ -98,7 +98,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
     if df_test['prediction_is_buy'].any():
         df_prediction_is_buy = df_test[(df_test['prediction_is_buy'] == True)]
         if (not cfg.use_hyperopt and num_combinations == 1):
-            print(df_prediction_is_buy.to_markdown())
+            # print(df_prediction_is_buy.to_markdown())
             df_prediction_is_buy.to_excel(f'./outputs/{hf.get_date()}_classifier_df_prediction_is_buy.xlsx')
 
         profits = get_profits(df_prediction_is_buy)

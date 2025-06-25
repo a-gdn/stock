@@ -242,7 +242,7 @@ def main():
         grid_search(results)
 
     save_results(results, trials, cfg.results_path, cfg.trials_path)
-    print_results(results)
+    # print_results(results)
 
 with subprocess.Popen(["caffeinate", "-dims"]) as caffeinate_process:
     print("Caffeinate started...")
