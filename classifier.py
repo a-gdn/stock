@@ -20,7 +20,7 @@ import gc
 from itertools import product
 
 os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'  # Disable file validation in the debugger
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0: All logs (default setting), 1: Filter out INFO logs, up to 3
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'  # 0: All logs (default setting), 1: Filter out INFO logs, up to 3
 pd.options.mode.copy_on_write = True  # Avoid making unnecessary copies of DataFrames or Series
 
 num_combinations = cfg.hyperopt_n_iterations if cfg.use_hyperopt else hf.get_num_combinations(cfg.param_grid)

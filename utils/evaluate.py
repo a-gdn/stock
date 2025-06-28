@@ -2,6 +2,7 @@ import config as cfg
 import utils.helper_functions as hf
 
 import numpy as np
+from sklearn.metrics import f1_score, precision_score, recall_score
 
 def slice_df_test(df_data, test_size):
     return df_data.tail(test_size)
@@ -40,6 +41,24 @@ def get_binary_classification(df):
         'true_positives': tp, 'true_negatives': tn,
         'false_positives': fp, 'false_negatives': fn,
         'winning_rate': winning_rate
+    }
+
+def get_classification_metrics(df):
+    """
+    Calculates F1 score, precision, and recall from a DataFrame
+    containing 'output_is_buy' (ground truth) and 'prediction_is_buy' (predictions).
+    """
+    y_true = df['output_is_buy'].astype(int)
+    y_pred = df['prediction_is_buy'].astype(int)
+
+    f1 = f1_score(y_true, y_pred, zero_division=0)
+    precision = precision_score(y_true, y_pred, zero_division=0)
+    recall = recall_score(y_true, y_pred, zero_division=0)
+
+    return {
+        'f1_score': f1,
+        'precision': precision,
+        'recall': recall
     }
 
 def get_profits(df_prediction_is_buy):
@@ -90,6 +109,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
     
     market_rate = get_market_rate(test_train_data['y_test'])
     binary_classification = get_binary_classification(df_test)
+    classification_metrics = get_classification_metrics(df_test)
 
     if df_test['prediction_is_buy'].any():
         df_prediction_is_buy = df_test[(df_test['prediction_is_buy'] == True)]
@@ -112,6 +132,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
             'prediction_is_buy_count': prediction_is_buy_count,
             'loss_limit_reached_pct': loss_limit_reached_pct,
             **binary_classification,
+            **classification_metrics,
             'market_rate': market_rate,
             'winning_rate_vs_market': binary_classification['winning_rate'] - market_rate,
             'profitable_rate': profitable_rate
@@ -125,6 +146,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
             'prediction_is_buy_count': 0,
             'loss_limit_reached_pct': 0,
             **binary_classification,
+            **classification_metrics,
             'market_rate': market_rate,
             'winning_rate_vs_market': binary_classification['winning_rate'] - market_rate,
             'profitable_rate': 0

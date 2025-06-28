@@ -12,14 +12,14 @@ results_path = './outputs/results.xlsx'
 
 fee = 0.002
 
-use_hyperopt = False
+use_hyperopt = True
 use_saved_transformed_data = False
 use_saved_model = False
 
 start_date = '2015-06-01' #'2013-01-01'
 test_size = 60000
 
-max_epochs = 3
+max_epochs = 5
 early_stopping_patience = 3
 lr_reduction_factor = 0.1
 lr_reduction_patience = 2
