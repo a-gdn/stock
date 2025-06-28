@@ -1,4 +1,4 @@
-fix val_loss: nan
+to fix: df_inputs doesn't have nan values in inputs.py but has a lot in tf_classifier_model
 
 caveat: risk of data leakage with fundamentals?
 

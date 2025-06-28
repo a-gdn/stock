@@ -296,7 +296,8 @@ def get_inputs(df_buy, dfs_ohlcv, buying_time):
         input_list += [var_vs_open_0, var_vs_low_0, var_vs_high_0]
 
     df_inputs = pd.concat(input_list, axis='columns')
-    df_inputs.interpolate(method='linear', inplace=True)
+    df_inputs.ffill(inplace=True)
     df_inputs.dropna(inplace=True)
+    print(f"df_input NaN count: {df_inputs.isna().sum().sum()}")
 
     return df_inputs

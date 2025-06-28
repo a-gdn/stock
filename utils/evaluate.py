@@ -75,13 +75,6 @@ def get_profits(df_prediction_is_buy):
 def get_loss_limit_pct(df):
     return df['output_is_loss_limit_reached'].sum() / len(df) if len(df) > 0 else 0
 
-def get_profitable_rate(df_prediction_is_buy_output_profit):
-    profitable_count = (df_prediction_is_buy_output_profit > 1).sum()
-    total_count = len(df_prediction_is_buy_output_profit)
-    profitable_rate = round((profitable_count / total_count), 3) if total_count > 0 else 0
-
-    return profitable_rate
-
 def get_performance_score(trimmed_average_profit, is_buy_count, true_positives, num_tickers, **hyperparams):
     estimated_total_days = cfg.test_size / num_tickers
     holding_total_days = min(is_buy_count, estimated_total_days)
@@ -120,7 +113,6 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
         profits = get_profits(df_prediction_is_buy)
         prediction_is_buy_count = len(df_prediction_is_buy['output_profit'])
         loss_limit_reached_pct = get_loss_limit_pct(df_prediction_is_buy)
-        profitable_rate = get_profitable_rate(df_prediction_is_buy['output_profit'])
         performance_score = get_performance_score(profits['trimmed_average_profit'],
                                                   prediction_is_buy_count,
                                                   binary_classification['true_positives'],
@@ -135,7 +127,6 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
             **classification_metrics,
             'market_rate': market_rate,
             'winning_rate_vs_market': binary_classification['winning_rate'] - market_rate,
-            'profitable_rate': profitable_rate
         }
     else:
         performance_metrics = {
@@ -149,7 +140,6 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
             **classification_metrics,
             'market_rate': market_rate,
             'winning_rate_vs_market': binary_classification['winning_rate'] - market_rate,
-            'profitable_rate': 0
         }
 
     return performance_metrics

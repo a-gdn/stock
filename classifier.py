@@ -191,7 +191,7 @@ def hyperopt_search(results):
             results.append(result)
             save_results_if_needed(results, trials, len(trials), cfg.hyperopt_n_iterations, cfg.results_path, cfg.trials_path)
 
-            performance = result.get('performance_score', None)
+            performance = result.get('precision', None)
             if performance is None:
                 print("Missing performance score in result.")
                 return {'loss': float('inf'), 'status': STATUS_FAIL}
