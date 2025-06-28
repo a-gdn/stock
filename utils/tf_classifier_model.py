@@ -172,8 +172,6 @@ def get_test_train_data(df_input, df_output, test_size):
     if test_size >= n_samples:
         raise ValueError(f"test_size ({test_size}) must be smaller than the total number of samples ({n_samples}).")
     
-    print(f"df_input NaN count: {df_input.isna().sum().sum()}")
-
     X_train = df_input[:-test_size].values
     # y_train = df_output[:-test_size].values.ravel().astype(int)
     y_train = df_output[:-test_size].values.astype(np.float32)
@@ -200,14 +198,14 @@ def create_tf_model(**kwargs):
     y_train = kwargs.get('y_train')
     y_test = kwargs.get('y_test')
 
-    def print_nan_stats(name, array):
-        print(f"{name} shape: {array.shape}")
-        print(f"{name} NaN count: {np.isnan(array).sum()}\n")
+    # def print_nan_stats(name, array):
+    #     print(f"{name} shape: {array.shape}")
+    #     print(f"{name} NaN count: {np.isnan(array).sum()}\n")
 
-    print_nan_stats("X_train", X_train)
-    print_nan_stats("y_train", y_train)
-    print_nan_stats("X_test", X_test)
-    print_nan_stats("y_test", y_test)
+    # print_nan_stats("X_train", X_train)
+    # print_nan_stats("y_train", y_train)
+    # print_nan_stats("X_test", X_test)
+    # print_nan_stats("y_test", y_test)
 
     size_layer_1 = kwargs.get('size_layer_1', 128)
     size_layer_2 = kwargs.get('size_layer_2', 64)
@@ -238,7 +236,7 @@ def load_tf_model(df_data, hyperparams):
     logging.info("Loading TensorFlow model...")
     # logging.info(df_data.tail())
 
-    df_input, df_output = get_dfs_input_output(df_data, cfg.output_binary_name)
+    df_input, df_output = get_dfs_input_output(df_data, cfg.output_binary_name)    
     # importance_df = get_feature_importance(df_input, df_output) # Calculate SHAP importances
     # df_input = remove_highly_correlated_features(df_input, importance_df) # Remove correlated features
     test_train_data = get_test_train_data(df_input, df_output, cfg.test_size)

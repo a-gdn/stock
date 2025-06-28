@@ -119,7 +119,10 @@ def get_df_data(hyperparams):
         df_data.to_pickle(cfg.transformed_data_path)
 
     df_data = outputs.add_outputs(df_data, df_buy, df_sell, dfs_ohlcv, num_tickers, cfg.output_binary_name, cfg.fee, **hyperparams)    
-    df_data = df_data.dropna(axis='rows', how='all') # Drop rows with all NaN values
+    # df_data = df_data.dropna(axis='rows', how='all') # Drop rows with all NaN values
+    df_data = hf.fillnavalues(df_data)
+    print(f"df_data shape: {df_data.shape}")
+    print(f"df_data NaN count: {df_data.isna().sum().sum()}")
 
     return df_data, num_tickers
 

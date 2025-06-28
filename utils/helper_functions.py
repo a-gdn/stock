@@ -53,10 +53,11 @@ def get_date() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
 def fillnavalues(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.interpolate(limit_area='inside') #interpolation when only one value ('inside') is missing
-    df = df.ffill() #forward fill otherwise
-    df = df.bfill() #backward fill for the first rows
-
+    # df = df.interpolate(limit_area='inside') #interpolation when only one value ('inside') is missing
+    df.ffill(inplace=True) #forward fill otherwise
+    # df = df.bfill() #backward fill for the first rows
+    df.fillna(0, inplace=True) #fill remaining NaN values with 0
+    df.replace([np.inf, -np.inf], np.nan, inplace=True)
     return df
 
 def save_object(obj, filename):
