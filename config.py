@@ -56,6 +56,6 @@ search_space = {
     'use_focal_loss': hp.choice('use_focal_loss', [True, True]),
     'batch_size': hp.choice('batch_size', [128]), #[32, 64, 128]
     'confidence_threshold': hp.uniform('confidence_threshold', 0.5, 1),
-    'var_threshold': hp.uniform('var_threshold', 1, 3),
+    'var_threshold': hp.uniform('var_threshold', 1, 1.5),
     'rank_pct_threshold': hp.uniform('rank_pct_threshold', 0, 1)
 }

@@ -1,13 +1,3 @@
-to fix:
-Lengths before concat:                                                      
-df_data         : 637830                                                    
-future_end_var  : 663765                                                    
-future_max_var  : 663765                                                    
-future_min_var  : 663765
- 
-maybe stack at the end?
-
-to fix: df_inputs doesn't have nan values in inputs.py but has a lot in tf_classifier_model
 
 caveat: risk of data leakage with fundamentals?
 

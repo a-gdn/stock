@@ -4,7 +4,7 @@ import utils.helper_functions as hf
 import tensorflow as tf
 from tensorflow.keras import Model, Sequential  # type: ignore
 from tensorflow.keras.layers import Dense, BatchNormalization, Dropout, Activation, Input # type: ignore
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, TerminateOnNaN # type: ignore
 from tensorflow.keras.optimizers import AdamW # type: ignore
 
 from sklearn.model_selection import train_test_split
@@ -31,21 +31,15 @@ class FocalLoss(tf.keras.losses.Loss):
         self.alpha = alpha
 
     def call(self, y_true, y_pred):
-        # Clip the predictions to prevent log(0) error
         epsilon = tf.keras.backend.epsilon()
         y_pred = tf.clip_by_value(y_pred, epsilon, 1. - epsilon)
-
-        # Compute the cross entropy loss
-        ce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
-
-        # Compute p_t
+        
+        ce = - (y_true * tf.math.log(y_pred) + (1 - y_true) * tf.math.log(1 - y_pred))
         p_t = tf.where(tf.equal(y_true, 1), y_pred, 1 - y_pred)
-
-        # Compute the modulating factor
         modulating_factor = tf.pow(1.0 - p_t, self.gamma)
-
-        # Compute the final loss
-        loss = self.alpha * modulating_factor * ce
+        alpha_t = tf.where(tf.equal(y_true, 1), self.alpha, 1 - self.alpha)
+        
+        loss = alpha_t * modulating_factor * ce
         return tf.reduce_mean(loss)
 
 def remove_highly_correlated_features(df, importance_df, threshold=0.9):
@@ -207,6 +201,15 @@ def create_tf_model(**kwargs):
     # print_nan_stats("X_test", X_test)
     # print_nan_stats("y_test", y_test)
 
+    # print("Unique labels in y_train:", np.unique(y_train))
+    # print("Unique labels in y_test:", np.unique(y_test))
+
+    # print("y_train shape:", y_train.shape)
+    # print("First few y_train values:", y_train[:10])
+
+    print("NaNs in X_train:", np.isnan(X_train).sum())
+    print("NaNs in y_train:", np.isnan(y_train).sum())
+
     size_layer_1 = kwargs.get('size_layer_1', 128)
     size_layer_2 = kwargs.get('size_layer_2', 64)
     dropout_rate = kwargs.get('dropout_rate', 0.05)
@@ -225,7 +228,7 @@ def create_tf_model(**kwargs):
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=cfg.early_stopping_patience, restore_best_weights=True)
     lr_scheduler = ReduceLROnPlateau(monitor='val_loss', factor=cfg.lr_reduction_factor, patience=cfg.lr_reduction_patience, min_lr=cfg.min_learning_rate)
-    callbacks = [early_stopping, lr_scheduler]
+    callbacks = [early_stopping, lr_scheduler, TerminateOnNaN()]
 
     history = model.fit(X_train, y_train, epochs=cfg.max_epochs, batch_size=batch_size, validation_data=(X_test, y_test), callbacks=callbacks)
 

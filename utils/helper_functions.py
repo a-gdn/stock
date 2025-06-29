@@ -58,6 +58,7 @@ def fillnavalues(df: pd.DataFrame) -> pd.DataFrame:
     # df = df.bfill() #backward fill for the first rows
     df.fillna(0, inplace=True) #fill remaining NaN values with 0
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
+    df.dropna(inplace=True) #drop rows with NaN values
     return df
 
 def save_object(obj, filename):
