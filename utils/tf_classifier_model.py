@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'  # Disable file validation in the debugger
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'  # Reduce TensorFlow logs
 
+def compute_alpha(y):
+    pos_frac = np.mean(y)
+    return 1.0 - pos_frac
+
 @tf.keras.utils.register_keras_serializable()
 class FocalLoss(tf.keras.losses.Loss):
     def __init__(self, gamma=2.0, alpha=0.25, **kwargs):
@@ -207,8 +211,8 @@ def create_tf_model(**kwargs):
     # print("y_train shape:", y_train.shape)
     # print("First few y_train values:", y_train[:10])
 
-    print("NaNs in X_train:", np.isnan(X_train).sum())
-    print("NaNs in y_train:", np.isnan(y_train).sum())
+    # print("NaNs in X_train:", np.isnan(X_train).sum())
+    # print("NaNs in y_train:", np.isnan(y_train).sum())
 
     size_layer_1 = kwargs.get('size_layer_1', 128)
     size_layer_2 = kwargs.get('size_layer_2', 64)
@@ -223,7 +227,9 @@ def create_tf_model(**kwargs):
         Dense(1, activation='sigmoid')
     ])
 
-    loss = FocalLoss(gamma=2., alpha=0.25) if use_focal_loss else 'binary_crossentropy'
+    alpha = compute_alpha(y_train)
+    loss = FocalLoss(gamma=2., alpha=alpha) if use_focal_loss else 'binary_crossentropy'
+    
     model.compile(optimizer=AdamW(learning_rate=cfg.learning_rate), loss=loss, metrics=['accuracy'])
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=cfg.early_stopping_patience, restore_best_weights=True)

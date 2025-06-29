@@ -75,7 +75,7 @@ def get_profits(df_prediction_is_buy):
 def get_loss_limit_pct(df):
     return df['output_is_loss_limit_reached'].sum() / len(df) if len(df) > 0 else 0
 
-def get_performance_score(precision, trimmed_average_profit, is_buy_count, true_positives, num_tickers, **hyperparams):
+def get_performance_score(f1_score, trimmed_average_profit, is_buy_count, true_positives, num_tickers, **hyperparams):
     # estimated_total_days = cfg.test_size / num_tickers
     # holding_total_days = min(is_buy_count, estimated_total_days)
     # stock_holding_days = hyperparams['target_future_days']
@@ -95,9 +95,9 @@ def get_performance_score(precision, trimmed_average_profit, is_buy_count, true_
     # performance_score = is_buy_count_score * (adjusted_profit ** (holding_total_days / (stock_holding_days + 1)))
 
     if (true_positives < min_is_buy_count):
-        performance_score = precision * (true_positives / min_is_buy_count)
+        performance_score = f1_score * (true_positives / min_is_buy_count)
     else:
-        performance_score = precision
+        performance_score = f1_score
 
     return performance_score
 
@@ -118,7 +118,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
         profits = get_profits(df_prediction_is_buy)
         prediction_is_buy_count = len(df_prediction_is_buy['output_profit'])
         loss_limit_reached_pct = get_loss_limit_pct(df_prediction_is_buy)
-        performance_score = get_performance_score(classification_metrics['precision'],
+        performance_score = get_performance_score(classification_metrics['f1_score'],
                                                   profits['trimmed_average_profit'],
                                                   prediction_is_buy_count,
                                                   binary_classification['true_positives'],
