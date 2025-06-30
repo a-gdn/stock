@@ -14,7 +14,7 @@ import hyperopt
 from hyperopt import hp, fmin, tpe, STATUS_FAIL, STATUS_OK, Trials
 
 import os
-import subprocess
+import subprocess 
 import gc
 
 from itertools import product
@@ -122,7 +122,6 @@ def get_df_data(hyperparams):
     # df_data = df_data.dropna(axis='rows', how='all') # Drop rows with all NaN values
     df_data = hf.fillnavalues(df_data)
     print(f"df_data shape: {df_data.shape}")
-    print(f"df_data NaN count: {df_data.isna().sum().sum()}")
 
     return df_data, num_tickers
 

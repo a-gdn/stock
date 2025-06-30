@@ -23,7 +23,7 @@ tickers_madrid = ['BME:ANA', 'BME:ACX', 'BME:AENA', 'BME:AMP', 'BME:APPS', 'BME:
  'BME:ANE', 'BME:EDR', 'BME:ENC', 'BME:GEST', 'BME:DOM', 'BME:GCO', 'BME:IBE', 'BME:ITX',
  'BME:COL', 'BME:IAG', 'BME:ROVI', 'BME:MRL', 'BME:MTB', 'BME:NTGY', 'BME:NXT', 'BME:OHLA',
  'BME:PHM', 'BME:SPH', 'BME:CASH', 'BME:SCYR', 'BME:TEF', 'BME:UBS', 'BME:VID']
-tickers_milan = ['BIT:BFF', 'BIT:BGN', 'BIT:IF', 'BIT:BMPS', 'BIT:BPE', 'BIT:BPSO', 'BIT:PRO', 'BIT:BST',
+tickers_milan = ['BIT:1ABT', 'BIT:BFF', 'BIT:BGN', 'BIT:IF', 'BIT:BMPS', 'BIT:BPE', 'BIT:BPSO', 'BIT:PRO', 'BIT:BST',
  'BIT:BAMI', 'BIT:BE', 'BIT:BNP', 'BIT:BC', 'BIT:BZU', 'BIT:CPR', 'BIT:CRL', 'BIT:CEM',
  'BIT:CNHI', 'BIT:CE', 'BIT:DIS', 'BIT:DAN', 'BIT:DAL', 'BIT:DLG', 'BIT:DEA', 'BIT:DBK',
  'BIT:DOV', 'BIT:ELN', 'BIT:ENAV', 'BIT:ENI', 'BIT:EPR', 'BIT:EXAI', 'BIT:FNX', 'BIT:RACE',
@@ -37,7 +37,7 @@ tickers_milan = ['BIT:BFF', 'BIT:BGN', 'BIT:IF', 'BIT:BMPS', 'BIT:BPE', 'BIT:BPS
  'BIT:TEN', 'BIT:TRN', 'BIT:TKA', 'BIT:TNXT', 'BIT:TOD', 'BIT:TXT', 'BIT:UCG', 'BIT:DAPP',
  'BIT:VNT', 'BIT:WBD', 'BIT:ZV', 'BIT:A2A', 'BIT:AED', 'BIT:ALA', 'BIT:AMZN', 'BIT:AMP',
  'BIT:ANIM', 'BIT:AV', 'BIT:ARIS', 'BIT:ASC', 'BIT:G', 'BIT:AGL', 'BIT:AVIO']
-tickers_oslo = ['OB:ABG', 'OB:AFG', 'OB:AMSC', 'OB:ABT', 'OB:ARCH', 'OB:ARR', 'OB:ASA', 'OB:BCS', 'OB:BORR',
+tickers_oslo = ['OB:ABG', 'OB:AFG', 'OB:AMSC', 'OB:ARCH', 'OB:ARR', 'OB:ASA', 'OB:BCS', 'OB:BORR',
  'OB:DNB', 'OB:ENTRA', 'OB:EQNR', 'OB:EPR', 'OB:FLNG', 'OB:FRO', 'OB:GOGL', 'OB:GSF',
  'OB:HEX', 'OB:JIN', 'OB:NAPA', 'OB:NEXT', 'OB:NAS', 'OB:NRC', 'OB:PEN', 'OB:PHO',
  'OB:SAGA', 'OB:SATS', 'OB:SDRL', 'OB:SBO', 'OB:SPOL', 'OB:STB', 'OB:STRO', 'OB:TEL',

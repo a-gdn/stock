@@ -8,7 +8,9 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, Termina
 from tensorflow.keras.optimizers import AdamW # type: ignore
 
 from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.preprocessing import StandardScaler
+
 from collections import Counter
 
 import shap
@@ -25,7 +27,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'  # Reduce TensorFlow logs
 
 def compute_alpha(y):
     pos_frac = np.mean(y)
-    return 1.0 - pos_frac
+    return tf.constant(1.0 - pos_frac, dtype=tf.float32)
 
 @tf.keras.utils.register_keras_serializable()
 class FocalLoss(tf.keras.losses.Loss):
@@ -185,6 +187,25 @@ def get_test_train_data(df_input, df_output, test_size):
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
     hf.save_object(scaler, './outputs/scaler.pkl')
+
+    selector = SelectKBest(score_func=f_classif, k=15)
+    X_train = selector.fit_transform(X_train, y_train)
+    X_test = selector.transform(X_test)
+
+    # Get selected feature indices
+    selected_indices = selector.get_support(indices=True)
+
+    # Get feature names and scores
+    selected_features = df_input.columns[selected_indices]
+    selected_scores = selector.scores_[selected_indices]
+
+    # Combine into a DataFrame and sort
+    feature_importances = pd.DataFrame({
+        'feature': selected_features,
+        'score': selected_scores
+    }).sort_values(by='score', ascending=False)
+
+    print(feature_importances)
 
     return {'X_train': X_train, 'X_test': X_test, 'y_train': y_train, 'y_test': y_test}
 
