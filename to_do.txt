@@ -1,5 +1,7 @@
 
-caveat: risk of data leakage with fundamentals?
+during testing, test every possible date range and make sure that i beat the market
+
+add feature: n_ups_market
 
 fix ticker code for:
 ABG.OL

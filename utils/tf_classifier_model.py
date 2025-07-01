@@ -173,12 +173,10 @@ def get_test_train_data(df_input, df_output, test_size):
         raise ValueError(f"test_size ({test_size}) must be smaller than the total number of samples ({n_samples}).")
     
     X_train = df_input[:-test_size].values
-    # y_train = df_output[:-test_size].values.ravel().astype(int)
-    y_train = df_output[:-test_size].values.astype(np.float32)
+    y_train = df_output[:-test_size].values.astype(np.float32) # y_train = df_output[:-test_size].values.ravel().astype(int)
 
     X_test = df_input.tail(test_size).values
-    # y_test = df_output.tail(test_size).values.ravel().astype(int)
-    y_test = df_output.tail(test_size).values.astype(np.float32)
+    y_test = df_output.tail(test_size).values.astype(np.float32) # y_test = df_output.tail(test_size).values.ravel().astype(int)
     
     if cfg.use_hyperopt and X_train.shape[0] == 0:
         raise ValueError("Empty training set, skipping this trial")
@@ -188,7 +186,7 @@ def get_test_train_data(df_input, df_output, test_size):
     X_test = scaler.transform(X_test)
     hf.save_object(scaler, './outputs/scaler.pkl')
 
-    selector = SelectKBest(score_func=f_classif, k=15)
+    selector = SelectKBest(score_func=f_classif, k=20)
     X_train = selector.fit_transform(X_train, y_train)
     X_test = selector.transform(X_test)
 
