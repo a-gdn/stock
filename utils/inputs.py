@@ -4,6 +4,8 @@ import config as cfg
 import pandas as pd
 import numpy as np
 
+from sklearn.preprocessing import LabelEncoder
+
 def calculate_rsi(df, period=14):
     hf.validate_dataframe(df, function_name="calculate_rsi")
 
@@ -151,10 +153,15 @@ def calculate_ref_var(df, past_days, col_name, df_index):
     return var_reindexed
 
 def get_market_name(df):
-    for col in df.columns:
-        df[col] = col[-2:]
+    market_name = df.copy()
+    for col in market_name.columns:
+        market_name[col] = col[-2:]
     
-    return hf.stack(df, 'input_market_name')
+    market_name_stacked = hf.stack(df, 'input_market_name')
+    le = LabelEncoder()
+    market_name_encoded = market_name_stacked.apply(le.fit_transform)
+
+    return market_name_encoded
 
 def get_inputs(dfs, buying_time):
     var_90 = calculate_var(dfs['df_stock_buy'], past_days=90, col_name='input_var_90d')
@@ -179,8 +186,6 @@ def get_inputs(dfs, buying_time):
     volume_var_10_1 = calculate_volume_var(dfs['df_stock_volume'], past_start_day=10, past_end_day=1)
     volume_var_2_1 = calculate_volume_var(dfs['df_stock_volume'], past_start_day=2, past_end_day=1)
     
-    # market_name = get_market_name(dfs['df_stock_buy'])
-
     # sp500_var_90 = calculate_var(dfs['df_market_'], past_days=90, col_name='input_sp500_var_90d')
 
     # market_var_90 = calculate_market_var(dfs['df_stock_buy'], past_days=90)
@@ -272,10 +277,12 @@ def get_inputs(dfs, buying_time):
     total_debt_var_4 =  hf.stack(dfs['df_total_debt_var_4'], 'input_total_debt_var_4')
     total_rev_var_4 =  hf.stack(dfs['df_total_rev_var_4'], 'input_total_rev_var_4')
 
+    market_name = get_market_name(dfs['df_stock_buy'])
+
     input_list = [
         var_90, var_30, var_10, var_1,
         var_vs_close_1, var_vs_high_1, var_vs_low_1,
-        # market_name,
+        market_name,
         # volume_1,
         volume_var_90_1, volume_var_30_1, volume_var_10_1, volume_var_2_1,
         # market_var_90, market_var_30, market_var_10, market_var_5, market_var_1,
