@@ -157,6 +157,7 @@ def add_output_profit(df, **hyperparams):
 
 def add_outputs(df_data, dfs, num_stocks, **hyperparams):
     df_loss_limit_prices = get_loss_limit_prices(dfs, **hyperparams)
+
     df_loss_prices = get_loss_prices(dfs, df_loss_limit_prices)
     has_min_max_values = get_has_min_max_values(**hyperparams)
 

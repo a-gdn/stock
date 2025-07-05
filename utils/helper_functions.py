@@ -53,13 +53,14 @@ def get_date() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
 def fillnavalues(df: pd.DataFrame) -> pd.DataFrame:
-    # df = df.interpolate(limit_area='inside') #interpolation when only one value ('inside') is missing
-    df.ffill(inplace=True) #forward fill otherwise
-    # df = df.bfill() #backward fill for the first rows
-    df.fillna(0, inplace=True) #fill remaining NaN values with 0
-    df.replace([np.inf, -np.inf], np.nan, inplace=True)
-    df.dropna(inplace=True) #drop rows with NaN values
-    return df
+    df_cleaned = df.copy()
+
+    df_cleaned.ffill(inplace=True) #forward fill otherwise
+    # df_cleaned.bfill(inplace=True) #backward fill for the first rows
+    df_cleaned.fillna(0, inplace=True) #fill remaining NaN values with 0
+    df_cleaned.replace([np.inf, -np.inf], np.nan, inplace=True)
+    df_cleaned.dropna(inplace=True) #drop rows with NaN values
+    return df_cleaned
 
 def save_object(obj, filename):
     """Save a Python object to a file using pickle."""
@@ -165,9 +166,10 @@ def get_rows_after_date(df: pd.DataFrame, start_date: str) -> pd.DataFrame:
     return df[df.index >= pd.Timestamp(start_date)]
 
 def rename_first_column(df: pd.DataFrame, new_col_name: str) -> pd.DataFrame:
-    df.rename(columns={df.columns[0] : new_col_name}, inplace=True)
+    df_renamed = df.copy()
+    df_renamed.rename(columns={df.columns[0] : new_col_name}, inplace=True)
 
-    return df
+    return df_renamed
 
 def stack(df, new_col_name):
     df_stacked = df.stack(future_stack=True) # Stack columns, using future_stack is to be Pandas 3.0 compatible
@@ -175,6 +177,15 @@ def stack(df, new_col_name):
     df_stacked = rename_first_column(df_stacked, new_col_name) # Rename the 1st (and only) column
 
     return df_stacked
+
+def expand(df_to_expand: pd.DataFrame, df_index: pd.DataFrame, index_name) -> pd.DataFrame:
+    level_values = df_index.index.get_level_values(index_name)
+    df_expanded = df_to_expand.reindex(level_values).set_index(df_index.index)
+    
+    df_expanded.ffill(inplace=True)
+    df_expanded.bfill(inplace=True)
+    
+    return df_expanded
 
 def create_floor_mask(df: pd.DataFrame, low_df:pd.DataFrame, loss_limit:float, n_future_days:int) -> pd.DataFrame:
     if loss_limit > 0:

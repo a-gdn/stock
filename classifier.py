@@ -112,6 +112,10 @@ def get_df_data(hyperparams):
     stock_df = load_db(cfg.db_path)
     market_df = load_db(cfg.market_db_path)
 
+    market_df = market_df.reindex(stock_df.index)
+    market_df.ffill(inplace=True)
+    market_df.bfill(inplace=True)
+
     num_stocks = hf.get_num_tickers(get_single_level_df(stock_df, 'Open'))
     print(f'Number of stocks: {num_stocks}')
     
@@ -119,7 +123,6 @@ def get_df_data(hyperparams):
     stock_fundamental_dfs = get_fundamental_dfs(stock_df)
     market_ohlcv_dfs = get_ohlcv_dfs(market_df, "market", **hyperparams)
     dfs = {**stock_ohlcv_dfs, **stock_fundamental_dfs, **market_ohlcv_dfs}
-
 
     if os.path.exists(cfg.transformed_data_path) and cfg.use_saved_transformed_data:
         df_data = pd.read_pickle(cfg.transformed_data_path)
