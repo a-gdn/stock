@@ -41,13 +41,22 @@ def get_single_level_df(df, ohlcv):
     new_df = hf.remove_top_column_name(new_df)
     return new_df
 
-def get_ohlcv_dfs(df):
+def get_ohlcv_dfs(df, source, **hyperparams):
+    df_buy = get_single_level_df(df, hyperparams["buying_time"])
+    df_sell = get_single_level_df(df, hyperparams["selling_time"])
+
     df_open = get_single_level_df(df, 'Open')
     df_high = get_single_level_df(df, 'High')
     df_low = get_single_level_df(df, 'Low')
     df_close = get_single_level_df(df, 'Close')
     df_volume = get_single_level_df(df, 'Volume')
+    
+    return {
+        f'df_{source}_buy': df_buy, f'df_{source}_sell': df_sell,
+        f'df_{source}_open': df_open, f'df_{source}_high': df_high, f'df_{source}_low': df_low, f'df_{source}_close': df_close, f'df_{source}_volume': df_volume,
+    }
 
+def get_fundamental_dfs(df):
     df_current_ratio = get_single_level_df(df, 'current_ratio')
     df_ev_to_ebitda_ltm = get_single_level_df(df, 'ev_to_ebitda_ltm')
     df_fcf_yield_ltm = get_single_level_df(df, 'fcf_yield_ltm')
@@ -91,39 +100,39 @@ def get_ohlcv_dfs(df):
     df_roe_var_4 = get_single_level_df(df, 'roe_var_4')
     df_total_debt_var_4 = get_single_level_df(df, 'total_debt_var_4')
     df_total_rev_var_4 = get_single_level_df(df, 'total_rev_var_4')
-    
-    return {'df_open': df_open, 'df_high': df_high, 'df_low': df_low, 'df_close': df_close, 'df_volume': df_volume,
-            'df_current_ratio': df_current_ratio, 'df_ev_to_ebitda_ltm': df_ev_to_ebitda_ltm, 'df_fcf_yield_ltm': df_fcf_yield_ltm, 'df_marketcap': df_marketcap, 'df_pe_ltm': df_pe_ltm, 'df_price_to_book': df_price_to_book, 'df_roa': df_roa, 'df_roe': df_roe, 'df_total_debt': df_total_debt, 'df_total_rev': df_total_rev,
-            'df_current_ratio_var_1': df_current_ratio_var_1, 'df_ev_to_ebitda_ltm_var_1': df_ev_to_ebitda_ltm_var_1, 'df_fcf_yield_ltm_var_1': df_fcf_yield_ltm_var_1, 'df_marketcap_var_1': df_marketcap_var_1, 'df_pe_ltm_var_1': df_pe_ltm_var_1, 'df_price_to_book_var_1': df_price_to_book_var_1, 'df_roa_var_1': df_roa_var_1, 'df_roe_var_1': df_roe_var_1, 'df_total_debt_var_1': df_total_debt_var_1, 'df_total_rev_var_1': df_total_rev_var_1,
-            'df_current_ratio_var_2': df_current_ratio_var_2, 'df_ev_to_ebitda_ltm_var_2': df_ev_to_ebitda_ltm_var_2, 'df_fcf_yield_ltm_var_2': df_fcf_yield_ltm_var_2, 'df_marketcap_var_2': df_marketcap_var_2, 'df_pe_ltm_var_2': df_pe_ltm_var_2, 'df_price_to_book_var_2': df_price_to_book_var_2, 'df_roa_var_2': df_roa_var_2, 'df_roe_var_2': df_roe_var_2, 'df_total_debt_var_2': df_total_debt_var_2, 'df_total_rev_var_2': df_total_rev_var_2,
-            'df_current_ratio_var_4': df_current_ratio_var_4, 'df_ev_to_ebitda_ltm_var_4': df_ev_to_ebitda_ltm_var_4, 'df_fcf_yield_ltm_var_4': df_fcf_yield_ltm_var_4, 'df_marketcap_var_4': df_marketcap_var_4, 'df_pe_ltm_var_4': df_pe_ltm_var_4, 'df_price_to_book_var_4': df_price_to_book_var_4, 'df_roa_var_4': df_roa_var_4, 'df_roe_var_4': df_roe_var_4, 'df_total_debt_var_4': df_total_debt_var_4, 'df_total_rev_var_4': df_total_rev_var_4
-            }
+
+    return {
+        'df_current_ratio': df_current_ratio, 'df_ev_to_ebitda_ltm': df_ev_to_ebitda_ltm, 'df_fcf_yield_ltm': df_fcf_yield_ltm, 'df_marketcap': df_marketcap, 'df_pe_ltm': df_pe_ltm, 'df_price_to_book': df_price_to_book, 'df_roa': df_roa, 'df_roe': df_roe, 'df_total_debt': df_total_debt, 'df_total_rev': df_total_rev,
+        'df_current_ratio_var_1': df_current_ratio_var_1, 'df_ev_to_ebitda_ltm_var_1': df_ev_to_ebitda_ltm_var_1, 'df_fcf_yield_ltm_var_1': df_fcf_yield_ltm_var_1, 'df_marketcap_var_1': df_marketcap_var_1, 'df_pe_ltm_var_1': df_pe_ltm_var_1, 'df_price_to_book_var_1': df_price_to_book_var_1, 'df_roa_var_1': df_roa_var_1, 'df_roe_var_1': df_roe_var_1, 'df_total_debt_var_1': df_total_debt_var_1, 'df_total_rev_var_1': df_total_rev_var_1,
+        'df_current_ratio_var_2': df_current_ratio_var_2, 'df_ev_to_ebitda_ltm_var_2': df_ev_to_ebitda_ltm_var_2, 'df_fcf_yield_ltm_var_2': df_fcf_yield_ltm_var_2, 'df_marketcap_var_2': df_marketcap_var_2, 'df_pe_ltm_var_2': df_pe_ltm_var_2, 'df_price_to_book_var_2': df_price_to_book_var_2, 'df_roa_var_2': df_roa_var_2, 'df_roe_var_2': df_roe_var_2, 'df_total_debt_var_2': df_total_debt_var_2, 'df_total_rev_var_2': df_total_rev_var_2,
+        'df_current_ratio_var_4': df_current_ratio_var_4, 'df_ev_to_ebitda_ltm_var_4': df_ev_to_ebitda_ltm_var_4, 'df_fcf_yield_ltm_var_4': df_fcf_yield_ltm_var_4, 'df_marketcap_var_4': df_marketcap_var_4, 'df_pe_ltm_var_4': df_pe_ltm_var_4, 'df_price_to_book_var_4': df_price_to_book_var_4, 'df_roa_var_4': df_roa_var_4, 'df_roe_var_4': df_roe_var_4, 'df_total_debt_var_4': df_total_debt_var_4, 'df_total_rev_var_4': df_total_rev_var_4
+    }
 
 def get_df_data(hyperparams):
-    df = load_db(cfg.db_path)
+    stock_df = load_db(cfg.db_path)
+    market_df = load_db(cfg.market_db_path)
 
-    num_tickers = hf.get_num_tickers(get_single_level_df(df, 'Open'))
-    print(f'Number of tickers: {num_tickers}')
+    num_stocks = hf.get_num_tickers(get_single_level_df(stock_df, 'Open'))
+    print(f'Number of stocks: {num_stocks}')
     
-    df_buy = get_single_level_df(df, hyperparams['buying_time'])
-    df_sell = get_single_level_df(df, hyperparams['selling_time'])
-    dfs_ohlcv = get_ohlcv_dfs(df)
+    stock_ohlcv_dfs = get_ohlcv_dfs(stock_df, "stock", **hyperparams)
+    stock_fundamental_dfs = get_fundamental_dfs(stock_df)
+    market_ohlcv_dfs = get_ohlcv_dfs(market_df, "market", **hyperparams)
+    dfs = {**stock_ohlcv_dfs, **stock_fundamental_dfs, **market_ohlcv_dfs}
 
-    # df_sp500 = load_db(cfg.sp500_db_path)
-    # df_vix = load_db(cfg.vix_db_path)
 
     if os.path.exists(cfg.transformed_data_path) and cfg.use_saved_transformed_data:
         df_data = pd.read_pickle(cfg.transformed_data_path)
     else:
-        df_data = inputs.get_inputs(df_buy, dfs_ohlcv, hyperparams['buying_time'])
+        df_data = inputs.get_inputs(dfs, hyperparams['buying_time'])
         df_data.to_pickle(cfg.transformed_data_path)
 
-    df_data = outputs.add_outputs(df_data, df_buy, df_sell, dfs_ohlcv, num_tickers, cfg.output_binary_name, cfg.fee, **hyperparams)    
-    # df_data = df_data.dropna(axis='rows', how='all') # Drop rows with all NaN values
+    df_data = outputs.add_outputs(df_data, dfs, num_stocks, **hyperparams)    
+
     df_data = hf.fillnavalues(df_data)
     print(f"df_data shape: {df_data.shape}")
 
-    return df_data, num_tickers
+    return df_data, num_stocks
 
 def load_results(path):
     if os.path.exists(path):
@@ -169,18 +178,13 @@ def get_model_result(hyperparams):
 
     df_data, num_tickers = get_df_data(hyperparams)
 
-    # print(df_data.index[:10])
-
-    # Initialize list to store results from each fold
-    all_fold_performance_metrics = []
+    all_fold_performance_metrics = [] # Initialize list to store results from each fold
 
     total_rows = len(df_data)
 
     # Test the model with a sliding window approach
     for i, train_end_index in enumerate(range(cfg.train_window_size, total_rows, cfg.test_window_size)):
-        # Ensure there's a full test window available
         if (train_end_index + cfg.test_window_size) > total_rows:
-            # If not enough data for a full test window, break
             print(f"Not enough data for a full test window starting at index {train_end_index}. Breaking.")
             break
 

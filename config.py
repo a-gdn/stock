@@ -2,8 +2,7 @@ import hyperopt as hp
 from hyperopt import hp, fmin, tpe
 
 db_path = './db/merged_ohlcv_fundamentals.pkl'
-sp500_db_path = './db/sp500_2000-08-01_to_2024-11-20.pkl'
-vix_db_path = './db/vix_2000-08-01_to_2024-11-20.pkl'
+market_db_path = './db/ohlcv/ohlcv_market_tickers_2000-08-01_to_2025-06-13.pkl'
 
 transformed_data_path = './outputs/classifier_transformed_data.pkl'
 model_path = './outputs/classifier_model.keras'
