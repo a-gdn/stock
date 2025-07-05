@@ -147,7 +147,7 @@ def get_feature_importance(df_input, df_output, sample_size=10000):
 
     return importance_df
 
-def get_test_train_data(df_input, df_output, test_size):
+def get_test_train_data(df_input, df_output, train_end_index):
     """
     Splits data into training and testing sets, scales the input features,
     and ensures that the test size is valid.
@@ -164,20 +164,23 @@ def get_test_train_data(df_input, df_output, test_size):
         ValueError: If the test_size is not a positive integer or is greater than or equal to the total number of samples.
     """
 
-    n_samples = len(df_input)
+    # Calculate indices for training and testing
+    train_start_index = 0
+    test_start_index = train_end_index
+    test_end_index = train_end_index + cfg.test_window_size
 
-    # Input validation
-    if not isinstance(test_size, int) or test_size <= 0:
-        raise ValueError("test_size must be a positive integer.")
-    if test_size >= n_samples:
-        raise ValueError(f"test_size ({test_size}) must be smaller than the total number of samples ({n_samples}).")
+    if train_end_index <= 0 or test_start_index >= len(df_input):
+        raise ValueError("Invalid train_end_index or test_size leading to empty or out-of-bounds sets.")
+    if test_end_index > len(df_input):
+        # Adjust test_end_index if it goes beyond the DataFrame length
+        test_end_index = len(df_input)
+        logging.warning(f"Adjusted test_end_index to {test_end_index} as it exceeded DataFrame length.")
     
-    X_train = df_input[:-test_size].values
-    y_train = df_output[:-test_size].values.astype(np.float32) # y_train = df_output[:-test_size].values.ravel().astype(int)
+    X_train = df_input.iloc[train_start_index:train_end_index].values
+    y_train = df_output.iloc[train_start_index:train_end_index].values.astype(np.float32)
 
-    X_test = df_input.tail(test_size).values
-    y_test = df_output.tail(test_size).values.astype(np.float32) # y_test = df_output.tail(test_size).values.ravel().astype(int)
-    
+    X_test = df_input.iloc[test_start_index:test_end_index].values
+    y_test = df_output.iloc[test_start_index:test_end_index].values.astype(np.float32)    
     if cfg.use_hyperopt and X_train.shape[0] == 0:
         raise ValueError("Empty training set, skipping this trial")
 
@@ -260,14 +263,14 @@ def create_tf_model(**kwargs):
     logging.info(f"Number of epochs used: {len(history.epoch)}")
     model.save(cfg.model_path)
 
-def load_tf_model(df_data, hyperparams):
+def load_tf_model(df_data, train_end_index, hyperparams):
     logging.info("Loading TensorFlow model...")
     # logging.info(df_data.tail())
 
     df_input, df_output = get_dfs_input_output(df_data, cfg.output_binary_name)    
     # importance_df = get_feature_importance(df_input, df_output) # Calculate SHAP importances
     # df_input = remove_highly_correlated_features(df_input, importance_df) # Remove correlated features
-    test_train_data = get_test_train_data(df_input, df_output, cfg.test_size)
+    test_train_data = get_test_train_data(df_input, df_output, train_end_index)
     
     if not os.path.exists(cfg.model_path) or not cfg.use_saved_model:
         tf.keras.backend.clear_session()

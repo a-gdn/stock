@@ -1,7 +1,8 @@
 
-during testing, test every possible date range and make sure that i beat the market
 
-add feature: n_ups_market
+add feature: n_ups_market_90d, n_ups_market_30d, n_ups_market_10d
+
+add new hyperparameter : n_top_predictions for one day
 
 fix ticker code for:
 ABG.OL

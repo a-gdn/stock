@@ -150,6 +150,15 @@ def calculate_ref_var(df, past_days, col_name, df_index):
 
     return var_reindexed
 
+def get_market_name(df):
+    for col in df.columns:
+        df[col] = col[-2:]
+    
+    market_name_stacked = hf.stack(df, 'input_market_name')
+    print(f"Market name stacked: {market_name_stacked.shape}")
+    print(market_name_stacked.tail(10))
+    return market_name_stacked
+
 def get_inputs(df_buy, dfs_ohlcv, buying_time):
     var_90 = calculate_var(df_buy, past_days=90, col_name='input_var_90d')
     var_30 = calculate_var(df_buy, past_days=30, col_name='input_var_30d')
@@ -173,7 +182,8 @@ def get_inputs(df_buy, dfs_ohlcv, buying_time):
     volume_var_10_1 = calculate_volume_var(dfs_ohlcv['df_volume'], past_start_day=10, past_end_day=1)
     volume_var_2_1 = calculate_volume_var(dfs_ohlcv['df_volume'], past_start_day=2, past_end_day=1)
     
-    # market_var_90 = calculate_market_var(df_buy, past_days=90)
+    market = get_market_name(df_buy)
+    market_var_90 = calculate_market_var(df_buy, past_days=90)
     # market_var_30 = calculate_market_var(df_buy, past_days=30)
     # market_var_10 = calculate_market_var(df_buy, past_days=10)
     # market_var_5 = calculate_market_var(df_buy, past_days=5)

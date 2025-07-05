@@ -102,7 +102,7 @@ def get_performance_score(precision, trimmed_average_profit, is_buy_count, true_
     return performance_score
 
 def evaluate_model(df_data, model, test_train_data, num_tickers, num_combinations, hyperparams):
-    df_test = slice_df_test(df_data, cfg.test_size)
+    df_test = slice_df_test(df_data, cfg.test_window_size)
     df_test = add_predictions(df_test, model, test_train_data['X_test'], **hyperparams)
     
     market_rate = get_market_rate(test_train_data['y_test'])

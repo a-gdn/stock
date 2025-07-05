@@ -169,17 +169,57 @@ def get_model_result(hyperparams):
 
     df_data, num_tickers = get_df_data(hyperparams)
 
-    test_train_data, model = tf_classifier_model.load_tf_model(df_data, hyperparams)
-    performance_metrics = eval.evaluate_model(df_data, model, test_train_data, num_tickers, num_combinations, hyperparams)
+    # print(df_data.index[:10])
 
-    result = {**performance_metrics, **hyperparams}
-    print(f"Result:")
-    for k, v in result.items():
+    # Initialize list to store results from each fold
+    all_fold_performance_metrics = []
+
+    total_rows = len(df_data)
+
+    # Test the model with a sliding window approach
+    for i, train_end_index in enumerate(range(cfg.train_window_size, total_rows, cfg.test_window_size)):
+        # Ensure there's a full test window available
+        if (train_end_index + cfg.test_window_size) > total_rows:
+            # If not enough data for a full test window, break
+            print(f"Not enough data for a full test window starting at index {train_end_index}. Breaking.")
+            break
+
+        print(f"\n--- Fold {i+1}: Training on rows 1 to {train_end_index}, Testing on rows {train_end_index + 1} to {train_end_index + cfg.test_window_size} ---")
+
+        test_train_data, model = tf_classifier_model.load_tf_model(df_data, train_end_index, hyperparams)
+
+        performance_metrics = eval.evaluate_model(df_data, model, test_train_data, num_tickers, num_combinations, hyperparams)
+
+        all_fold_performance_metrics.append(performance_metrics)
+
+        print(f"Result for Fold {i+1}:")
+        for k, v in performance_metrics.items():
+            print(f"- {k}: {v}")
+
+        release_memory(model, test_train_data) # Release memory for each fold
+
+    # After all folds are processed, aggregate (average) the results
+    df_fold_metrics = pd.DataFrame(all_fold_performance_metrics)    
+    aggregated_results = df_fold_metrics.mean().round(2).to_dict()
+
+    filtered_df = df_fold_metrics[df_fold_metrics['prediction_is_buy_count'] > 0]
+
+    if not filtered_df.empty:
+        performance_score_mean = filtered_df['performance_score'].mean().round(2)
+    else:
+        performance_score_mean = 0
+    
+    aggregated_results['performance_score'] = performance_score_mean
+    
+    print(f"\nAggregated Results (across {len(all_fold_performance_metrics)} folds):")
+    for k, v in aggregated_results.items():
         print(f"- {k}: {v}")
+    
+    final_result = {**aggregated_results, **hyperparams}
 
-    release_memory(df_data, model, test_train_data)
+    release_memory(df_data) # Release memory for df_data after all folds
 
-    return result
+    return final_result
 
 def hyperopt_search(results):
     def objective(hyperparams):   
