@@ -189,7 +189,7 @@ def get_test_train_data(df_input, df_output, train_end_index):
     X_test = scaler.transform(X_test)
     hf.save_object(scaler, './outputs/scaler.pkl')
 
-    selector = SelectKBest(score_func=f_classif, k=20)
+    selector = SelectKBest(score_func=f_classif, k=cfg.num_features)
     X_train = selector.fit_transform(X_train, y_train)
     X_test = selector.transform(X_test)
 

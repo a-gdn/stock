@@ -165,9 +165,10 @@ def get_rows_after_date(df: pd.DataFrame, start_date: str) -> pd.DataFrame:
     #start_date formatted as 'YYYY-MM-DD'
     return df[df.index >= pd.Timestamp(start_date)]
 
-def rename_first_column(df: pd.DataFrame, new_col_name: str) -> pd.DataFrame:
+def rename_first_column(df, new_col_name: str) -> pd.DataFrame:
     df_renamed = df.copy()
-    df_renamed.rename(columns={df.columns[0] : new_col_name}, inplace=True)
+    df_renamed = pd.DataFrame(df_renamed)
+    df_renamed.rename(columns={df_renamed.columns[0] : new_col_name}, inplace=True)
 
     return df_renamed
 

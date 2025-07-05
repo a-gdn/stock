@@ -19,6 +19,7 @@ start_date = '2015-06-01' #'2013-01-01'
 train_window_size = 500000
 test_window_size = 25000
 
+num_features = 50
 max_epochs = 100
 early_stopping_patience = 3
 lr_reduction_factor = 0.1

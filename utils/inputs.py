@@ -59,11 +59,11 @@ def calculate_stock_var_vs_past_ohlcv(df, df_past, past_days, col_name):
 
     return var_stacked
 
-def calculate_market_var_vs_past_ohlcv(df, df_past, past_days, col_name):
-    var = df / df_past.shift(past_days)
-    var = hf.rename_first_column(df, new_col_name=col_name)
+def calculate_market_var_vs_past_ohlcv(df_stock, df_market_past, past_days, col_name):
+    var = df_stock.div(df_market_past.shift(past_days), axis='index')
+    var_stacked = hf.stack(var, col_name)
 
-    return var
+    return var_stacked
 
 def clean_volume_data(df_stock_volume):
     df_cleaned_volume = df_stock_volume.copy()
@@ -129,11 +129,18 @@ def get_volume_volability(df, past_start_day, past_end_day):
 
     return volatility_stacked
 
-def get_n_ups(df, past_days):
+def get_stock_n_ups(df, past_days):
     n_ups = hf.calculate_n_ups(df, past_days)
-    n_ups_stacked = hf.stack(n_ups, f'input_n_ups_{past_days}d')
+    n_ups_stacked = hf.stack(n_ups, f'input_stock_n_ups_{past_days}d')
 
     return n_ups_stacked
+
+def get_market_n_ups(df, df_index, past_days, col_name):
+    n_ups = hf.calculate_n_ups(df, past_days)
+    n_ups = hf.rename_first_column(n_ups, new_col_name=col_name)
+    n_ups_expanded = hf.expand(n_ups, df_index, index_name='Date')
+
+    return n_ups_expanded
 
 def get_performance_vs_market(df, past_days):
     performance_vs_market = hf.calculate_performance_vs_market(df, past_days)
@@ -172,10 +179,6 @@ def get_market_name(df):
 
 def get_inputs(dfs, buying_time):
     var_stock_90 = calculate_stock_var(dfs['df_stock_buy'], past_days=90, col_name='input_stock_var_90d')
-    # print("var_stock_90 type:", type(var_stock_90))
-    # print("var_stock_90 shape:", var_stock_90.shape)
-    # print("var_stock_90 tail:", var_stock_90.tail(3))
-
     var_stock_30 = calculate_stock_var(dfs['df_stock_buy'], past_days=30, col_name='input_stock_var_30d')
     var_stock_10 = calculate_stock_var(dfs['df_stock_buy'], past_days=10, col_name='input_stock_var_10d')
     var_stock_1 = calculate_stock_var(dfs['df_stock_buy'], past_days=1, col_name='input_stock_var_1d')
@@ -184,52 +187,42 @@ def get_inputs(dfs, buying_time):
     var_brussels_market_30 = calculate_market_var(dfs['df_market_buy']['^BFX'], var_stock_90, past_days=30, col_name='input_brussels_market_var_30d')
     var_brussels_market_10 = calculate_market_var(dfs['df_market_buy']['^BFX'], var_stock_90, past_days=10, col_name='input_brussels_market_var_10d')
     var_brussels_market_1 = calculate_market_var(dfs['df_market_buy']['^BFX'], var_stock_90, past_days=1, col_name='input_brussels_market_var_1d')
-    
     var_madrid_market_90 = calculate_market_var(dfs['df_market_buy']['^IBEX'], var_stock_90, past_days=90, col_name='input_madrid_market_var_90d')
     var_madrid_market_30 = calculate_market_var(dfs['df_market_buy']['^IBEX'], var_stock_90, past_days=30, col_name='input_madrid_market_var_30d')
     var_madrid_market_10 = calculate_market_var(dfs['df_market_buy']['^IBEX'], var_stock_90, past_days=10, col_name='input_madrid_market_var_10d')
     var_madrid_market_1 = calculate_market_var(dfs['df_market_buy']['^IBEX'], var_stock_90, past_days=1, col_name='input_madrid_market_var_1d')
-    
     var_milan_market_90 = calculate_market_var(dfs['df_market_buy']['FTSEMIB.MI'], var_stock_90, past_days=90, col_name='input_milan_market_var_90d')
     var_milan_market_30 = calculate_market_var(dfs['df_market_buy']['FTSEMIB.MI'], var_stock_90, past_days=30, col_name='input_milan_market_var_30d')
     var_milan_market_10 = calculate_market_var(dfs['df_market_buy']['FTSEMIB.MI'], var_stock_90, past_days=10, col_name='input_milan_market_var_10d')
     var_milan_market_1 = calculate_market_var(dfs['df_market_buy']['FTSEMIB.MI'], var_stock_90, past_days=1, col_name='input_milan_market_var_1d')
-
     var_nordic_market_90 = calculate_market_var(dfs['df_market_buy']['^OMX'], var_stock_90, past_days=90, col_name='input_nordic_market_var_90d')
     var_nordic_market_30 = calculate_market_var(dfs['df_market_buy']['^OMX'], var_stock_90, past_days=30, col_name='input_nordic_market_var_30d')
     var_nordic_market_10 = calculate_market_var(dfs['df_market_buy']['^OMX'], var_stock_90, past_days=10, col_name='input_nordic_market_var_10d')
     var_nordic_market_1 = calculate_market_var(dfs['df_market_buy']['^OMX'], var_stock_90, past_days=1, col_name='input_nordic_market_var_1d')
-
     var_amsterdam_market_90 = calculate_market_var(dfs['df_market_buy']['^AEX'], var_stock_90, past_days=90, col_name='input_amsterdam_market_var_90d')
     var_amsterdam_market_30 = calculate_market_var(dfs['df_market_buy']['^AEX'], var_stock_90, past_days=30, col_name='input_amsterdam_market_var_30d')
     var_amsterdam_market_10 = calculate_market_var(dfs['df_market_buy']['^AEX'], var_stock_90, past_days=10, col_name='input_amsterdam_market_var_10d')
     var_amsterdam_market_1 = calculate_market_var(dfs['df_market_buy']['^AEX'], var_stock_90, past_days=1, col_name='input_amsterdam_market_var_1d')
-
     var_paris_market_90 = calculate_market_var(dfs['df_market_buy']['^FCHI'], var_stock_90, past_days=90, col_name='input_paris_market_var_90d')
     var_paris_market_30 = calculate_market_var(dfs['df_market_buy']['^FCHI'], var_stock_90, past_days=30, col_name='input_paris_market_var_30d')
     var_paris_market_10 = calculate_market_var(dfs['df_market_buy']['^FCHI'], var_stock_90, past_days=10, col_name='input_paris_market_var_10d')
     var_paris_market_1 = calculate_market_var(dfs['df_market_buy']['^FCHI'], var_stock_90, past_days=1, col_name='input_paris_market_var_1d')
-
     var_sp500_market_90 = calculate_market_var(dfs['df_market_buy']['^GSPC'], var_stock_90, past_days=90, col_name='input_sp500_market_var_90d')
     var_sp500_market_30 = calculate_market_var(dfs['df_market_buy']['^GSPC'], var_stock_90, past_days=30, col_name='input_sp500_market_var_30d')
     var_sp500_market_10 = calculate_market_var(dfs['df_market_buy']['^GSPC'], var_stock_90, past_days=10, col_name='input_sp500_market_var_10d')
     var_sp500_market_1 = calculate_market_var(dfs['df_market_buy']['^GSPC'], var_stock_90, past_days=1, col_name='input_sp500_market_var_1d')
-
     var_euro_market_90 = calculate_market_var(dfs['df_market_buy']['^STOXX50E'], var_stock_90, past_days=90, col_name='input_euro_market_var_90d')
     var_euro_market_30 = calculate_market_var(dfs['df_market_buy']['^STOXX50E'], var_stock_90, past_days=30, col_name='input_euro_market_var_30d')
     var_euro_market_10 = calculate_market_var(dfs['df_market_buy']['^STOXX50E'], var_stock_90, past_days=10, col_name='input_euro_market_var_10d')
     var_euro_market_1 = calculate_market_var(dfs['df_market_buy']['^STOXX50E'], var_stock_90, past_days=1, col_name='input_euro_market_var_1d')
-
     var_frankfurt_market_90 = calculate_market_var(dfs['df_market_buy']['^GDAXI'], var_stock_90, past_days=90, col_name='input_frankfurt_market_var_90d')
     var_frankfurt_market_30 = calculate_market_var(dfs['df_market_buy']['^GDAXI'], var_stock_90, past_days=30, col_name='input_frankfurt_market_var_30d')
     var_frankfurt_market_10 = calculate_market_var(dfs['df_market_buy']['^GDAXI'], var_stock_90, past_days=10, col_name='input_frankfurt_market_var_10d')
     var_frankfurt_market_1 = calculate_market_var(dfs['df_market_buy']['^GDAXI'], var_stock_90, past_days=1, col_name='input_frankfurt_market_var_1d')
-
     var_london_market_90 = calculate_market_var(dfs['df_market_buy']['^FTSE'], var_stock_90, past_days=90, col_name='input_london_market_var_90d')
     var_london_market_30 = calculate_market_var(dfs['df_market_buy']['^FTSE'], var_stock_90, past_days=30, col_name='input_london_market_var_30d')
     var_london_market_10 = calculate_market_var(dfs['df_market_buy']['^FTSE'], var_stock_90, past_days=10, col_name='input_london_market_var_10d')
     var_london_market_1 = calculate_market_var(dfs['df_market_buy']['^FTSE'], var_stock_90, past_days=1, col_name='input_london_market_var_1d')
-
     var_vix_90 = calculate_market_var(dfs['df_market_buy']['^VIX'], var_stock_90, past_days=90, col_name='input_vix_var_90d')
     var_vix_30 = calculate_market_var(dfs['df_market_buy']['^VIX'], var_stock_90, past_days=30, col_name='input_vix_var_30d')
     var_vix_10 = calculate_market_var(dfs['df_market_buy']['^VIX'], var_stock_90, past_days=10, col_name='input_vix_var_10d')
@@ -240,47 +233,37 @@ def get_inputs(dfs, buying_time):
     var_vs_stock_close_1 = calculate_stock_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_stock_close'], past_days=1, col_name='input_stock_var_vs_close_1d')
     var_vs_stock_low_1 = calculate_stock_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_stock_low'], past_days=1, col_name='input_stock_var_vs_low_1d')
     var_vs_stock_high_1 = calculate_stock_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_stock_high'], past_days=1, col_name='input_stock_var_vs_high_1d')
-
+    
     var_vs_brussels_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^BFX'], past_days=1, col_name='input_brussels_var_vs_close_1d')
     var_vs_brussels_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^BFX'], past_days=1, col_name='input_brussels_var_vs_low_1d')
     var_vs_brussels_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^BFX'], past_days=1, col_name='input_brussels_var_vs_high_1d')
-
     var_vs_madrid_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^IBEX'], past_days=1, col_name='input_madrid_var_vs_close_1d')
     var_vs_madrid_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^IBEX'], past_days=1, col_name='input_madrid_var_vs_low_1d')
     var_vs_madrid_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^IBEX'], past_days=1, col_name='input_madrid_var_vs_high_1d')
-
     var_vs_milan_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['FTSEMIB.MI'], past_days=1, col_name='input_milan_var_vs_close_1d')
     var_vs_milan_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['FTSEMIB.MI'], past_days=1, col_name='input_milan_var_vs_low_1d')
     var_vs_milan_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['FTSEMIB.MI'], past_days=1, col_name='input_milan_var_vs_high_1d')
-
     var_vs_nordic_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^OMX'], past_days=1, col_name='input_nordic_var_vs_close_1d')
     var_vs_nordic_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^OMX'], past_days=1, col_name='input_nordic_var_vs_low_1d')
     var_vs_nordic_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^OMX'], past_days=1, col_name='input_nordic_var_vs_high_1d')
-
     var_vs_amsterdam_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^AEX'], past_days=1, col_name='input_amsterdam_var_vs_close_1d')
     var_vs_amsterdam_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^AEX'], past_days=1, col_name='input_amsterdam_var_vs_low_1d')
     var_vs_amsterdam_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^AEX'], past_days=1, col_name='input_amsterdam_var_vs_high_1d')
-
     var_vs_paris_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^FCHI'], past_days=1, col_name='input_paris_var_vs_close_1d')
     var_vs_paris_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^FCHI'], past_days=1, col_name='input_paris_var_vs_low_1d')
     var_vs_paris_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^FCHI'], past_days=1, col_name='input_paris_var_vs_high_1d')
-
     var_vs_sp500_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^GSPC'], past_days=1, col_name='input_sp500_var_vs_close_1d')
     var_vs_sp500_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^GSPC'], past_days=1, col_name='input_sp500_var_vs_low_1d')
     var_vs_sp500_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^GSPC'], past_days=1, col_name='input_sp500_var_vs_high_1d')
-
     var_vs_euro_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^STOXX50E'], past_days=1, col_name='input_euro_var_vs_close_1d')
     var_vs_euro_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^STOXX50E'], past_days=1, col_name='input_euro_var_vs_low_1d')
     var_vs_euro_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^STOXX50E'], past_days=1, col_name='input_euro_var_vs_high_1d')
-
     var_vs_frankfurt_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^GDAXI'], past_days=1, col_name='input_frankfurt_var_vs_close_1d')
     var_vs_frankfurt_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^GDAXI'], past_days=1, col_name='input_frankfurt_var_vs_low_1d')
     var_vs_frankfurt_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^GDAXI'], past_days=1, col_name='input_frankfurt_var_vs_high_1d')
-
     var_vs_london_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^FTSE'], past_days=1, col_name='input_london_var_vs_close_1d')
     var_vs_london_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^FTSE'], past_days=1, col_name='input_london_var_vs_low_1d')
     var_vs_london_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^FTSE'], past_days=1, col_name='input_london_var_vs_high_1d')
-
     var_vs_vix_close_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_close']['^VIX'], past_days=1, col_name='input_vix_var_vs_close_1d')
     var_vs_vix_low_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_low']['^VIX'], past_days=1, col_name='input_vix_var_vs_low_1d')
     var_vs_vix_high_1 = calculate_market_var_vs_past_ohlcv(dfs['df_stock_buy'], dfs['df_market_high']['^VIX'], past_days=1, col_name='input_vix_var_vs_high_1d')
@@ -291,14 +274,6 @@ def get_inputs(dfs, buying_time):
     volume_var_30_1 = calculate_volume_var(dfs['df_stock_volume'], past_start_day=30, past_end_day=1)
     volume_var_10_1 = calculate_volume_var(dfs['df_stock_volume'], past_start_day=10, past_end_day=1)
     volume_var_2_1 = calculate_volume_var(dfs['df_stock_volume'], past_start_day=2, past_end_day=1)
-    
-    # sp500_var_90 = calculate_var(dfs['df_market_'], past_days=90, col_name='input_sp500_var_90d')
-
-    # market_var_90 = calculate_market_var(dfs['df_stock_buy'], past_days=90)
-    # market_var_30 = calculate_market_var(dfs['df_stock_buy'], past_days=30)
-    # market_var_10 = calculate_market_var(dfs['df_stock_buy'], past_days=10)
-    # market_var_5 = calculate_market_var(dfs['df_stock_buy'], past_days=5)
-    # market_var_1 = calculate_market_var(dfs['df_stock_buy'], past_days=1)
     
     min_var_90, max_var_90 = min_max_var(dfs['df_stock_buy'], past_days=90)
     min_var_30, max_var_30 = min_max_var(dfs['df_stock_buy'], past_days=30)
@@ -320,9 +295,43 @@ def get_inputs(dfs, buying_time):
     volume_volability_10_1 = get_volume_volability(dfs['df_stock_volume'], past_start_day=10, past_end_day=1)
     volume_volability_2_1 = get_volume_volability(dfs['df_stock_volume'], past_start_day=2, past_end_day=1)
 
-    n_ups_90 = get_n_ups(dfs['df_stock_buy'], past_days=90)
-    n_ups_30 = get_n_ups(dfs['df_stock_buy'], past_days=30)
-    n_ups_5 = get_n_ups(dfs['df_stock_buy'], past_days=5)
+    stock_n_ups_90 = get_stock_n_ups(dfs['df_stock_buy'], past_days=90)
+    stock_n_ups_30 = get_stock_n_ups(dfs['df_stock_buy'], past_days=30)
+    stock_n_ups_5 = get_stock_n_ups(dfs['df_stock_buy'], past_days=5)
+
+    brussels_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^BFX'], stock_n_ups_90, past_days=90, col_name='input_brussels_n_ups_90d')
+    brussels_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^BFX'], stock_n_ups_30, past_days=30, col_name='input_brussels_n_ups_30d')
+    brussels_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^BFX'], stock_n_ups_5, past_days=5, col_name='input_brussels_n_ups_5d')
+    madrid_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^IBEX'], stock_n_ups_90, past_days=90, col_name='input_madrid_n_ups_90d')
+    madrid_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^IBEX'], stock_n_ups_30, past_days=30, col_name='input_madrid_n_ups_30d')
+    madrid_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^IBEX'], stock_n_ups_5, past_days=5, col_name='input_madrid_n_ups_5d')
+    milan_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['FTSEMIB.MI'], stock_n_ups_90, past_days=90, col_name='input_milan_n_ups_90d')
+    milan_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['FTSEMIB.MI'], stock_n_ups_30, past_days=30, col_name='input_milan_n_ups_30d')
+    milan_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['FTSEMIB.MI'], stock_n_ups_5, past_days=5, col_name='input_milan_n_ups_5d')
+    nordic_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^OMX'], stock_n_ups_90, past_days=90, col_name='input_nordic_n_ups_90d')
+    nordic_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^OMX'], stock_n_ups_30, past_days=30, col_name='input_nordic_n_ups_30d')
+    nordic_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^OMX'], stock_n_ups_5, past_days=5, col_name='input_nordic_n_ups_5d')
+    amsterdam_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^AEX'], stock_n_ups_90, past_days=90, col_name='input_amsterdam_n_ups_90d')
+    amsterdam_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^AEX'], stock_n_ups_30, past_days=30, col_name='input_amsterdam_n_ups_30d')
+    amsterdam_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^AEX'], stock_n_ups_5, past_days=5, col_name='input_amsterdam_n_ups_5d')
+    paris_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^FCHI'], stock_n_ups_90, past_days=90, col_name='input_paris_n_ups_90d')
+    paris_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^FCHI'], stock_n_ups_30, past_days=30, col_name='input_paris_n_ups_30d')
+    paris_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^FCHI'], stock_n_ups_5, past_days=5, col_name='input_paris_n_ups_5d')
+    sp500_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^GSPC'], stock_n_ups_90, past_days=90, col_name='input_sp500_n_ups_90d')
+    sp500_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^GSPC'], stock_n_ups_30, past_days=30, col_name='input_sp500_n_ups_30d')
+    sp500_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^GSPC'], stock_n_ups_5, past_days=5, col_name='input_sp500_n_ups_5d')
+    euro_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^STOXX50E'], stock_n_ups_90, past_days=90, col_name='input_euro_n_ups_90d')
+    euro_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^STOXX50E'], stock_n_ups_30, past_days=30, col_name='input_euro_n_ups_30d')
+    euro_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^STOXX50E'], stock_n_ups_5, past_days=5, col_name='input_euro_n_ups_5d')
+    frankfurt_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^GDAXI'], stock_n_ups_90, past_days=90, col_name='input_frankfurt_n_ups_90d')
+    frankfurt_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^GDAXI'], stock_n_ups_30, past_days=30, col_name='input_frankfurt_n_ups_30d')
+    frankfurt_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^GDAXI'], stock_n_ups_5, past_days=5, col_name='input_frankfurt_n_ups_5d')
+    london_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^FTSE'], stock_n_ups_90, past_days=90, col_name='input_london_n_ups_90d')
+    london_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^FTSE'], stock_n_ups_30, past_days=30, col_name='input_london_n_ups_30d')
+    london_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^FTSE'], stock_n_ups_5, past_days=5, col_name='input_london_n_ups_5d')
+    vix_n_ups_90 = get_market_n_ups(dfs['df_market_buy']['^VIX'], stock_n_ups_90, past_days=90, col_name='input_vix_n_ups_90d')
+    vix_n_ups_30 = get_market_n_ups(dfs['df_market_buy']['^VIX'], stock_n_ups_30, past_days=30, col_name='input_vix_n_ups_30d')
+    vix_n_ups_5 = get_market_n_ups(dfs['df_market_buy']['^VIX'], stock_n_ups_5, past_days=5, col_name='input_vix_n_ups_5d')
 
     rank_90 = get_rank(dfs['df_stock_buy'], past_days=90)
     rank_30 = get_rank(dfs['df_stock_buy'], past_days=30)
@@ -385,35 +394,34 @@ def get_inputs(dfs, buying_time):
 
     input_list = [
         var_stock_90, var_stock_30, var_stock_10, var_stock_1,
-        # var_brussels_market_90, # var_brussels_market_30, var_brussels_market_10, var_brussels_market_1,
-        # var_madrid_market_90, var_madrid_market_30, var_madrid_market_10, var_madrid_market_1,
-        # var_milan_market_90, var_milan_market_30, var_milan_market_10, var_milan_market_1,
-        # var_nordic_market_90, var_nordic_market_30, var_nordic_market_10, var_nordic_market_1,
-        # var_amsterdam_market_90, var_amsterdam_market_30, var_amsterdam_market_10, var_amsterdam_market_1,
-        # var_paris_market_90, var_paris_market_30, var_paris_market_10, var_paris_market_1,
-        # var_sp500_market_90, var_sp500_market_30, var_sp500_market_10, var_sp500_market_1,
-        # var_euro_market_90, var_euro_market_30, var_euro_market_10, var_euro_market_1,
-        # var_frankfurt_market_90, var_frankfurt_market_30, var_frankfurt_market_10, var_frankfurt_market_1,
-        # var_london_market_90, var_london_market_30, var_london_market_10, var_london_market_1,
-        # var_vix_90, var_vix_30, var_vix_10, var_vix_1,
+        var_brussels_market_90, var_brussels_market_30, var_brussels_market_10, var_brussels_market_1,
+        var_madrid_market_90, var_madrid_market_30, var_madrid_market_10, var_madrid_market_1,
+        var_milan_market_90, var_milan_market_30, var_milan_market_10, var_milan_market_1,
+        var_nordic_market_90, var_nordic_market_30, var_nordic_market_10, var_nordic_market_1,
+        var_amsterdam_market_90, var_amsterdam_market_30, var_amsterdam_market_10, var_amsterdam_market_1,
+        var_paris_market_90, var_paris_market_30, var_paris_market_10, var_paris_market_1,
+        var_sp500_market_90, var_sp500_market_30, var_sp500_market_10, var_sp500_market_1,
+        var_euro_market_90, var_euro_market_30, var_euro_market_10, var_euro_market_1,
+        var_frankfurt_market_90, var_frankfurt_market_30, var_frankfurt_market_10, var_frankfurt_market_1,
+        var_london_market_90, var_london_market_30, var_london_market_10, var_london_market_1,
+        var_vix_90, var_vix_30, var_vix_10, var_vix_1,
 
         market_name,
 
-        # var_vs_stock_close_1, var_vs_stock_high_1, var_vs_stock_low_1,
-        # var_vs_brussels_close_1, var_vs_brussels_high_1, var_vs_brussels_low_1,
-        # var_vs_madrid_close_1, var_vs_madrid_high_1, var_vs_madrid_low_1,
-        # var_vs_milan_close_1, var_vs_milan_high_1, var_vs_milan_low_1,
-        # var_vs_nordic_close_1, var_vs_nordic_high_1, var_vs_nordic_low_1,
-        # var_vs_amsterdam_close_1, var_vs_amsterdam_high_1, var_vs_amsterdam_low_1,
-        # var_vs_paris_close_1, var_vs_paris_high_1, var_vs_paris_low_1,
-        # var_vs_sp500_close_1, var_vs_sp500_high_1, var_vs_sp500_low_1,
-        # var_vs_euro_close_1, var_vs_euro_high_1, var_vs_euro_low_1,
-        # var_vs_frankfurt_close_1, var_vs_frankfurt_high_1, var_vs_frankfurt_low_1,
-        # var_vs_london_close_1, var_vs_london_high_1, var_vs_london_low_1,
-        # var_vs_vix_close_1, var_vs_vix_high_1, var_vs_vix_low_1,
+        var_vs_stock_close_1, var_vs_stock_high_1, var_vs_stock_low_1,
+        var_vs_brussels_close_1, var_vs_brussels_high_1, var_vs_brussels_low_1,
+        var_vs_madrid_close_1, var_vs_madrid_high_1, var_vs_madrid_low_1,
+        var_vs_milan_close_1, var_vs_milan_high_1, var_vs_milan_low_1,
+        var_vs_nordic_close_1, var_vs_nordic_high_1, var_vs_nordic_low_1,
+        var_vs_amsterdam_close_1, var_vs_amsterdam_high_1, var_vs_amsterdam_low_1,
+        var_vs_paris_close_1, var_vs_paris_high_1, var_vs_paris_low_1,
+        var_vs_sp500_close_1, var_vs_sp500_high_1, var_vs_sp500_low_1,
+        var_vs_euro_close_1, var_vs_euro_high_1, var_vs_euro_low_1,
+        var_vs_frankfurt_close_1, var_vs_frankfurt_high_1, var_vs_frankfurt_low_1,
+        var_vs_london_close_1, var_vs_london_high_1, var_vs_london_low_1,
+        var_vs_vix_close_1, var_vs_vix_high_1, var_vs_vix_low_1,
         
         volume_var_90_1, volume_var_30_1, volume_var_10_1, volume_var_2_1,
-        # market_var_90, market_var_30, market_var_10, market_var_5, market_var_1,
         min_var_90, min_var_30, min_var_10,
         max_var_90, max_var_30, max_var_10,
         days_since_min_30, days_since_min_10,
@@ -421,13 +429,25 @@ def get_inputs(dfs, buying_time):
         volatility_30, volatility_10, volatility_2,
         # market_volatility_30, market_volatility_10, market_volatility_2,
         volume_volability_90_1, volume_volability_30_1, volume_volability_10_1, volume_volability_2_1,
-        n_ups_90, n_ups_30, n_ups_5,
+        
+        stock_n_ups_90, stock_n_ups_30, stock_n_ups_5,
+        brussels_n_ups_90, brussels_n_ups_30, brussels_n_ups_5,
+        madrid_n_ups_90, madrid_n_ups_30, madrid_n_ups_5,
+        milan_n_ups_90, milan_n_ups_30, milan_n_ups_5,
+        nordic_n_ups_90, nordic_n_ups_30, nordic_n_ups_5,
+        amsterdam_n_ups_90, amsterdam_n_ups_30, amsterdam_n_ups_5,
+        paris_n_ups_90, paris_n_ups_30, paris_n_ups_5,
+        sp500_n_ups_90, sp500_n_ups_30, sp500_n_ups_5,
+        euro_n_ups_90, euro_n_ups_30, euro_n_ups_5,
+        frankfurt_n_ups_90, frankfurt_n_ups_30, frankfurt_n_ups_5,
+        london_n_ups_90, london_n_ups_30, london_n_ups_5,
+        vix_n_ups_90, vix_n_ups_30, vix_n_ups_5,
+
         rank_90, rank_30, rank_10, rank_1,
         perf_vs_market_90, perf_vs_market_30, perf_vs_market_10, perf_vs_market_1,
         # rsi_14, macd, macd_signal,
         # atr_14, bollinger_upper, bollinger_lower, # affected by stock absolute prices
-        # sp500_var_90, sp500_var_30, sp500_var_10, sp500_var_1,
-        # vix
+        
         current_ratio, ev_to_ebitda_ltm, fcf_yield_ltm, marketcap, pe_ltm, price_to_book, roa, roe, total_debt, total_rev,
         current_ratio_var_1, ev_to_ebitda_ltm_var_1, fcf_yield_ltm_var_1, marketcap_var_1, pe_ltm_var_1, price_to_book_var_1, roa_var_1, roe_var_1, total_debt_var_1, total_rev_var_1,
         current_ratio_var_2, ev_to_ebitda_ltm_var_2, fcf_yield_ltm_var_2, marketcap_var_2, pe_ltm_var_2, price_to_book_var_2, roa_var_2, roe_var_2, total_debt_var_2, total_rev_var_2,
