@@ -111,7 +111,7 @@ def add_output_var_binary(df_data, **hyperparams):
 def add_future_rank(df_data, dfs, **hyperparams):
     target_future_days = hyperparams.get('target_future_days')
 
-    rank = hf.calculate_rank(dfs['df_stock_buy'], n_past_days=0, n_future_days=target_future_days)
+    rank = hf.calculate_var_rank(dfs['df_stock_buy'], n_past_days=0, n_future_days=target_future_days)
     rank_stacked = hf.stack(rank, 'output_future_end_rank')
 
     df_data['output_future_end_rank'] = rank_stacked

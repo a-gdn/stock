@@ -1,8 +1,7 @@
 
-
-add feature: n_ups_market_90d, n_ups_market_30d, n_ups_market_10d
-
 add new hyperparameter : n_top_predictions for one day
+
+consider buy/sell at open
 
 fix ticker code for:
 ABG.OL

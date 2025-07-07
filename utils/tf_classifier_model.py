@@ -189,7 +189,8 @@ def get_test_train_data(df_input, df_output, train_end_index):
     X_test = scaler.transform(X_test)
     hf.save_object(scaler, './outputs/scaler.pkl')
 
-    selector = SelectKBest(score_func=f_classif, k=cfg.num_features)
+    k = min(cfg.num_features, X_train.shape[1])
+    selector = SelectKBest(score_func=f_classif, k=k)
     X_train = selector.fit_transform(X_train, y_train)
     X_test = selector.transform(X_test)
 
@@ -217,24 +218,6 @@ def create_tf_model(**kwargs):
     X_test = kwargs.get('X_test')
     y_train = kwargs.get('y_train')
     y_test = kwargs.get('y_test')
-
-    # def print_nan_stats(name, array):
-    #     print(f"{name} shape: {array.shape}")
-    #     print(f"{name} NaN count: {np.isnan(array).sum()}\n")
-
-    # print_nan_stats("X_train", X_train)
-    # print_nan_stats("y_train", y_train)
-    # print_nan_stats("X_test", X_test)
-    # print_nan_stats("y_test", y_test)
-
-    # print("Unique labels in y_train:", np.unique(y_train))
-    # print("Unique labels in y_test:", np.unique(y_test))
-
-    # print("y_train shape:", y_train.shape)
-    # print("First few y_train values:", y_train[:10])
-
-    # print("NaNs in X_train:", np.isnan(X_train).sum())
-    # print("NaNs in y_train:", np.isnan(y_train).sum())
 
     size_layer_1 = kwargs.get('size_layer_1', 128)
     size_layer_2 = kwargs.get('size_layer_2', 64)
