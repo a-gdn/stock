@@ -22,9 +22,6 @@ finbox_aligned = finbox_df.reindex(ohlcv_df.index)
 
 # Concatenate along the columns
 merged_df = pd.concat([ohlcv_df, finbox_aligned], axis="columns")
-tickers = merged_df.columns.levels[1]
-
-print(merged_df['marketcap'].tail(10))
 
 def fill_market_cap(uncomplete_market_cap, price):
     # Estimate shares outstanding
@@ -50,7 +47,7 @@ def fill_price_to_book(uncomplete_price_to_book, price):
     return price / bvps
 
 # For some fundamentals, estimate missing data based on price
-for ticker in tickers:
+for ticker in common_tickers:
     price = merged_df[('Open', ticker)].replace(0, np.nan)
 
     merged_df[('marketcap', ticker)] = fill_market_cap(merged_df[('marketcap', ticker)], price)
@@ -61,6 +58,5 @@ for ticker in tickers:
 merged_df.ffill(inplace=True)
 
 merged_df.info()
-print(merged_df.tail(10))
 
 merged_df.to_pickle("./db/merged_ohlcv_fundamentals.pkl")
