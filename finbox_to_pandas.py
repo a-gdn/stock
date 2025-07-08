@@ -105,11 +105,17 @@ def create_fundamentals_dataframe(directory_path: str) -> pd.DataFrame:
 
     print("\nCombining all data into a single DataFrame...")
     final_df = pd.concat(clean_series, axis=1)
-    final_df.sort_index(inplace=True)
-    final_df.sort_index(axis=1, level=[0, 1], inplace=True)
+
+    # Sort the DataFrame
+    final_df.sort_index(axis='index', inplace=True) # Sort rows by date
+    final_df.sort_index(axis='columns', level=[0, 1], inplace=True) # Sort columns by fundamental, then by ticker
+    
+    # Set names for the DataFrame
     final_df.columns.names = ['Fundamental', 'Ticker']
-    final_df.ffill(inplace=True)
     final_df.index.name = 'Date'
+    
+    # final_df.ffill(inplace=True)
+
     final_df = remove_tickers_with_all_nan(final_df)
     final_df = add_pct_change_columns(final_df, periods=[1, 2, 4])
     final_df.replace([float('inf'), -float('inf')], [1e6, -1e6], inplace=True)

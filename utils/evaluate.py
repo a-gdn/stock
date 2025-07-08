@@ -83,7 +83,7 @@ def get_performance_score(precision, trimmed_average_profit, is_buy_count, true_
     # performance_score = is_buy_count_score * profitable_rate * (trimmed_average_profit**2) * penalty_factor
     
     # Adjust is_buy_count_score
-    min_is_buy_count = 50
+    min_is_buy_count = 25
     # is_buy_count_score = min(1, true_positives / min_is_buy_count)
 
     # Emphasize profitability
@@ -136,7 +136,7 @@ def evaluate_model(df_data, model, test_train_data, num_tickers, num_combination
         }
     else:
         performance_metrics = {
-            'performance_score': 0,
+            'performance_score': 0.5,
             'trimmed_average_profit': 1,
             'average_profit': 1,
             'median_profit': 1,
