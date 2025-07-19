@@ -1,7 +1,15 @@
 
 add new hyperparameter : n_top_predictions for one day
 
-consider buy/sell at open
+analyse feature correlation and remove highly corrolated features
+
+ajout d'inputs de william igon:
+    - PER: ideally around 7%, <12%
+    - ROE > 10%
+    - increasing revenue
+    - PER: between 15 and 20%, sell 10% of stocks for every percent after 15%
+    - every 6 months remove the least performing stocks
+    - 25 lines max
 
 fix ticker code for:
 ABG.OL
@@ -77,9 +85,6 @@ US.MI
 VLK.AS
 WDP.BR
 
-ajout d'inputs de william igon:
-    - PER: ideally around 7, <12%, ROE > 10%, increasing revenue
-    - PER: between 15 and 20%, every 6 months remove the least performing stocks
 analyse best input features using shap
 db_etf (qui servent d'inputs references market) et df_stocks. ajouter inputs ref_sp500, ref_cac40
 ajouter db (json?) actions et field. ajouter input field ref_field

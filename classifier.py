@@ -135,6 +135,8 @@ def get_df_data(hyperparams):
     df_data = hf.fillnavalues(df_data)
     print(f"df_data shape: {df_data.shape}")
 
+    # df_data.to_csv("./outputs/df_data.csv", index=False, float_format="%.3f")
+
     return df_data, num_stocks
 
 def load_results(path):

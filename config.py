@@ -11,12 +11,12 @@ results_path = './outputs/results.xlsx'
 
 fee = 0.002
 
-use_hyperopt = True
+use_hyperopt = False
 use_saved_transformed_data = False
 use_saved_model = False
 
 start_date = '2015-06-01' #'2013-01-01'
-train_window_size = 550000
+train_window_size = 600000
 test_window_size = 25000
 
 num_features = 100
@@ -30,7 +30,7 @@ learning_rate = 1e-3
 hyperopt_n_iterations = 300
 save_every_n_iterations = 5
 
-output_binary_name = 'output_var_binary' #'output_var_binary' or 'output_rank_binary'
+output_binary_name = 'output_rank_binary' #'output_var_binary' or 'output_rank_binary'
 
 param_grid = {
     'buying_time': ['Close'], 'selling_time': ['Close'], #'Open', 
@@ -40,8 +40,9 @@ param_grid = {
     'size_layer_1': [128], 'size_layer_2': [64], 'size_layer_3': [64],
     'dropout_rate': [0.35], 'use_focal_loss': [True], 'batch_size': [128], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
     'confidence_threshold': [0.61],
+    'max_daily_predictions': [5],
     'var_threshold': [1.0],
-    'rank_pct_threshold': [0.45]
+    'rank_pct_threshold': [0.25]
 }
 
 search_space = {
@@ -53,10 +54,11 @@ search_space = {
     'size_layer_1': hp.choice('size_layer_1', [128]),
     'size_layer_2': hp.choice('size_layer_2', [64]),
     'size_layer_3': hp.choice('size_layer_3', [64]), #[64, 128, 256]
-    'dropout_rate': hp.uniform('dropout_rate', 0.34, 0.35), #0, 0.5
+    'dropout_rate': hp.uniform('dropout_rate', 0.05, 0.4), #0, 0.5
     'use_focal_loss': hp.choice('use_focal_loss', [True, True]),
     'batch_size': hp.choice('batch_size', [128]), #[32, 64, 128]
     'confidence_threshold': hp.uniform('confidence_threshold', 0.5, 1),
+    'max_daily_predictions': hp.randint('max_daily_predictions', 1, 25),
     'var_threshold': hp.uniform('var_threshold', 1, 1.01),
-    'rank_pct_threshold': hp.uniform('rank_pct_threshold', 0, 1)
+    'rank_pct_threshold': hp.uniform('rank_pct_threshold', 0, 0.5)
 }

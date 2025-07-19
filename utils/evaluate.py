@@ -7,15 +7,36 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 def slice_df_test(df_data, test_size):
     return df_data.tail(test_size)
 
+def mark_top_predictions(df, max_daily_predictions, sort_column):
+    df = df.copy()
+
+    df['prediction_rank'] = (
+        df.sort_values(by=sort_column, ascending=False)
+          .groupby(level='Date')
+          .cumcount()
+    )
+
+    df['is_top_prediction'] = df['prediction_rank'] < max_daily_predictions
+    return df
+
+def mark_confident_predictions(df, confidence_threshold):
+    df = df.copy()
+    df['is_confident'] = df['prediction_probs'] > confidence_threshold
+    return df
+
 def add_predictions(df, model, X_test, **hyperparams):
     print(f'X_test shape: {X_test.shape}')
-    
-    confidence_threshold = hyperparams['confidence_threshold']
 
+    max_daily_predictions = hyperparams['max_daily_predictions']
+    confidence_threshold = hyperparams['confidence_threshold']
+    
     prediction_y_test_array = model.predict(X_test).flatten()
     df['prediction_probs'] = prediction_y_test_array.tolist()
 
-    df['prediction_is_buy'] = (df['prediction_probs'] > confidence_threshold)
+    df = mark_top_predictions(df, max_daily_predictions, 'prediction_probs')
+    df = mark_confident_predictions(df, confidence_threshold)
+
+    df['prediction_is_buy'] = df['is_top_prediction'] & df['is_confident']
 
     if cfg.output_binary_name not in {'output_var_binary', 'output_rank_binary'}:
         raise ValueError(f'output_binary_name must be either "output_var_binary" or "output_rank_binary"')

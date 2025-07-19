@@ -228,7 +228,7 @@ def create_tf_model(**kwargs):
     model = Sequential([
         Input(shape=(X_train.shape[1],)),
         Dense(size_layer_1), BatchNormalization(), Activation('relu'), Dropout(dropout_rate),
-        Dense(size_layer_2), BatchNormalization(), Activation('relu'), Dropout(dropout_rate),
+        # Dense(size_layer_2), BatchNormalization(), Activation('relu'), Dropout(dropout_rate),
         Dense(1, activation='sigmoid')
     ])
 

@@ -48,7 +48,7 @@ def fill_price_to_book(uncomplete_price_to_book, price):
 
 # For some fundamentals, estimate missing data based on price
 for ticker in common_tickers:
-    price = merged_df[('Open', ticker)].replace(0, np.nan)
+    price = merged_df[('Close', ticker)].replace(0, np.nan)
 
     merged_df[('marketcap', ticker)] = fill_market_cap(merged_df[('marketcap', ticker)], price)
     merged_df[('pe_ltm', ticker)] = fill_pe_ltm(merged_df[('pe_ltm', ticker)], price)
