@@ -57,7 +57,7 @@ def fillnavalues(df: pd.DataFrame) -> pd.DataFrame:
 
     df_cleaned.ffill(inplace=True) #forward fill otherwise
     # df_cleaned.bfill(inplace=True) #backward fill for the first rows
-    df_cleaned.fillna(0, inplace=True) #fill remaining NaN values with 0
+    # df_cleaned.fillna(0, inplace=True) #fill remaining NaN values with 0
     df_cleaned.replace([np.inf, -np.inf], np.nan, inplace=True)
     df_cleaned.dropna(inplace=True) #drop rows with NaN values
     return df_cleaned

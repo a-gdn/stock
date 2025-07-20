@@ -7,16 +7,34 @@ import utils.helper_functions as hf
 def add_pct_change_columns(df: pd.DataFrame, periods: list[int]) -> pd.DataFrame:
     all_pct_change_dfs = []
 
-    for period in periods:
-        pct_change_df = df.pct_change(periods=period, fill_method=None)
-        pct_change_df.columns = pd.MultiIndex.from_tuples(
-            [(f"{fundamental}_var_{period}", ticker) for fundamental, ticker in pct_change_df.columns],
-            names=df.columns.names
-        )
-        all_pct_change_dfs.append(pct_change_df)
+    for col in df.columns:
+        fundamental, ticker = col
+        series = df[col]
+        known_indices = series[series.notna()].index
 
-    combined_df = pd.concat([df] + all_pct_change_dfs, axis=1)
+        for period in periods:
+            new_col = (f"{fundamental}_var_{period}", ticker)
+            pct_changes = pd.Series(index=series.index, dtype="float64")
+
+            for i in range(period, len(known_indices)):
+                current_idx = known_indices[i]
+                prev_idx = known_indices[i - period]
+                current_val = series.loc[current_idx]
+                prev_val = series.loc[prev_idx]
+
+                # Avoid division by zero
+                if prev_val == 0:
+                    pct_changes.loc[current_idx] = pd.NA
+                else:
+                    pct_changes.loc[current_idx] = (current_val / prev_val) - 1
+
+            pct_change_df = pct_changes.to_frame(name=new_col)
+            all_pct_change_dfs.append(pct_change_df)
+
+    pct_change_df_combined = pd.concat(all_pct_change_dfs, axis=1)
+    combined_df = pd.concat([df, pct_change_df_combined], axis=1)
     combined_df = combined_df.sort_index(axis=1, level=[0, 1])
+
     return combined_df
 
 def extract_finbox_ticker_from_path(file_path: Path, base_directory: Path) -> str:

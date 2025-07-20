@@ -133,9 +133,14 @@ def get_df_data(hyperparams):
     df_data = outputs.add_outputs(df_data, dfs, num_stocks, **hyperparams)    
 
     df_data = hf.fillnavalues(df_data)
+    df_data = df_data[
+        (df_data['input_stock_var_90d'] != 0) &
+        (df_data['input_pe_ltm'] > 0) &
+        (df_data['input_roe'] != 0)
+    ]
     print(f"df_data shape: {df_data.shape}")
 
-    # df_data.to_csv("./outputs/df_data.csv", index=False, float_format="%.3f")
+    # df_data.to_csv("./outputs/df_data.csv", index=True, float_format="%.3f", decimal=",")
 
     return df_data, num_stocks
 
