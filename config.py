@@ -11,7 +11,7 @@ results_path = './outputs/results.xlsx'
 
 fee = 0.002
 
-use_hyperopt = False
+use_hyperopt = True
 use_saved_transformed_data = False
 use_saved_model = False
 
@@ -19,9 +19,9 @@ start_date = '2015-06-01' #'2013-01-01'
 train_window_size = 600000
 test_window_size = 25000
 
-num_features = 100
+num_features = 30
 max_epochs = 100
-early_stopping_patience = 5
+early_stopping_patience = 4
 lr_reduction_factor = 0.1
 lr_reduction_patience = 2
 min_learning_rate = 1e-6
