@@ -216,10 +216,8 @@ def get_model_result(hyperparams):
     df_fold_metrics = pd.DataFrame(all_fold_performance_metrics)    
     aggregated_results = df_fold_metrics.mean().round(2).to_dict()
 
-    filtered_df = df_fold_metrics[df_fold_metrics['prediction_is_buy_count'] > 0]
-
-    if not filtered_df.empty:
-        performance_score_mean = filtered_df['performance_score'].mean().round(2)
+    if not df_fold_metrics.empty:
+        performance_score_mean = df_fold_metrics['performance_score'].mean().round(2)
     else:
         performance_score_mean = 0
     

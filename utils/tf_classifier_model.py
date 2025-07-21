@@ -6,6 +6,7 @@ from tensorflow.keras import Model, Sequential  # type: ignore
 from tensorflow.keras.layers import Dense, BatchNormalization, Dropout, Activation, Input # type: ignore
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, TerminateOnNaN # type: ignore
 from tensorflow.keras.optimizers import AdamW # type: ignore
+from tensorflow.keras.metrics import Precision # type: ignore
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import SelectKBest, f_classif
@@ -235,10 +236,14 @@ def create_tf_model(**kwargs):
     alpha = compute_alpha(y_train)
     loss = FocalLoss(gamma=2., alpha=alpha) if use_focal_loss else 'binary_crossentropy'
     
-    model.compile(optimizer=AdamW(learning_rate=cfg.learning_rate), loss=loss, metrics=['accuracy'])
+    # model.compile(optimizer=AdamW(learning_rate=cfg.learning_rate), loss=loss, metrics=['accuracy'])
+    model.compile(optimizer=AdamW(learning_rate=cfg.learning_rate), loss=loss, metrics=[Precision()])
 
-    early_stopping = EarlyStopping(monitor='val_loss', patience=cfg.early_stopping_patience, restore_best_weights=True)
-    lr_scheduler = ReduceLROnPlateau(monitor='val_loss', factor=cfg.lr_reduction_factor, patience=cfg.lr_reduction_patience, min_lr=cfg.min_learning_rate)
+    # early_stopping = EarlyStopping(monitor='val_loss', patience=cfg.early_stopping_patience, restore_best_weights=True)
+    # lr_scheduler = ReduceLROnPlateau(monitor='val_loss', factor=cfg.lr_reduction_factor, patience=cfg.lr_reduction_patience, min_lr=cfg.min_learning_rate)
+    early_stopping = EarlyStopping(monitor='val_precision', mode='max', patience=cfg.early_stopping_patience, restore_best_weights=True)
+    lr_scheduler = ReduceLROnPlateau(monitor='val_precision', mode='max', factor=cfg.lr_reduction_factor, patience=cfg.lr_reduction_patience, min_lr=cfg.min_learning_rate)
+
     callbacks = [early_stopping, lr_scheduler, TerminateOnNaN()]
 
     history = model.fit(X_train, y_train, epochs=cfg.max_epochs, batch_size=batch_size, validation_data=(X_test, y_test), callbacks=callbacks)

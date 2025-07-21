@@ -16,10 +16,12 @@ use_saved_transformed_data = False
 use_saved_model = False
 
 start_date = '2015-06-01' #'2013-01-01'
-train_window_size = 600000
-test_window_size = 25000
+train_window_size = 380000
+test_window_size = 20000
 
-num_features = 30
+min_is_buy_count = 10
+num_features = 100
+
 max_epochs = 100
 early_stopping_patience = 4
 lr_reduction_factor = 0.1
@@ -27,19 +29,19 @@ lr_reduction_patience = 2
 min_learning_rate = 1e-6
 learning_rate = 1e-3
 
-hyperopt_n_iterations = 300
+hyperopt_n_iterations = 500
 save_every_n_iterations = 5
 
 output_binary_name = 'output_rank_binary' #'output_var_binary' or 'output_rank_binary'
 
 param_grid = {
     'buying_time': ['Close'], 'selling_time': ['Close'], #'Open', 
-    'target_future_days': [30],
+    'target_future_days': [5],
     'loss_limit': [0.25], #0.4, 0.55, 0.7, 
     'sell_at_target': [False],
     'size_layer_1': [128], 'size_layer_2': [64], 'size_layer_3': [64],
     'dropout_rate': [0.35], 'use_focal_loss': [True], 'batch_size': [128], #'dropout_rates': [i for i in list(np.arange(0, 0.3, 0.1))], 'batch_sizes': [32, 64, 128],
-    'confidence_threshold': [0.61],
+    'confidence_threshold': [0.55],
     'max_daily_predictions': [5],
     'var_threshold': [1.0],
     'rank_pct_threshold': [0.25]
@@ -50,12 +52,12 @@ search_space = {
     'selling_time': hp.choice('selling_time', ['Open', 'Close']),
     'target_future_days': hp.randint('target_future_days', 0, 250), #hp.randint('target_future_days', 1, 60), #1, 60
     'loss_limit': hp.uniform('loss_limit', 0, 1),
-    'sell_at_target': hp.choice('sell_at_target', [False, False]), #[True, False] or [False, False]
+    'sell_at_target': hp.choice('sell_at_target', [True, False]), #[True, False] or [False, False]
     'size_layer_1': hp.choice('size_layer_1', [128]),
     'size_layer_2': hp.choice('size_layer_2', [64]),
     'size_layer_3': hp.choice('size_layer_3', [64]), #[64, 128, 256]
     'dropout_rate': hp.uniform('dropout_rate', 0.05, 0.4), #0, 0.5
-    'use_focal_loss': hp.choice('use_focal_loss', [True, True]),
+    'use_focal_loss': hp.choice('use_focal_loss', [True, False]),
     'batch_size': hp.choice('batch_size', [128]), #[32, 64, 128]
     'confidence_threshold': hp.uniform('confidence_threshold', 0.5, 1),
     'max_daily_predictions': hp.randint('max_daily_predictions', 1, 25),

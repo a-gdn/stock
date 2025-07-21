@@ -26,7 +26,7 @@ def get_future_max_var(dfs, future_days, buying_time, selling_time):
     
     return future_max_var_stacked
 
-def get_future_min_var(dfs, df_loss_prices, future_days, buying_time, selling_time):
+def get_future_min_var(dfs, future_days, buying_time, selling_time):
     future_rolling_min = hf.get_future_rolling_min(dfs['df_stock_low'], future_days, buying_time, selling_time)
     future_min_var = future_rolling_min / dfs['df_stock_buy']
     future_min_var_stacked = hf.stack(future_min_var, f'output_future_min_var')
@@ -36,6 +36,7 @@ def get_future_min_var(dfs, df_loss_prices, future_days, buying_time, selling_ti
 def get_future_min_var_before_max(dfs, future_days, buying_time, selling_time):
     rolling_max_positions = hf.get_future_rolling_max_position(dfs['df_stock_sell'], future_days, buying_time, selling_time)
 
+    df_low = dfs['df_stock_low'].copy()
     df_low = df_low.reset_index(drop=True)
     rolling_min = df_low.apply(lambda col: col.index.map(
             lambda row: hf.get_future_rolling_min_value(row, dfs['df_stock_low'].columns.get_loc(col.name), dfs['df_stock_low'], rolling_max_positions)
@@ -74,7 +75,7 @@ def add_future_vars(df_data, dfs, df_loss_prices, has_min_max_values, **hyperpar
         
     if has_min_max_values:
         future_max_var = get_future_max_var(dfs, target_future_days, buying_time, selling_time)
-        future_min_var = get_future_min_var(dfs, df_loss_prices, target_future_days, buying_time, selling_time)
+        future_min_var = get_future_min_var(dfs, target_future_days, buying_time, selling_time)
     else:
         future_max_var = future_end_var.copy()
         future_max_var.rename(columns={'output_future_end_var': 'output_future_max_var'}, inplace=True)
@@ -83,7 +84,7 @@ def add_future_vars(df_data, dfs, df_loss_prices, has_min_max_values, **hyperpar
         future_min_var.rename(columns={'output_future_end_var': 'output_future_min_var'}, inplace=True)
     
     if sell_at_target:
-        future_min_var = get_future_min_var_before_max(dfs['df_stock_buy'], dfs['df_stock_sell'], df_loss_prices, target_future_days, buying_time, selling_time)
+        future_min_var = get_future_min_var_before_max(dfs, target_future_days, buying_time, selling_time)
 
     future_vars = pd.concat([df_data, future_end_var, future_max_var, future_min_var], axis='columns')
     
